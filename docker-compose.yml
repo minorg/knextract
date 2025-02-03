@@ -1,0 +1,20 @@
+services:
+  app:
+    build: .
+    env_file: .env
+    container_name: app
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - ./caches:/caches
+      - ./data/knextract:/data
+  oxigraph:
+    command: ["serve", "--location", "/data", "--bind", "0.0.0.0:7878"]
+    container_name: oxigraph
+    image: ghcr.io/oxigraph/oxigraph:main
+    ports:
+      - "127.0.0.1:7878:7878"
+    volumes:
+      - oxigraph:/data
+volumes:
+  oxigraph:

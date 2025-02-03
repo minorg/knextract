@@ -1,0 +1,13 @@
+/build/
+/coverage/
+/cpu-prof/
+/.env
+.~lock*
+/.next/
+next-env.d.ts
+/node_modules/
+/out/
+*.sqlite3*
+/test-results/
+/tsconfig.tsbuildinfo
+/workflow-traces

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+# Don't need an .env file
+touch ../.env
+
+export NEXT_TELEMETRY_DISABLED=1
+
+npm run check
+
+# npm run build
+npm run tsc
+
+npm run test:unit
+#npm run test:unit:coverage

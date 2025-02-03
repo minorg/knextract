@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+format_rdf() {
+  rapper -i turtle -o turtle -q $1 >temp.ttl
+  mv -f temp.ttl $1
+}
+
+format_rdf lib/models/models.shaclmate.ttl
+
+../shaclmate/packages/cli/cli.sh generate "$PWD/lib/models.shaclmate.ttl" "$PWD/../kos-kit/lib/packages/models/stubs.shaclmate.ttl" >lib/models/generated.ts
+
+npm exec biome -- check --write --unsafe lib/models/generated.ts

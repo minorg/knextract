@@ -1,0 +1,1833 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix knextract: <http://purl.archive.org/purl/knextract/ontology#> .
+@prefix knextract-cbox: <http://purl.archive.org/purl/knextract/cbox#> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix shaclmate: <http://minorg.github.io/shaclmate/ns#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix kos-kit-stubs: <http://kos-kit.github.io/stubs#> .
+
+knextract:Answer
+    shaclmate:name "Answer" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:InformationContentEntity ;
+    sh:property knextract:Answer-claims .
+
+knextract:Answer-claims
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "claims" ;
+    sh:node knextract:ClaimList ;
+    sh:path knextract:claims .
+
+knextract:AnswerList
+    shaclmate:name "AnswerList" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf rdf:List ;
+    sh:nodeKind sh:IRI ;
+    sh:property knextract:AnswerList-first, knextract:AnswerList-rest .
+
+knextract:AnswerList-first
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "first" ;
+    sh:node knextract:Answer ;
+    sh:path rdf:first .
+
+knextract:AnswerList-rest
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "rest" ;
+    sh:nodeKind sh:IRI ;
+    sh:path rdf:rest ;
+    sh:xone ([
+            sh:class knextract:AnswerList
+        ]
+        [
+            sh:hasValue ( )
+        ]
+    ) .
+
+knextract:BaseConceptSchemeConceptSelector
+    shaclmate:abstract true ;
+    shaclmate:export false ;
+    shaclmate:name "BaseConceptSchemeConceptSelector" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:BaseConceptSelector ;
+    sh:property knextract:BaseConceptSchemeConceptSelector-conceptScheme .
+
+knextract:BaseConceptSchemeConceptSelector-conceptScheme
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "conceptScheme" ;
+    sh:node kos-kit-stubs:ConceptSchemeStub ;
+    sh:path knextract:conceptScheme .
+
+knextract:BaseConceptSelector
+    shaclmate:abstract true ;
+    shaclmate:export false ;
+    shaclmate:name "BaseConceptSelector" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:InformationContentEntity .
+
+knextract:BaseEvent
+    shaclmate:abstract true ;
+    shaclmate:export false ;
+    shaclmate:mintingStrategy shaclmate:_MintingStrategy_SHA256 ;
+    shaclmate:name "BaseEvent" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:Entity ;
+    sh:property knextract:BaseEvent-timestamp .
+
+knextract:BaseEvent-timestamp
+    a sh:PropertyShape ;
+    sh:datatype xsd:dateTime ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "timestamp" ;
+    sh:path knextract:timestamp .
+
+knextract:BaseFocusConceptSelector
+    shaclmate:abstract true ;
+    shaclmate:export false ;
+    shaclmate:name "BaseFocusConceptSelector" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:BaseConceptSelector ;
+    sh:property knextract:BaseFocusConceptSelector-focusConcept .
+
+knextract:BaseFocusConceptSelector-focusConcept
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "focusConcept" ;
+    sh:node kos-kit-stubs:ConceptStub ;
+    sh:path knextract:focusConcept .
+
+knextract:BaseQuestion
+    shaclmate:abstract true ;
+    shaclmate:export false ;
+    shaclmate:name "BaseQuestion" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:InformationContentEntity ;
+    sh:property knextract:BaseQuestion-path, knextract:BaseQuestion-promptTemplate .
+
+knextract:BaseQuestion-path
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "path" ;
+    sh:nodeKind sh:IRI ;
+    sh:path sh:path .
+
+knextract:BaseQuestion-promptTemplate
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "promptTemplate" ;
+    sh:node knextract:PromptTemplateLike ;
+    sh:path knextract:promptTemplateLike .
+
+knextract:BaseValue
+    shaclmate:abstract true ;
+    shaclmate:export false ;
+    shaclmate:name "BaseValue" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:InformationContentEntity .
+
+knextract:BooleanValue
+    shaclmate:name "BooleanValue" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:BaseValue ;
+    sh:property knextract:BooleanValue-value .
+
+knextract:BooleanValue-value
+    a sh:PropertyShape ;
+    sh:datatype xsd:boolean ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "value" ;
+    sh:path rdf:value .
+
+knextract:CategoricalQuestion
+    shaclmate:name "CategoricalQuestion" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:BaseQuestion ;
+    sh:property knextract:CategoricalQuestion-class, knextract:CategoricalQuestion-conceptSelector .
+
+knextract:CategoricalQuestion-class
+    shaclmate:extern true ;
+    a sh:PropertyShape ;
+    sh:defaultValue skos:Concept ;
+    sh:hasValue skos:Concept ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "class_" ;
+    sh:nodeKind sh:IRI ;
+    sh:path sh:class .
+
+knextract:CategoricalQuestion-conceptSelector
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "conceptSelector" ;
+    sh:node knextract:ConceptSelector ;
+    sh:path knextract:conceptSelector .
+
+knextract:CategoricalValue
+    shaclmate:name "CategoricalValue" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:BaseValue ;
+    sh:property knextract:CategoricalValue-value .
+
+knextract:CategoricalValue-value
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "value" ;
+    sh:node kos-kit-stubs:ConceptStub ;
+    sh:path rdf:value .
+
+knextract:Claim
+    shaclmate:name "Claim" ;
+    shaclmate:toRdfType rdf:Statement ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:InformationContentEntity ;
+    sh:property knextract:Claim-gold, knextract:Claim-object, knextract:Claim-predicate, knextract:Claim-subject .
+
+knextract:Claim-gold
+    a sh:PropertyShape ;
+    sh:datatype xsd:boolean ;
+    sh:defaultValue false ;
+    sh:maxCount 1 ;
+    sh:name "gold" ;
+    sh:path knextract:gold .
+
+knextract:Claim-object
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "object" ;
+    sh:node knextract:Value ;
+    sh:path rdf:object .
+
+knextract:Claim-predicate
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "predicate" ;
+    sh:nodeKind sh:IRI ;
+    sh:path rdf:predicate .
+
+knextract:Claim-subject
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "subject" ;
+    sh:nodeKind sh:IRI ;
+    sh:path rdf:subject .
+
+knextract:ClaimList
+    shaclmate:name "ClaimList" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf rdf:List ;
+    sh:nodeKind sh:IRI ;
+    sh:property knextract:ClaimList-first, knextract:ClaimList-rest .
+
+knextract:ClaimList-first
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "first" ;
+    sh:node knextract:Claim ;
+    sh:path rdf:first .
+
+knextract:ClaimList-rest
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "rest" ;
+    sh:nodeKind sh:IRI ;
+    sh:path rdf:rest ;
+    sh:xone ([
+            sh:class knextract:ClaimList
+        ]
+        [
+            sh:hasValue ( )
+        ]
+    ) .
+
+knextract:ClaimProperty
+    shaclmate:fromRdfType rdf:Property ;
+    shaclmate:name "ClaimProperty" ;
+    a owl:Class, sh:NodeShape ;
+    sh:nodeKind sh:IRI ;
+    sh:property knextract:ClaimProperty-comments, knextract:ClaimProperty-labels .
+
+knextract:ClaimProperty-comments
+    a sh:PropertyShape ;
+    sh:name "comments" ;
+    sh:path rdfs:comment ;
+    sh:xone dash:StringOrLangString .
+
+knextract:ClaimProperty-labels
+    a sh:PropertyShape ;
+    sh:name "labels" ;
+    sh:path rdfs:label ;
+    sh:xone dash:StringOrLangString .
+
+knextract:CompletionMessage
+    shaclmate:name "CompletionMessage" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:PromptMessage .
+
+knextract:ConceptSchemeConceptSelector
+    shaclmate:name "ConceptSchemeConceptSelector" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:BaseConceptSchemeConceptSelector .
+
+knextract:ConceptSchemeTopConceptSelector
+    shaclmate:name "ConceptSchemeTopConceptSelector" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:BaseConceptSchemeConceptSelector .
+
+knextract:ConceptSelector
+    shaclmate:name "ConceptSelector" ;
+    a sh:NodeShape ;
+    sh:xone (knextract:ConceptSchemeConceptSelector
+        knextract:ConceptSchemeTopConceptSelector
+        knextract:EnumeratedConceptSelector
+        knextract:NarrowerConceptSelector
+        knextract:NarrowerTransitiveConceptSelector
+    ) .
+
+knextract:ConceptStubList
+    shaclmate:name "ConceptStubList" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf rdf:List ;
+    sh:nodeKind sh:IRI ;
+    sh:property knextract:ConceptStubList-first, knextract:ConceptStubList-rest .
+
+knextract:ConceptStubList-first
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "first" ;
+    sh:node kos-kit-stubs:ConceptStub ;
+    sh:path rdf:first .
+
+knextract:ConceptStubList-rest
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "rest" ;
+    sh:nodeKind sh:IRI ;
+    sh:path rdf:rest ;
+    sh:xone ([
+            sh:class knextract:ConceptStubList
+        ]
+        [
+            sh:hasValue ( )
+        ]
+    ) .
+
+knextract:Corpus
+    shaclmate:mintingStrategy shaclmate:_MintingStrategy_UUIDv4 ;
+    shaclmate:name "Corpus" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:InformationContentEntity ;
+    sh:property knextract:deleted, knextract:label-required, knextract:mutable .
+
+knextract:CorpusDeletion
+    shaclmate:name "CorpusDeletion" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:Process ;
+    sh:property knextract:CorpusDeletion-input .
+
+knextract:CorpusDeletion-input
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "input" ;
+    sh:node knextract:CorpusDeletionInput ;
+    sh:path knextract:processInput .
+
+knextract:CorpusDeletionInput
+    shaclmate:name "CorpusDeletionInput" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:ProcessInput ;
+    sh:property knextract:CorpusDeletionInput-corpus .
+
+knextract:CorpusDeletionInput-corpus
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "corpus" ;
+    sh:node knextract:CorpusStub ;
+    sh:path knextract:corpus .
+
+knextract:CorpusStub
+    shaclmate:fromRdfType knextract:Corpus ;
+    shaclmate:name "CorpusStub" ;
+    a owl:Class, sh:NodeShape ;
+    sh:nodeKind sh:IRI ;
+    sh:property knextract:deleted, knextract:label-optional .
+
+knextract:DichotomousQuestion
+    shaclmate:name "DichotomousQuestion" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:BaseQuestion ;
+    sh:property knextract:DichotomousQuestion-noLabel, knextract:DichotomousQuestion-yesLabel .
+
+knextract:DichotomousQuestion-noLabel
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 0 ;
+    sh:name "noLabel" ;
+    sh:path knextract:noLabel ;
+    sh:xone dash:StringOrLangString .
+
+knextract:DichotomousQuestion-yesLabel
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 0 ;
+    sh:name "yesLabel" ;
+    sh:path knextract:yesLabel ;
+    sh:xone dash:StringOrLangString .
+
+knextract:Document
+    shaclmate:mintingStrategy shaclmate:_MintingStrategy_UUIDv4 ;
+    shaclmate:name "Document" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:InformationContentEntity ;
+    sh:property knextract:Document-images, knextract:Document-memberOfCorpus, knextract:Document-textualEntities, knextract:Document-title, knextract:Document-url, knextract:deleted, knextract:mutable .
+
+knextract:Document-images
+    a sh:PropertyShape ;
+    sh:name "images" ;
+    sh:node knextract:Image ;
+    sh:path knextract:image .
+
+knextract:Document-memberOfCorpus
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "memberOfCorpus" ;
+    sh:node knextract:CorpusStub ;
+    sh:path knextract:memberOfCorpus .
+
+knextract:Document-textualEntities
+    a sh:PropertyShape ;
+    sh:name "textualEntities" ;
+    sh:node knextract:TextualEntity ;
+    sh:path knextract:textualEntity .
+
+knextract:Document-title
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:name "title" ;
+    sh:node knextract:DocumentTitle ;
+    sh:path knextract:title .
+
+knextract:Document-url
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:name "url" ;
+    sh:path knextract:url .
+
+knextract:DocumentDeletion
+    shaclmate:name "DocumentDeletion" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:Process ;
+    sh:property knextract:DocumentDeletion-input .
+
+knextract:DocumentDeletion-input
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "input" ;
+    sh:node knextract:DocumentDeletionInput ;
+    sh:path knextract:processInput .
+
+knextract:DocumentDeletionInput
+    shaclmate:name "DocumentDeletionInput" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:ProcessInput ;
+    sh:property knextract:DocumentDeletionInput-document .
+
+knextract:DocumentDeletionInput-document
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "document" ;
+    sh:node knextract:DocumentStub ;
+    sh:path knextract:document .
+
+knextract:DocumentStub
+    shaclmate:fromRdfType knextract:Document ;
+    shaclmate:name "DocumentStub" ;
+    a owl:Class, sh:NodeShape ;
+    sh:nodeKind sh:IRI ;
+    sh:property knextract:Document-title, knextract:deleted .
+
+knextract:DocumentTitle
+    shaclmate:name "DocumentTitle" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:TextualEntity .
+
+knextract:Entity
+    shaclmate:abstract true ;
+    shaclmate:export false ;
+    shaclmate:name "Entity" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:label "entity" ;
+    sh:nodeKind sh:IRI .
+
+knextract:EnumeratedConceptSelector
+    shaclmate:name "EnumeratedConceptSelector" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:BaseConceptSelector ;
+    sh:property knextract:EnumeratedConceptSelector-concepts .
+
+knextract:EnumeratedConceptSelector-concepts
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "concepts" ;
+    sh:node knextract:ConceptStubList ;
+    sh:path knextract:enumeratedConcepts .
+
+knextract:Exception
+    shaclmate:name "Exception" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:InformationContentEntity ;
+    sh:property knextract:Exception-message .
+
+knextract:Exception-message
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "message" ;
+    sh:path knextract:exceptionMessage .
+
+knextract:Image
+    shaclmate:name "Image" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:InformationContentEntity ;
+    sh:property knextract:Image-heightPx, knextract:Image-url, knextract:Image-widthPx .
+
+knextract:Image-heightPx
+    a sh:PropertyShape ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "heightPx" ;
+    sh:path knextract:imageHeightPx .
+
+knextract:Image-url
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "url" ;
+    sh:path knextract:url .
+
+knextract:Image-widthPx
+    a sh:PropertyShape ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "widthPx" ;
+    sh:path knextract:imageWidthPx .
+
+knextract:InformationContentEntity
+    shaclmate:abstract true ;
+    shaclmate:export false ;
+    shaclmate:mintingStrategy shaclmate:_MintingStrategy_SHA256 ;
+    shaclmate:name "InformationContentEntity" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:label "information content entity" ;
+    rdfs:subClassOf knextract:Entity .
+
+knextract:Instruction
+    shaclmate:name "Instruction" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:InformationContentEntity ;
+    sh:property knextract:Instruction-promptMessage .
+
+knextract:Instruction-promptMessage
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "promptMessage" ;
+    sh:path knextract:instructionPromptMessage ;
+    sh:xone ([
+            sh:node knextract:PromptMessage
+        ]
+        [
+            sh:node knextract:PromptMessageTemplate
+        ]
+    ) .
+
+knextract:LanguageModelInvocation
+    shaclmate:name "LanguageModelInvocation" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:Process ;
+    sh:property knextract:LanguageModelInvocation-input, knextract:LanguageModelInvocation-output .
+
+knextract:LanguageModelInvocation-input
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "input" ;
+    sh:node knextract:LanguageModelInvocationInput ;
+    sh:path knextract:processInput .
+
+knextract:LanguageModelInvocation-output
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "output" ;
+    sh:path knextract:processOutput ;
+    sh:xone ([
+            sh:node knextract:Exception
+        ]
+        [
+            sh:node knextract:LanguageModelInvocationOutput
+        ]
+    ) .
+
+knextract:LanguageModelInvocationInput
+    shaclmate:name "LanguageModelInvocationInput" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:ProcessInput ;
+    sh:property knextract:LanguageModelInvocationInput-languageModel, knextract:LanguageModelInvocationInput-prompt .
+
+knextract:LanguageModelInvocationInput-languageModel
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "languageModel" ;
+    sh:node knextract:LanguageModelSpecificationStub ;
+    sh:path knextract:languageModel .
+
+knextract:LanguageModelInvocationInput-prompt
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "prompt" ;
+    sh:node knextract:Prompt ;
+    sh:path knextract:prompt .
+
+knextract:LanguageModelInvocationOutput
+    shaclmate:name "LanguageModelInvocationOutput" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:ProcessOutput ;
+    sh:property knextract:LanguageModelInvocationOutput-completionMessage .
+
+knextract:LanguageModelInvocationOutput-completionMessage
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "completionMessage" ;
+    sh:node knextract:CompletionMessage ;
+    sh:path knextract:completionMessage .
+
+knextract:LanguageModelSpecification
+    shaclmate:name "LanguageModelSpecification" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:InformationContentEntity ;
+    sh:property knextract:label-required .
+
+knextract:LanguageModelSpecificationStub
+    shaclmate:fromRdfType knextract:LanguageModelSpecification ;
+    shaclmate:name "LanguageModelSpecificationStub" ;
+    a owl:Class, sh:NodeShape ;
+    sh:nodeKind sh:IRI ;
+    sh:property knextract:label-optional .
+
+knextract:NarrowerConceptSelector
+    shaclmate:name "NarrowerConceptSelector" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:BaseFocusConceptSelector .
+
+knextract:NarrowerTransitiveConceptSelector
+    shaclmate:name "NarrowerTransitiveConceptSelector" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:BaseFocusConceptSelector .
+
+knextract:PostWorkflowExecutionEvent
+    shaclmate:name "PostWorkflowExecutionEvent" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:BaseEvent ;
+    sh:property knextract:PostWorkflowExecutionEvent-payload .
+
+knextract:PostWorkflowExecutionEvent-payload
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "payload" ;
+    sh:node knextract:WorkflowExecution ;
+    sh:path knextract:eventPayload .
+
+knextract:PostWorkflowStepExecutionEvent
+    shaclmate:name "PostWorkflowStepExecutionEvent" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:BaseEvent ;
+    sh:property knextract:PostWorkflowStepExecutionEvent-payload .
+
+knextract:PostWorkflowStepExecutionEvent-payload
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "payload" ;
+    sh:node knextract:WorkflowStepExecution ;
+    sh:path knextract:eventPayload .
+
+knextract:PreWorkflowExecutionEvent
+    shaclmate:name "PreWorkflowExecutionEvent" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:BaseEvent ;
+    sh:property knextract:PreWorkflowExecutionEvent-payload .
+
+knextract:PreWorkflowExecutionEvent-payload
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "payload" ;
+    sh:node knextract:WorkflowExecutionInput ;
+    sh:path knextract:eventPayload .
+
+knextract:PreWorkflowStepExecutionEvent
+    shaclmate:name "PreWorkflowStepExecutionEvent" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:BaseEvent ;
+    sh:property knextract:PreWorkflowStepExecutionEvent-payload .
+
+knextract:PreWorkflowStepExecutionEvent-payload
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "payload" ;
+    sh:node knextract:WorkflowStepExecutionInput ;
+    sh:path knextract:eventPayload .
+
+knextract:Process
+    shaclmate:abstract true ;
+    shaclmate:mintingStrategy shaclmate:_MintingStrategy_SHA256 ;
+    shaclmate:name "Process" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:Entity ;
+    sh:property knextract:Process-endedAtTime, knextract:Process-startedAtTime .
+
+knextract:Process-endedAtTime
+    a sh:PropertyShape ;
+    sh:datatype xsd:dateTime ;
+    sh:maxCount 1 ;
+    sh:minCount 0 ;
+    sh:name "endedAtTime" ;
+    sh:path knextract:endedAtTime .
+
+knextract:Process-startedAtTime
+    a sh:PropertyShape ;
+    sh:datatype xsd:dateTime ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "startedAtTime" ;
+    sh:path knextract:startedAtTime .
+
+knextract:ProcessInput
+    shaclmate:abstract true ;
+    shaclmate:mintingStrategy shaclmate:_MintingStrategy_SHA256 ;
+    shaclmate:name "ProcessInput" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:Entity .
+
+knextract:ProcessOutput
+    shaclmate:abstract true ;
+    shaclmate:mintingStrategy shaclmate:_MintingStrategy_SHA256 ;
+    shaclmate:name "ProcessOutput" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:Entity .
+
+knextract:ProcessSubProcesses
+    shaclmate:abstract true ;
+    shaclmate:mintingStrategy shaclmate:_MintingStrategy_SHA256 ;
+    shaclmate:name "ProcessSubProcesses" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:Entity .
+
+knextract:Prompt
+    shaclmate:name "Prompt" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:label "prompt" ;
+    rdfs:subClassOf knextract:InformationContentEntity ;
+    sh:property knextract:Prompt-messages .
+
+knextract:Prompt-messages
+    a sh:PropertyShape ;
+    rdfs:label "messages" ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "messages" ;
+    sh:node knextract:PromptMessageList ;
+    sh:path knextract:promptMessages .
+
+knextract:PromptConstruction
+    shaclmate:name "PromptConstruction" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:Process ;
+    sh:property knextract:PromptConstruction-input, knextract:PromptConstruction-output .
+
+knextract:PromptConstruction-input
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "input" ;
+    sh:node knextract:PromptConstructionInput ;
+    sh:path knextract:processInput .
+
+knextract:PromptConstruction-output
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "output" ;
+    sh:path knextract:processOutput ;
+    sh:xone ([
+            sh:node knextract:Exception
+        ]
+        [
+            sh:node knextract:PromptConstructionOutput
+        ]
+    ) .
+
+knextract:PromptConstructionInput
+    shaclmate:name "PromptConstructionInput" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:ProcessInput ;
+    sh:property knextract:PromptConstructionInput-concepts, knextract:PromptConstructionInput-document, knextract:PromptConstructionInput-question .
+
+knextract:PromptConstructionInput-concepts
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 0 ;
+    sh:name "concepts" ;
+    sh:node knextract:ConceptStubList ;
+    sh:path knextract:concepts .
+
+knextract:PromptConstructionInput-document
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "document" ;
+    sh:node knextract:DocumentStub ;
+    sh:path knextract:document .
+
+knextract:PromptConstructionInput-question
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "question" ;
+    sh:node knextract:Question ;
+    sh:path knextract:question .
+
+knextract:PromptConstructionOutput
+    shaclmate:name "PromptConstructionOutput" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:ProcessOutput ;
+    sh:property knextract:PromptConstructionOutput-prompt .
+
+knextract:PromptConstructionOutput-prompt
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "prompt" ;
+    sh:node knextract:Prompt ;
+    sh:path knextract:prompt .
+
+knextract:PromptInputValue
+    shaclmate:name "PromptInputValue" ;
+    a sh:NodeShape ;
+    sh:xone (knextract:PromptLiteralInputValue
+        knextract:PromptSparqlSelectInputValue
+    ) .
+
+knextract:PromptLiteralInputValue
+    shaclmate:name "PromptLiteralInputValue" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:InformationContentEntity ;
+    sh:property knextract:PromptLiteralInputValue-variable, knextract:literalForm .
+
+knextract:PromptLiteralInputValue-variable
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "variable" ;
+    sh:path knextract:variable .
+
+knextract:PromptMessage
+    shaclmate:name "PromptMessage" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:label "prompt message" ;
+    rdfs:subClassOf knextract:InformationContentEntity ;
+    sh:property knextract:literalForm, knextract:promptMessageRole .
+
+knextract:PromptMessageList
+    shaclmate:name "PromptMessageList" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:label "messages" ;
+    rdfs:subClassOf rdf:List ;
+    sh:nodeKind sh:IRI ;
+    sh:property knextract:PromptMessageList-first, knextract:PromptMessageList-rest .
+
+knextract:PromptMessageList-first
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "first" ;
+    sh:node knextract:PromptMessage ;
+    sh:nodeKind sh:IRI ;
+    sh:path rdf:first .
+
+knextract:PromptMessageList-rest
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "rest" ;
+    sh:nodeKind sh:IRI ;
+    sh:path rdf:rest ;
+    sh:xone ([
+            sh:class knextract:PromptMessageList
+        ]
+        [
+            sh:hasValue ( )
+        ]
+    ) .
+
+knextract:PromptMessageTemplate
+    shaclmate:name "PromptMessageTemplate" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:label "message template" ;
+    rdfs:subClassOf knextract:InformationContentEntity ;
+    sh:property knextract:literalForm, knextract:promptInputValue, knextract:promptMessageRole .
+
+knextract:PromptMessageTemplateList
+    shaclmate:name "PromptMessageTemplateList" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:label "messages" ;
+    rdfs:subClassOf rdf:List ;
+    sh:nodeKind sh:IRI ;
+    sh:property knextract:PromptMessageTemplateList-first, knextract:PromptMessageTemplateList-rest .
+
+knextract:PromptMessageTemplateList-first
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "first" ;
+    sh:node knextract:PromptMessageTemplate ;
+    sh:nodeKind sh:IRI ;
+    sh:path rdf:first .
+
+knextract:PromptMessageTemplateList-rest
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "rest" ;
+    sh:nodeKind sh:IRI ;
+    sh:path rdf:rest ;
+    sh:xone ([
+            sh:class knextract:PromptMessageTemplateList
+        ]
+        [
+            sh:hasValue ( )
+        ]
+    ) .
+
+knextract:PromptSparqlSelectInputValue
+    shaclmate:name "PromptSparqlSelectInputValue" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:InformationContentEntity ;
+    sh:property knextract:PromptSparqlSelectInputValue-sparqlSelect .
+
+knextract:PromptSparqlSelectInputValue-sparqlSelect
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "sparqlSelect" ;
+    sh:path knextract:sparqlSelect .
+
+knextract:PromptTemplate
+    shaclmate:name "PromptTemplate" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:label "prompt template" ;
+    rdfs:subClassOf knextract:InformationContentEntity ;
+    sh:property knextract:PromptTemplate-messageTemplates, knextract:promptInputValue .
+
+knextract:PromptTemplate-messageTemplates
+    a sh:PropertyShape ;
+    rdfs:label "message templates" ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "messageTemplates" ;
+    sh:node knextract:PromptMessageTemplateList ;
+    sh:path knextract:promptMessageTemplates .
+
+knextract:PromptTemplateLike
+    shaclmate:name "PromptTemplateLike" ;
+    a sh:NodeShape ;
+    sh:xone (knextract:CompletionMessage
+        knextract:Prompt
+        knextract:PromptMessage
+        knextract:PromptMessageTemplate
+        knextract:PromptTemplate
+    ) .
+
+knextract:Question
+    shaclmate:name "Question" ;
+    a sh:NodeShape ;
+    sh:xone (knextract:CategoricalQuestion
+        knextract:DichotomousQuestion
+        knextract:RealValuedQuestion
+        knextract:TextQuestion
+    ) .
+
+knextract:QuestionAdministration
+    shaclmate:name "QuestionAdministration" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:Process ;
+    sh:property knextract:QuestionAdministration-input, knextract:QuestionAdministration-output, knextract:QuestionAdministration-subProcesses .
+
+knextract:QuestionAdministration-input
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "input" ;
+    sh:node knextract:QuestionAdministrationInput ;
+    sh:path knextract:processInput .
+
+knextract:QuestionAdministration-output
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "output" ;
+    sh:path knextract:processOutput ;
+    sh:xone ([
+            sh:node knextract:Exception
+        ]
+        [
+            sh:node knextract:QuestionAdministrationOutput
+        ]
+    ) .
+
+knextract:QuestionAdministration-subProcesses
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "subProcesses" ;
+    sh:node knextract:QuestionAdministrationSubProcesses ;
+    sh:path knextract:subProcesses .
+
+knextract:QuestionAdministrationInput
+    shaclmate:name "QuestionAdministrationInput" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:ProcessInput ;
+    sh:property knextract:QuestionAdministrationInput-document, knextract:QuestionAdministrationInput-languageModel, knextract:QuestionAdministrationInput-question .
+
+knextract:QuestionAdministrationInput-document
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "document" ;
+    sh:node knextract:DocumentStub ;
+    sh:path knextract:document .
+
+knextract:QuestionAdministrationInput-languageModel
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "languageModel" ;
+    sh:node knextract:LanguageModelSpecificationStub ;
+    sh:path knextract:languageModel .
+
+knextract:QuestionAdministrationInput-question
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "question" ;
+    sh:node knextract:Question ;
+    sh:path knextract:question .
+
+knextract:QuestionAdministrationList
+    shaclmate:name "QuestionAdministrationList" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf rdf:List ;
+    sh:nodeKind sh:IRI ;
+    sh:property knextract:QuestionAdministrationList-first, knextract:QuestionAdministrationList-rest .
+
+knextract:QuestionAdministrationList-first
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "first" ;
+    sh:node knextract:QuestionAdministration ;
+    sh:path rdf:first .
+
+knextract:QuestionAdministrationList-rest
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "rest" ;
+    sh:nodeKind sh:IRI ;
+    sh:path rdf:rest ;
+    sh:xone ([
+            sh:class knextract:QuestionAdministrationList
+        ]
+        [
+            sh:hasValue ( )
+        ]
+    ) .
+
+knextract:QuestionAdministrationOutput
+    shaclmate:name "QuestionAdministrationOutput" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:ProcessOutput ;
+    sh:property knextract:QuestionAdministrationOutput-answer .
+
+knextract:QuestionAdministrationOutput-answer
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "answer" ;
+    sh:node knextract:Answer ;
+    sh:path knextract:answer .
+
+knextract:QuestionAdministrationSubProcesses
+    shaclmate:name "QuestionAdministrationSubProcesses" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:ProcessSubProcesses ;
+    sh:property knextract:QuestionAdministrationSubProcesses-languageModelInvocation, knextract:QuestionAdministrationSubProcesses-promptConstruction, knextract:QuestionAdministrationSubProcesses-valueExtraction .
+
+knextract:QuestionAdministrationSubProcesses-languageModelInvocation
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 0 ;
+    sh:name "languageModelInvocation" ;
+    sh:node knextract:LanguageModelInvocation ;
+    sh:path knextract:languageModelInvocation .
+
+knextract:QuestionAdministrationSubProcesses-promptConstruction
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 0 ;
+    sh:name "promptConstruction" ;
+    sh:node knextract:PromptConstruction ;
+    sh:path knextract:promptConstruction .
+
+knextract:QuestionAdministrationSubProcesses-valueExtraction
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 0 ;
+    sh:name "valueExtraction" ;
+    sh:node knextract:ValueExtraction ;
+    sh:path knextract:valueExtraction .
+
+knextract:Questionnaire
+    shaclmate:name "Questionnaire" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:InformationContentEntity ;
+    sh:property knextract:Questionnaire-members .
+
+knextract:Questionnaire-members
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "members" ;
+    sh:node knextract:QuestionnaireMemberList ;
+    sh:path knextract:questionnaireMembers .
+
+knextract:QuestionnaireAdministration
+    shaclmate:name "QuestionnaireAdministration" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:Process ;
+    sh:property knextract:QuestionnaireAdministration-input, knextract:QuestionnaireAdministration-output, knextract:QuestionnaireAdministration-subProcesses .
+
+knextract:QuestionnaireAdministration-input
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "input" ;
+    sh:node knextract:QuestionnaireAdministrationInput ;
+    sh:path knextract:processInput .
+
+knextract:QuestionnaireAdministration-output
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "output" ;
+    sh:path knextract:processOutput ;
+    sh:xone ([
+            sh:node knextract:Exception
+        ]
+        [
+            sh:node knextract:QuestionnaireAdministrationOutput
+        ]
+    ) .
+
+knextract:QuestionnaireAdministration-subProcesses
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "subProcesses" ;
+    sh:node knextract:QuestionnaireAdministrationSubProcesses ;
+    sh:path knextract:subProcesses .
+
+knextract:QuestionnaireAdministrationInput
+    shaclmate:name "QuestionnaireAdministrationInput" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:ProcessInput ;
+    sh:property knextract:QuestionnaireAdministrationInput-document, knextract:QuestionnaireAdministrationInput-languageModel, knextract:QuestionnaireAdministrationInput-questionnaire .
+
+knextract:QuestionnaireAdministrationInput-document
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "document" ;
+    sh:node knextract:DocumentStub ;
+    sh:path knextract:document .
+
+knextract:QuestionnaireAdministrationInput-languageModel
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "languageModel" ;
+    sh:node knextract:LanguageModelSpecificationStub ;
+    sh:path knextract:languageModel .
+
+knextract:QuestionnaireAdministrationInput-questionnaire
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "questionnaire" ;
+    sh:node knextract:Questionnaire ;
+    sh:path knextract:questionnaire .
+
+knextract:QuestionnaireAdministrationOutput
+    shaclmate:name "QuestionnaireAdministrationOutput" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:ProcessOutput ;
+    sh:property knextract:QuestionnaireAdministrationOutput-answers .
+
+knextract:QuestionnaireAdministrationOutput-answers
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "answers" ;
+    sh:node knextract:AnswerList ;
+    sh:path knextract:answers .
+
+knextract:QuestionnaireAdministrationSubProcesses
+    shaclmate:name "QuestionnaireAdministrationSubProcesses" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:ProcessSubProcesses ;
+    sh:property knextract:QuestionnaireAdministrationSubProcesses-questionAdministrations .
+
+knextract:QuestionnaireAdministrationSubProcesses-questionAdministrations
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "questionAdministrations" ;
+    sh:node knextract:QuestionAdministrationList ;
+    sh:path knextract:questionAdministrations .
+
+knextract:QuestionnaireMember
+    shaclmate:name "QuestionnaireMember" ;
+    a sh:NodeShape ;
+    sh:xone (knextract:Instruction
+        knextract:Question
+    ) .
+
+knextract:QuestionnaireMemberList
+    shaclmate:name "QuestionnaireMemberList" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf rdf:List ;
+    sh:nodeKind sh:IRI ;
+    sh:property knextract:QuestionnaireMemberList-first, knextract:QuestionnaireMemberList-rest .
+
+knextract:QuestionnaireMemberList-first
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "first" ;
+    sh:node knextract:QuestionnaireMember ;
+    sh:path rdf:first .
+
+knextract:QuestionnaireMemberList-rest
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "rest" ;
+    sh:nodeKind sh:IRI ;
+    sh:path rdf:rest ;
+    sh:xone ([
+            sh:class knextract:QuestionnaireMemberList
+        ]
+        [
+            sh:hasValue ( )
+        ]
+    ) .
+
+knextract:RealValue
+    shaclmate:name "RealValue" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:BaseValue ;
+    sh:property knextract:RealValue-value .
+
+knextract:RealValue-value
+    a sh:PropertyShape ;
+    sh:datatype xsd:decimal ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "value" ;
+    sh:path rdf:value .
+
+knextract:RealValuedQuestion
+    shaclmate:name "RealValuedQuestion" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:BaseQuestion .
+
+knextract:TextQuestion
+    shaclmate:name "TextQuestion" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:BaseQuestion .
+
+knextract:TextValue
+    shaclmate:name "TextValue" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:BaseValue ;
+    sh:property knextract:TextValue-value .
+
+knextract:TextValue-value
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "value" ;
+    sh:path rdf:value .
+
+knextract:TextualEntity
+    shaclmate:name "TextualEntity" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:seeAlso <http://purl.obolibrary.org/obo/IAO_0000300> ;
+    rdfs:subClassOf knextract:InformationContentEntity ;
+    sh:property knextract:TextualEntity-encodingType, knextract:literalForm .
+
+knextract:TextualEntity-encodingType
+    a sh:PropertyShape ;
+    rdfs:label "has encoding type" ;
+    sh:in (knextract-cbox:_EncodingType_TextHtml
+        knextract-cbox:_EncodingType_TextPlain
+    ) ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "encodingType" ;
+    sh:path knextract:encodingType .
+
+knextract:Value
+    shaclmate:name "Value" ;
+    a sh:NodeShape ;
+    sh:xone (knextract:BooleanValue
+        knextract:CategoricalValue
+        knextract:RealValue
+        knextract:TextValue
+    ) .
+
+knextract:ValueExtraction
+    shaclmate:name "ValueExtraction" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:Process ;
+    sh:property knextract:ValueExtraction-input, knextract:ValueExtraction-output .
+
+knextract:ValueExtraction-input
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "input" ;
+    sh:node knextract:ValueExtractionInput ;
+    sh:path knextract:processInput .
+
+knextract:ValueExtraction-output
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "output" ;
+    sh:path knextract:processOutput ;
+    sh:xone ([
+            sh:node knextract:Exception
+        ]
+        [
+            sh:node knextract:ValueExtractionOutput
+        ]
+    ) .
+
+knextract:ValueExtractionInput
+    shaclmate:name "ValueExtractionInput" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:ProcessInput ;
+    sh:property knextract:ValueExtractionInput-completionMessage .
+
+knextract:ValueExtractionInput-completionMessage
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "completionMessage" ;
+    sh:node knextract:CompletionMessage ;
+    sh:path knextract:completionMessage .
+
+knextract:ValueExtractionOutput
+    shaclmate:name "ValueExtractionOutput" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:ProcessOutput ;
+    sh:property knextract:ValueExtractionOutput-values .
+
+knextract:ValueExtractionOutput-values
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "values" ;
+    sh:node knextract:ValueList ;
+    sh:path knextract:values .
+
+knextract:ValueList
+    shaclmate:name "ValueList" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf rdf:List ;
+    sh:nodeKind sh:IRI ;
+    sh:property knextract:ValueList-first, knextract:ValueList-rest .
+
+knextract:ValueList-first
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "first" ;
+    sh:node knextract:Value ;
+    sh:path rdf:first .
+
+knextract:ValueList-rest
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "rest" ;
+    sh:nodeKind sh:IRI ;
+    sh:path rdf:rest ;
+    sh:xone ([
+            sh:class knextract:ValueList
+        ]
+        [
+            sh:hasValue ( )
+        ]
+    ) .
+
+knextract:Workflow
+    shaclmate:mintingStrategy shaclmate:_MintingStrategy_UUIDv4 ;
+    shaclmate:name "Workflow" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:InformationContentEntity ;
+    sh:property knextract:Workflow-steps, knextract:deleted, knextract:label-required .
+
+knextract:Workflow-steps
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "steps" ;
+    sh:node knextract:WorkflowStepList ;
+    sh:path knextract:workflowSteps .
+
+knextract:WorkflowDeletion
+    shaclmate:name "WorkflowDeletion" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:Process ;
+    sh:property knextract:WorkflowDeletion-input .
+
+knextract:WorkflowDeletion-input
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "input" ;
+    sh:node knextract:WorkflowDeletionInput ;
+    sh:path knextract:processInput .
+
+knextract:WorkflowDeletionInput
+    shaclmate:name "WorkflowDeletionInput" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:ProcessInput ;
+    sh:property knextract:WorkflowDeletionInput-workflow .
+
+knextract:WorkflowDeletionInput-workflow
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "workflow" ;
+    sh:node knextract:WorkflowStub ;
+    sh:path knextract:workflow .
+
+knextract:WorkflowExecution
+    shaclmate:name "WorkflowExecution" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:Process ;
+    sh:property knextract:WorkflowExecution-input, knextract:WorkflowExecution-output, knextract:WorkflowExecution-subProcesses .
+
+knextract:WorkflowExecution-input
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "input" ;
+    sh:node knextract:WorkflowExecutionInput ;
+    sh:path knextract:processInput .
+
+knextract:WorkflowExecution-output
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "output" ;
+    sh:path knextract:processOutput ;
+    sh:xone ([
+            sh:node knextract:Exception
+        ]
+        [
+            sh:node knextract:WorkflowExecutionOutput
+        ]
+    ) .
+
+knextract:WorkflowExecution-subProcesses
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "subProcesses" ;
+    sh:node knextract:WorkflowExecutionSubProcesses ;
+    sh:path knextract:subProcesses .
+
+knextract:WorkflowExecutionEvent
+    shaclmate:name "WorkflowExecutionEvent" ;
+    a sh:NodeShape ;
+    sh:xone (knextract:PostWorkflowExecutionEvent
+        knextract:PostWorkflowStepExecutionEvent
+        knextract:PreWorkflowExecutionEvent
+        knextract:PreWorkflowStepExecutionEvent
+    ) .
+
+knextract:WorkflowExecutionInput
+    shaclmate:name "WorkflowExecutionInput" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:ProcessInput ;
+    sh:property knextract:WorkflowExecutionInput-document, knextract:WorkflowExecutionInput-workflow .
+
+knextract:WorkflowExecutionInput-document
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "document" ;
+    sh:node knextract:DocumentStub ;
+    sh:path knextract:document .
+
+knextract:WorkflowExecutionInput-workflow
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "workflow" ;
+    sh:node knextract:WorkflowStub ;
+    sh:path knextract:workflow .
+
+knextract:WorkflowExecutionOutput
+    shaclmate:name "WorkflowExecutionOutput" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:ProcessOutput .
+
+knextract:WorkflowExecutionStub
+    shaclmate:fromRdfType knextract:WorkflowExecution ;
+    shaclmate:name "WorkflowExecutionStub" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:Process ;
+    sh:nodeKind sh:IRI .
+
+knextract:WorkflowExecutionSubProcesses
+    shaclmate:name "WorkflowExecutionSubProcesses" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:ProcessSubProcesses ;
+    sh:property knextract:WorkflowExecutionSubProcesses-stepExecutions .
+
+knextract:WorkflowExecutionSubProcesses-stepExecutions
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "stepExecutions" ;
+    sh:node knextract:WorkflowStepExecutionList ;
+    sh:path knextract:workflowStepExecutions .
+
+knextract:WorkflowQuestionnaireStep
+    shaclmate:name "WorkflowQuestionnaireStep" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:InformationContentEntity ;
+    sh:property knextract:WorkflowQuestionnaireStep-languageModel, knextract:WorkflowQuestionnaireStep-questionnaire .
+
+knextract:WorkflowQuestionnaireStep-languageModel
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 0 ;
+    sh:name "languageModel" ;
+    sh:node knextract:LanguageModelSpecificationStub ;
+    sh:path knextract:languageModel .
+
+knextract:WorkflowQuestionnaireStep-questionnaire
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "questionnaire" ;
+    sh:node knextract:Questionnaire ;
+    sh:path knextract:questionnaire .
+
+knextract:WorkflowQuestionnaireStepExecution
+    shaclmate:name "WorkflowQuestionnaireStepExecution" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:Process ;
+    sh:property knextract:WorkflowQuestionnaireStepExecution-input, knextract:WorkflowQuestionnaireStepExecution-output, knextract:WorkflowQuestionnaireStepExecution-subProcesses .
+
+knextract:WorkflowQuestionnaireStepExecution-input
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "input" ;
+    sh:node knextract:WorkflowQuestionnaireStepExecutionInput ;
+    sh:path knextract:processInput .
+
+knextract:WorkflowQuestionnaireStepExecution-output
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "output" ;
+    sh:path knextract:processOutput ;
+    sh:xone ([
+            sh:node knextract:Exception
+        ]
+        [
+            sh:node knextract:WorkflowQuestionnaireStepExecutionOutput
+        ]
+    ) .
+
+knextract:WorkflowQuestionnaireStepExecution-subProcesses
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "subProcesses" ;
+    sh:node knextract:WorkflowQuestionnaireStepExecutionSubProcesses ;
+    sh:path knextract:subProcesses .
+
+knextract:WorkflowQuestionnaireStepExecutionInput
+    shaclmate:name "WorkflowQuestionnaireStepExecutionInput" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:ProcessInput ;
+    sh:property knextract:WorkflowQuestionnaireStepExecutionInput-document, knextract:WorkflowQuestionnaireStepExecutionInput-step .
+
+knextract:WorkflowQuestionnaireStepExecutionInput-document
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "document" ;
+    sh:node knextract:DocumentStub ;
+    sh:path knextract:document .
+
+knextract:WorkflowQuestionnaireStepExecutionInput-step
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "step" ;
+    sh:node knextract:WorkflowQuestionnaireStep ;
+    sh:path knextract:workflowQuestionnaireStep .
+
+knextract:WorkflowQuestionnaireStepExecutionOutput
+    shaclmate:name "WorkflowQuestionnaireStepExecutionOutput" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:ProcessOutput ;
+    sh:property knextract:WorkflowQuestionnaireStepExecutionOutput-answers .
+
+knextract:WorkflowQuestionnaireStepExecutionOutput-answers
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "answers" ;
+    sh:node knextract:AnswerList ;
+    sh:path knextract:answers .
+
+knextract:WorkflowQuestionnaireStepExecutionSubProcesses
+    shaclmate:name "WorkflowQuestionnaireStepExecutionSubProcesses" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:ProcessSubProcesses ;
+    sh:property knextract:WorkflowQuestionnaireStepExecutionSubProcesses-questionnaireAdministration .
+
+knextract:WorkflowQuestionnaireStepExecutionSubProcesses-questionnaireAdministration
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 0 ;
+    sh:name "questionnaireAdministration" ;
+    sh:node knextract:QuestionnaireAdministration ;
+    sh:path knextract:questionnaireAdministration .
+
+knextract:WorkflowStep
+    shaclmate:name "WorkflowStep" ;
+    a sh:NodeShape ;
+    sh:xone (knextract:WorkflowQuestionnaireStep
+    ) .
+
+knextract:WorkflowStepExecution
+    shaclmate:name "WorkflowStepExecution" ;
+    a sh:NodeShape ;
+    sh:xone (knextract:WorkflowQuestionnaireStepExecution
+    ) .
+
+knextract:WorkflowStepExecutionInput
+    shaclmate:name "WorkflowStepExecutionInput" ;
+    a sh:NodeShape ;
+    sh:xone (knextract:WorkflowQuestionnaireStepExecutionInput
+    ) .
+
+knextract:WorkflowStepExecutionList
+    shaclmate:name "WorkflowStepExecutionList" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf rdf:List ;
+    sh:nodeKind sh:IRI ;
+    sh:property knextract:WorkflowStepExecutionList-first, knextract:WorkflowStepExecutionList-rest .
+
+knextract:WorkflowStepExecutionList-first
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "first" ;
+    sh:node knextract:WorkflowStepExecution ;
+    sh:path rdf:first .
+
+knextract:WorkflowStepExecutionList-rest
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "rest" ;
+    sh:nodeKind sh:IRI ;
+    sh:path rdf:rest ;
+    sh:xone ([
+            sh:class knextract:WorkflowStepExecutionList
+        ]
+        [
+            sh:hasValue ( )
+        ]
+    ) .
+
+knextract:WorkflowStepList
+    shaclmate:name "WorkflowStepList" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf rdf:List ;
+    sh:nodeKind sh:IRI ;
+    sh:property knextract:WorkflowStepList-first, knextract:WorkflowStepList-rest .
+
+knextract:WorkflowStepList-first
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "first" ;
+    sh:node knextract:WorkflowStep ;
+    sh:path rdf:first .
+
+knextract:WorkflowStepList-rest
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "rest" ;
+    sh:nodeKind sh:IRI ;
+    sh:path rdf:rest ;
+    sh:xone ([
+            sh:class knextract:WorkflowStepList
+        ]
+        [
+            sh:hasValue ( )
+        ]
+    ) .
+
+knextract:WorkflowStub
+    shaclmate:fromRdfType knextract:Workflow ;
+    shaclmate:name "WorkflowStub" ;
+    a owl:Class, sh:NodeShape ;
+    sh:nodeKind sh:IRI ;
+    sh:property knextract:deleted, knextract:label-optional .
+
+knextract:deleted
+    a sh:PropertyShape ;
+    rdfs:label "deleted" ;
+    sh:datatype xsd:boolean ;
+    sh:defaultValue false ;
+    sh:maxCount 1 ;
+    sh:minCount 0 ;
+    sh:name "deleted" ;
+    sh:path knextract:deleted .
+
+knextract:label-optional
+    a sh:PropertyShape ;
+    rdfs:label "has label" ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:name "label" ;
+    sh:path rdfs:label .
+
+knextract:label-required
+    a sh:PropertyShape ;
+    rdfs:label "has label" ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "label" ;
+    sh:path rdfs:label .
+
+knextract:literalForm
+    a sh:PropertyShape ;
+    rdfs:label "has literal form" ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "literalForm" ;
+    sh:path knextract:literalForm .
+
+knextract:mutable
+    a sh:PropertyShape ;
+    rdfs:label "mutable" ;
+    sh:datatype xsd:boolean ;
+    sh:defaultValue false ;
+    sh:maxCount 1 ;
+    sh:minCount 0 ;
+    sh:name "mutable" ;
+    sh:path knextract:mutable .
+
+knextract:promptInputValue
+    a sh:PropertyShape ;
+    sh:name "inputValues" ;
+    sh:node knextract:PromptInputValue ;
+    sh:path knextract:promptInputValue .
+
+knextract:promptMessageRole
+    a sh:PropertyShape ;
+    rdfs:label "has role" ;
+    sh:defaultValue knextract-cbox:_Role_Human ;
+    sh:in (knextract-cbox:_Role_AI
+        knextract-cbox:_Role_Human
+        knextract-cbox:_Role_System
+    ) ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "role" ;
+    sh:path knextract:promptMessageRole .
+

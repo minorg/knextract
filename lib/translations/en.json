@@ -1,0 +1,337 @@
+{
+  "AnnotateCorpusForm": {
+    "Abort": "Abort",
+    "Aborted": "Aborted",
+    "Annotate": "Annotate",
+    "Annotating corpus": "Annotating corpus",
+    "Select a workflow": "Select a workflow",
+    "Skip previously-annotated documents": "Skip previously-annotated documents"
+  },
+  "AnnotateDocumentForm": {
+    "Cumulative annotations": "Cumulative annotations",
+    "Annotate": "Annotate",
+    "Annotating document": "Annotating document",
+    "Workflow execution": "Workflow execution"
+  },
+  "AnnotationPage": {
+    "Annotation": "Annotation",
+    "Concept path": "Concept path",
+    "Document": "Document",
+    "Gold": "Gold",
+    "Inferred": "Inferred",
+    "Missing concept": "Missing concept",
+    "Missing document": "Missing document",
+    "Output of": "Output of",
+    "Type": "Type",
+    "Workflow execution": "Workflow execution"
+  },
+  "CompletionMessageProcessingViewer": {
+    "Annotations": "Annotations",
+    "Completion message": "Completion message"
+  },
+  "ConceptAnnotatorExecutionViewer": {
+    "Annotations": "Annotations",
+    "Completion message processing": "Completion message processing",
+    "Concept annotator execution": "Concept annotator execution",
+    "Concept annotator parameters": "Concept annotator parameters",
+    "Concept selection": "Concept selection",
+    "Concept selector": "Concept selector",
+    "Language model invocation": "Language model invocation",
+    "Prompt construction": "Prompt construction"
+  },
+  "ConceptAnnotatorParametersViewer": {
+    "Annotator": "Annotator",
+    "Concept annotator parameters": "Concept annotator parameters",
+    "Default": "Default",
+    "Language model": "Language model",
+    "Missing language model": "Missing language model",
+    "Prompt template": "Prompt template"
+  },
+  "ConceptPage": {
+    "Concept": "Concept",
+    "In schemes": "In schemes",
+    "Missing concept": "Missing concept",
+    "Missing concept scheme": "Missing concept scheme",
+    "Notations": "Notations",
+    "Top of concept schemes": "Top of concept schemes"
+  },
+  "ConceptsDataTable": {
+    "Concept": "Concept"
+  },
+  "ConceptSchemeConceptsDataTable": {
+    "Concept": "Concept"
+  },
+  "ConceptSchemePage": {
+    "Concept scheme": "Concept scheme",
+    "Top concepts": "Top concepts"
+  },
+  "ConceptSchemesDataTable": {
+    "Concept scheme": "Concept scheme"
+  },
+  "ConceptSchemesPage": {
+    "Concept schemes": "Concept schemes"
+  },
+  "ConceptSelectionViewer": {
+    "Concept selector": "Concept selector",
+    "Concepts": "Concepts"
+  },
+  "ConceptSelectorViewer": {
+    "Concept scheme": "Concept scheme",
+    "concepts": "concepts",
+    "Enumerated concepts": "Enumerated concepts",
+    "Missing concept": "Missing concept",
+    "Missing concept scheme": "Missing concept scheme",
+    "top concepts": "top concepts"
+  },
+  "CopyToClipboardButton": {
+    "Copied to clipboard": "Copied to clipboard"
+  },
+  "CorporaDataTable": {
+    "Label": "Label"
+  },
+  "CorporaPage": {
+    "Corpora": "Corpora",
+    "New corpus": "New corpus"
+  },
+  "CorpusDocumentsDataTable": {
+    "Label": "Label"
+  },
+  "CorpusEditor": {
+    "Corpus": "Corpus",
+    "Label": "Label",
+    "Save": "Save"
+  },
+  "CorpusPage": {
+    "DeletionDialog": {
+      "Description": "This action cannot be undone.",
+      "Title": "Are you sure you want to delete this corpus?"
+    },
+    "Corpus": "Corpus",
+    "Missing workflow": "Missing workflow",
+    "Upload document": "Upload document"
+  },
+  "DeletionDialog": {
+    "Cancel": "Cancel",
+    "Delete": "Delete"
+  },
+  "DocumentAnnotations": {
+    "F1 score": "F1 score",
+    "False negatives": "False negatives",
+    "False positives": "False positives",
+    "True positives": "True positives"
+  },
+  "DocumentAnnotationsDataTable": {
+    "Concept": "Concept",
+    "Concept scheme": "Concept scheme",
+    "Gold": "Gold",
+    "Inferred": "Inferred",
+    "Type": "Type"
+  },
+  "DocumentPage": {
+    "DeletionDialog": {
+      "Description": "This action cannot be undone.",
+      "Title": "Are you sure you want to delete this document?"
+    },
+    "Document": "Document"
+  },
+  "DocumentViewer": {
+    "Annotations": "Annotations",
+    "Document HTML": "Document HTML",
+    "Document images": "Document images",
+    "Document text": "Document text",
+    "Image of the document content": "Image of the document content",
+    "Member of corpus": "Member of corpus",
+    "Missing corpus": "Missing corpus",
+    "Missing workflow": "Missing workflow"
+  },
+  "ErrorAlert": {
+    "Error": "Error"
+  },
+  "FileUploader": {
+    "DropPrompt": {
+      "MultipleFiles": "Drop the file(s) here.",
+      "OneFile": "Drop the file here."
+    },
+    "file": "file",
+    "files": "files",
+    "Failed to upload": "Failed to upload",
+    "File was rejected": "File was rejected",
+    "Limits": {
+      "MultipleFiles": "You can upload multiple {maxFileCount} files of up to ${formatBytes(maxSize)} each.",
+      "OneFile": "You can upload one file of up to {maxSize}."
+    },
+    "DragAndDropPrompt": {
+      "MultipleFiles": "Drag 'n' drop files here, or click to select files.",
+      "OneFile": "Drag 'n' drop a file here, or click to select a file."
+    },
+    "Uploaded": "Uploaded",
+    "Uploading": "Uploading",
+    "YouCannotUploadMore": {
+      "MultipleFiles": "You cannot upload more than {maxFileCount} file(s).",
+      "OneFile": "You cannot upload more than one file."
+    }
+  },
+  "getConceptSchemeConcepts": {
+    "Missing concept": "Missing concept"
+  },
+  "getCorpusDocuments": {
+    "Missing document": "Missing document"
+  },
+  "LabelTypes": {
+    "http://www_w3_org/2004/02/skos/core#altLabel": "Alternative labels",
+    "http://www_w3_org/2004/02/skos/core#hiddenLabel": "Hidden labels",
+    "http://www_w3_org/2000/01/rdf-schema#label": "Other labels",
+    "http://www_w3_org/2004/02/skos/core#prefLabel": "Preferred labels"
+  },
+  "LanguageModelInvocationViewer": {
+    "Completion message": "Completion message",
+    "Prompt": "Prompt"
+  },
+  "MimeTypes": {
+    "image/png": "PNG image",
+    "text/html": "HTML",
+    "text/plain": "Plaintext"
+  },
+  "MultiUploader": {
+    "File": "File",
+    "Text": "Text"
+  },
+  "NoteTypes": {
+    "http://www_w3_org/2004/02/skos/core#changeNote": "Change note",
+    "http://www_w3_org/2004/02/skos/core#definition": "Definition",
+    "http://www_w3_org/2004/02/skos/core#editorialNote": "Editorial note",
+    "http://www_w3_org/2004/02/skos/core#example": "Example",
+    "http://www_w3_org/2004/02/skos/core#historyNote": "History note",
+    "http://www_w3_org/2004/02/skos/core#note": "Note",
+    "http://www_w3_org/2004/02/skos/core#scopeNote": "Scope note"
+  },
+  "Navbar": {
+    "Knextract": "Knextract"
+  },
+  "NavbarMenu": {
+    "Concept schemes": "Concept schemes",
+    "Corpora": "Corpora",
+    "Workflows": "Workflows"
+  },
+  "PageMetadata": {
+    "Claim": "Claim",
+    "Concept": "Concept",
+    "Concept scheme": "Concept scheme",
+    "Concept schemes": "Concept schemes",
+    "Corpora": "Corpora",
+    "Corpus": "Corpus",
+    "Document": "Document",
+    "Execution": "Execution",
+    "New corpus": "New corpus",
+    "New workflow": "New workflow",
+    "Top concepts": "Top concepts",
+    "Search results": "Search results",
+    "Upload document": "Upload document",
+    "Workflow": "Workflow",
+    "Workflows": "Workflows"
+  },
+  "ProcessViewer": {
+    "Exception": "Exception",
+    "Input": "Input",
+    "Output": "Output",
+    "Sub-processes": "Sub-processes"
+  },
+  "PromptConstructionViewer": {
+    "Concepts": "Concepts",
+    "Prompt": "Prompt",
+    "Prompt template": "Prompt template"
+  },
+  "PromptMessageRoleLabel": {
+    "AI": "AI",
+    "Human": "Human",
+    "System": "System"
+  },
+  "SemanticRelationTypes": {
+    "http://www_w3_org/2004/02/skos/core#broader": "Broader concepts",
+    "http://www_w3_org/2004/02/skos/core#broaderTransitive": "Broader concepts (transitive)",
+    "http://www_w3_org/2004/02/skos/core#broadMatch": "Broad match concepts",
+    "http://www_w3_org/2004/02/skos/core#closeMatch": "Close match concepts",
+    "http://www_w3_org/2004/02/skos/core#exactMatch": "Exact match concepts",
+    "http://www_w3_org/2004/02/skos/core#narrower": "Narrower concepts",
+    "http://www_w3_org/2004/02/skos/core#narrowerTransitive": "Varrower concepts (transitive)",
+    "http://www_w3_org/2004/02/skos/core#narrowMatch": "Narrow match concepts",
+    "http://www_w3_org/2004/02/skos/core#related": "Related concepts",
+    "http://www_w3_org/2004/02/skos/core#relatedMatch": "Related match concepts"
+  },
+  "StepExecutionViewer": {
+    "Annotations": "Annotations",
+    "Step": "Step",
+    "Sub-step executions": "Sub-step executions"
+  },
+  "TextUploader": {
+    "Auto-detect": "Auto-detect",
+    "Paste text here": "Paste text here.",
+    "Type": "Type"
+  },
+  "UploadDocumentPage": {
+    "Upload document": "Upload document"
+  },
+  "UploaderForm": {
+    "Server exception": "Server exception",
+    "Title": "Title",
+    "Upload": "Upload"
+  },
+  "WorkflowEditor": {
+    "Concept scheme": "Concept scheme",
+    "Label": "Label",
+    "Language model": "Language model",
+    "Prompt instructions": "Prompt instructions",
+    "Recursive": "Recursive",
+    "Save": "Save",
+    "Workflow": "Workflow"
+  },
+  "WorkflowExecutionEventsViewer": {
+    "Aborted": "Aborted",
+    "Document": "Document",
+    "Ended at": "Ended at",
+    "Exception": "Exception",
+    "Results": "Results",
+    "Started at": "Started at",
+    "Step executions": "Step executions",
+    "Type": "Type"
+  },
+  "WorkflowExecutionPage": {
+    "Execution": "Execution",
+    "Workflow": "Workflow"
+  },
+  "WorkflowExecutionsDataTable": {
+    "Ended at time": "Ended at time",
+    "Execution": "Execution",
+    "Started at time": "Started at time"
+  },
+  "WorkflowExecutionViewer": {
+    "Document": "Document",
+    "Steps": "Steps"
+  },
+  "WorkflowsDataTable": {
+    "Label": "Label"
+  },
+  "WorkflowPage": {
+    "DeletionDialog": {
+      "Description": "This action cannot be undone.",
+      "Title": "Are you sure you want to delete this workflow?"
+    },
+    "Workflow": "Workflow"
+  },
+  "WorkflowsPage": {
+    "New workflow": "New workflow",
+    "Workflows": "Workflows"
+  },
+  "WorkflowSelect": {
+    "Select a workflow": "Select a workflow"
+  },
+  "WorkflowStepViewer": {
+    "Concept selector": "Concept selector",
+    "Priority": "Priority",
+    "Recursive": "Recursive"
+  },
+  "WorkflowViewer": {
+    "Executions": "Executions",
+    "Steps": "Steps"
+  }
+}
