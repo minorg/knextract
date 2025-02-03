@@ -120,7 +120,7 @@ export {
   WorkflowStepExecution,
   WorkflowStepExecutionInput,
   WorkflowStub,
-} from "./generated";
+} from "./models.shaclmate-generated";
 
 // Re-export handwritten classes
 export * from "./ClaimEvaluation";
