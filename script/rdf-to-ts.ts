@@ -39,8 +39,9 @@ const cmd = command({
 
 import { rdfEnvironment } from "@/lib/rdfEnvironment";
 
-export const dataset = rdfEnvironment.parsers.parseString(String.raw\`
+const dataset = rdfEnvironment.parsers.parseString(String.raw\`
 ${await rdfEnvironment.serializers.serializeToString(dataset, { format: "application/n-triples", sorted: true })}\`, { format: "application/n-triples" } ).unsafeCoerce();
+export default dataset;
 `,
     );
   },

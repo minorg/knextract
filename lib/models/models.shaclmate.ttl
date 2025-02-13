@@ -577,6 +577,21 @@ knextract:Instruction-promptMessage
         ]
     ) .
 
+knextract:LanguageModelFamily
+    shaclmate:name "LanguageModelFamily" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:InformationContentEntity ;
+    sh:property knextract:LanguageModelFamily-creator, knextract:label-required .
+
+knextract:LanguageModelFamily-creator
+    a sh:PropertyShape ;
+    sh:in (<https://openai.com/>
+    ) ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "creator" ;
+    sh:path knextract:languageModelFamilyCreator .
+
 knextract:LanguageModelInvocation
     shaclmate:name "LanguageModelInvocation" ;
     a owl:Class, sh:NodeShape ;
@@ -645,7 +660,31 @@ knextract:LanguageModelSpecification
     shaclmate:name "LanguageModelSpecification" ;
     a owl:Class, sh:NodeShape ;
     rdfs:subClassOf knextract:InformationContentEntity ;
-    sh:property knextract:label-required .
+    sh:property knextract:LanguageModelSpecification-apiIdentifier, knextract:LanguageModelSpecification-contextWindow, knextract:LanguageModelSpecification-family, knextract:label-required .
+
+knextract:LanguageModelSpecification-apiIdentifier
+    a sh:PropertyShape ;
+    sh:datatype xsd:string ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "apiIdentifier" ;
+    sh:path knextract:languageModelApiIdentifier .
+
+knextract:LanguageModelSpecification-contextWindow
+    a sh:PropertyShape ;
+    sh:datatype xsd:integer ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "contextWindow" ;
+    sh:path knextract:languageModelContextWindow .
+
+knextract:LanguageModelSpecification-family
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "family" ;
+    sh:node knextract:LanguageModelFamily ;
+    sh:path knextract:languageModelFamily .
 
 knextract:LanguageModelSpecificationStub
     shaclmate:fromRdfType knextract:LanguageModelSpecification ;

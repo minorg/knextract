@@ -1133,6 +1133,7 @@ abstract class Entity {
     | "Exception"
     | "Image"
     | "Instruction"
+    | "LanguageModelFamily"
     | "LanguageModelInvocation"
     | "LanguageModelInvocationInput"
     | "LanguageModelInvocationOutput"
@@ -1239,6 +1240,7 @@ abstract class Entity {
       | "Exception"
       | "Image"
       | "Instruction"
+      | "LanguageModelFamily"
       | "LanguageModelInvocation"
       | "LanguageModelInvocationInput"
       | "LanguageModelInvocationOutput"
@@ -1404,6 +1406,7 @@ namespace Entity {
         "Exception",
         "Image",
         "Instruction",
+        "LanguageModelFamily",
         "LanguageModelInvocation",
         "LanguageModelInvocationInput",
         "LanguageModelInvocationOutput",
@@ -4912,6 +4915,7 @@ abstract class InformationContentEntity extends Entity {
     | "Exception"
     | "Image"
     | "Instruction"
+    | "LanguageModelFamily"
     | "LanguageModelSpecification"
     | "NarrowerConceptSelector"
     | "NarrowerTransitiveConceptSelector"
@@ -5050,6 +5054,7 @@ namespace InformationContentEntity {
           "Exception",
           "Image",
           "Instruction",
+          "LanguageModelFamily",
           "LanguageModelSpecification",
           "NarrowerConceptSelector",
           "NarrowerTransitiveConceptSelector",
@@ -24901,6 +24906,9 @@ export namespace PostWorkflowExecutionEvent {
   }
 }
 export class LanguageModelSpecification extends InformationContentEntity {
+  readonly apiIdentifier: string;
+  readonly contextWindow: number;
+  readonly family: LanguageModelFamily;
   private _identifier: rdfjs.NamedNode | undefined;
   /**
    * has label
@@ -24910,11 +24918,17 @@ export class LanguageModelSpecification extends InformationContentEntity {
 
   constructor(
     parameters: {
+      readonly apiIdentifier: string;
+      readonly contextWindow: number;
+      readonly family: LanguageModelFamily;
       readonly identifier?: rdfjs.NamedNode;
       readonly label: string;
     } & ConstructorParameters<typeof InformationContentEntity>[0],
   ) {
     super(parameters);
+    this.apiIdentifier = parameters.apiIdentifier;
+    this.contextWindow = parameters.contextWindow;
+    this.family = parameters.family;
     this._identifier = parameters.identifier;
     this.label = parameters.label;
   }
@@ -24931,6 +24945,40 @@ export class LanguageModelSpecification extends InformationContentEntity {
   override equals(other: LanguageModelSpecification): EqualsResult {
     return super
       .equals(other)
+      .chain(() =>
+        strictEquals(this.apiIdentifier, other.apiIdentifier).mapLeft(
+          (propertyValuesUnequal) => ({
+            left: this,
+            right: other,
+            propertyName: "apiIdentifier",
+            propertyValuesUnequal,
+            type: "Property" as const,
+          }),
+        ),
+      )
+      .chain(() =>
+        strictEquals(this.contextWindow, other.contextWindow).mapLeft(
+          (propertyValuesUnequal) => ({
+            left: this,
+            right: other,
+            propertyName: "contextWindow",
+            propertyValuesUnequal,
+            type: "Property" as const,
+          }),
+        ),
+      )
+      .chain(() =>
+        ((left, right) => left.equals(right))(
+          this.family,
+          other.family,
+        ).mapLeft((propertyValuesUnequal) => ({
+          left: this,
+          right: other,
+          propertyName: "family",
+          propertyValuesUnequal,
+          type: "Property" as const,
+        })),
+      )
       .chain(() =>
         strictEquals(this.label, other.label).mapLeft(
           (propertyValuesUnequal) => ({
@@ -24950,16 +24998,25 @@ export class LanguageModelSpecification extends InformationContentEntity {
     },
   >(_hasher: HasherT): HasherT {
     super.hash(_hasher);
+    _hasher.update(this.apiIdentifier);
+    _hasher.update(this.contextWindow.toString());
+    this.family.hash(_hasher);
     _hasher.update(this.label);
     return _hasher;
   }
 
-  override toJson(): { readonly label: string } & ReturnType<
-    InformationContentEntity["toJson"]
-  > {
+  override toJson(): {
+    readonly apiIdentifier: string;
+    readonly contextWindow: number;
+    readonly family: ReturnType<LanguageModelFamily["toJson"]>;
+    readonly label: string;
+  } & ReturnType<InformationContentEntity["toJson"]> {
     return JSON.parse(
       JSON.stringify({
         ...super.toJson(),
+        apiIdentifier: this.apiIdentifier,
+        contextWindow: this.contextWindow,
+        family: this.family.toJson(),
         label: this.label,
       } satisfies ReturnType<LanguageModelSpecification["toJson"]>),
     );
@@ -24991,6 +25048,24 @@ export class LanguageModelSpecification extends InformationContentEntity {
     }
 
     _resource.add(
+      dataFactory.namedNode(
+        "http://purl.archive.org/purl/knextract/ontology#languageModelApiIdentifier",
+      ),
+      this.apiIdentifier,
+    );
+    _resource.add(
+      dataFactory.namedNode(
+        "http://purl.archive.org/purl/knextract/ontology#languageModelContextWindow",
+      ),
+      this.contextWindow,
+    );
+    _resource.add(
+      dataFactory.namedNode(
+        "http://purl.archive.org/purl/knextract/ontology#languageModelFamily",
+      ),
+      this.family.toRdf({ mutateGraph: mutateGraph, resourceSet: resourceSet }),
+    );
+    _resource.add(
       dataFactory.namedNode("http://www.w3.org/2000/01/rdf-schema#label"),
       this.label,
     );
@@ -25007,9 +25082,13 @@ export namespace LanguageModelSpecification {
     _json: unknown,
   ): purify.Either<
     zod.ZodError,
-    { identifier: rdfjs.NamedNode; label: string } & UnwrapR<
-      ReturnType<typeof InformationContentEntity.propertiesFromJson>
-    >
+    {
+      apiIdentifier: string;
+      contextWindow: number;
+      family: LanguageModelFamily;
+      identifier: rdfjs.NamedNode;
+      label: string;
+    } & UnwrapR<ReturnType<typeof InformationContentEntity.propertiesFromJson>>
   > {
     const _jsonSafeParseResult =
       languageModelSpecificationJsonZodSchema().safeParse(_json);
@@ -25025,9 +25104,21 @@ export namespace LanguageModelSpecification {
     }
 
     const _super0 = _super0Either.unsafeCoerce();
+    const apiIdentifier = _jsonObject["apiIdentifier"];
+    const contextWindow = _jsonObject["contextWindow"];
+    const family = LanguageModelFamily.fromJson(
+      _jsonObject["family"],
+    ).unsafeCoerce();
     const identifier = dataFactory.namedNode(_jsonObject["@id"]);
     const label = _jsonObject["label"];
-    return purify.Either.of({ ..._super0, identifier, label });
+    return purify.Either.of({
+      ..._super0,
+      apiIdentifier,
+      contextWindow,
+      family,
+      identifier,
+      label,
+    });
   }
 
   export function fromJson(
@@ -25051,9 +25142,13 @@ export namespace LanguageModelSpecification {
     resource: rdfjsResource.Resource<rdfjs.NamedNode>;
   }): purify.Either<
     rdfjsResource.Resource.ValueError,
-    { identifier: rdfjs.NamedNode; label: string } & UnwrapR<
-      ReturnType<typeof InformationContentEntity.propertiesFromRdf>
-    >
+    {
+      apiIdentifier: string;
+      contextWindow: number;
+      family: LanguageModelFamily;
+      identifier: rdfjs.NamedNode;
+      label: string;
+    } & UnwrapR<ReturnType<typeof InformationContentEntity.propertiesFromRdf>>
   > {
     const _super0Either = InformationContentEntity.propertiesFromRdf({
       ..._context,
@@ -25085,6 +25180,65 @@ export namespace LanguageModelSpecification {
       );
     }
 
+    const _apiIdentifierEither: purify.Either<
+      rdfjsResource.Resource.ValueError,
+      string
+    > = _resource
+      .values(
+        dataFactory.namedNode(
+          "http://purl.archive.org/purl/knextract/ontology#languageModelApiIdentifier",
+        ),
+        { unique: true },
+      )
+      .head()
+      .chain((_value) => _value.toString());
+    if (_apiIdentifierEither.isLeft()) {
+      return _apiIdentifierEither;
+    }
+
+    const apiIdentifier = _apiIdentifierEither.unsafeCoerce();
+    const _contextWindowEither: purify.Either<
+      rdfjsResource.Resource.ValueError,
+      number
+    > = _resource
+      .values(
+        dataFactory.namedNode(
+          "http://purl.archive.org/purl/knextract/ontology#languageModelContextWindow",
+        ),
+        { unique: true },
+      )
+      .head()
+      .chain((_value) => _value.toNumber());
+    if (_contextWindowEither.isLeft()) {
+      return _contextWindowEither;
+    }
+
+    const contextWindow = _contextWindowEither.unsafeCoerce();
+    const _familyEither: purify.Either<
+      rdfjsResource.Resource.ValueError,
+      LanguageModelFamily
+    > = _resource
+      .values(
+        dataFactory.namedNode(
+          "http://purl.archive.org/purl/knextract/ontology#languageModelFamily",
+        ),
+        { unique: true },
+      )
+      .head()
+      .chain((value) => value.toNamedResource())
+      .chain((_resource) =>
+        LanguageModelFamily.fromRdf({
+          ..._context,
+          ignoreRdfType: true,
+          languageIn: _languageIn,
+          resource: _resource,
+        }),
+      );
+    if (_familyEither.isLeft()) {
+      return _familyEither;
+    }
+
+    const family = _familyEither.unsafeCoerce();
     const identifier = _resource.identifier;
     const _labelEither: purify.Either<
       rdfjsResource.Resource.ValueError,
@@ -25101,7 +25255,14 @@ export namespace LanguageModelSpecification {
     }
 
     const label = _labelEither.unsafeCoerce();
-    return purify.Either.of({ ..._super0, identifier, label });
+    return purify.Either.of({
+      ..._super0,
+      apiIdentifier,
+      contextWindow,
+      family,
+      identifier,
+      label,
+    });
   }
 
   export function fromRdf(
@@ -25134,6 +25295,11 @@ export namespace LanguageModelSpecification {
         InformationContentEntity.informationContentEntityJsonUiSchema({
           scopePrefix,
         }),
+        { scope: `${scopePrefix}/properties/apiIdentifier`, type: "Control" },
+        { scope: `${scopePrefix}/properties/contextWindow`, type: "Control" },
+        LanguageModelFamily.languageModelFamilyJsonUiSchema({
+          scopePrefix: `${scopePrefix}/properties/family`,
+        }),
         {
           label: "has label",
           scope: `${scopePrefix}/properties/label`,
@@ -25148,6 +25314,9 @@ export namespace LanguageModelSpecification {
   export function languageModelSpecificationJsonZodSchema() {
     return InformationContentEntity.informationContentEntityJsonZodSchema().merge(
       zod.object({
+        apiIdentifier: zod.string(),
+        contextWindow: zod.number(),
+        family: LanguageModelFamily.languageModelFamilyJsonZodSchema(),
         "@id": zod.string().min(1),
         label: zod.string(),
         type: zod.literal("LanguageModelSpecification"),
@@ -25228,6 +25397,32 @@ export namespace LanguageModelSpecification {
             },
           ]),
       {
+        object: dataFactory.variable!(`${variablePrefix}ApiIdentifier`),
+        predicate: dataFactory.namedNode(
+          "http://purl.archive.org/purl/knextract/ontology#languageModelApiIdentifier",
+        ),
+        subject,
+      },
+      {
+        object: dataFactory.variable!(`${variablePrefix}ContextWindow`),
+        predicate: dataFactory.namedNode(
+          "http://purl.archive.org/purl/knextract/ontology#languageModelContextWindow",
+        ),
+        subject,
+      },
+      {
+        object: dataFactory.variable!(`${variablePrefix}Family`),
+        predicate: dataFactory.namedNode(
+          "http://purl.archive.org/purl/knextract/ontology#languageModelFamily",
+        ),
+        subject,
+      },
+      ...LanguageModelFamily.sparqlConstructTemplateTriples({
+        ignoreRdfType: true,
+        subject: dataFactory.variable!(`${variablePrefix}Family`),
+        variablePrefix: `${variablePrefix}Family`,
+      }),
+      {
         object: dataFactory.variable!(`${variablePrefix}Label`),
         predicate: dataFactory.namedNode(
           "http://www.w3.org/2000/01/rdf-schema#label",
@@ -25286,6 +25481,47 @@ export namespace LanguageModelSpecification {
               type: "bgp" as const,
             },
           ]),
+      {
+        triples: [
+          {
+            object: dataFactory.variable!(`${variablePrefix}ApiIdentifier`),
+            predicate: dataFactory.namedNode(
+              "http://purl.archive.org/purl/knextract/ontology#languageModelApiIdentifier",
+            ),
+            subject,
+          },
+        ],
+        type: "bgp",
+      },
+      {
+        triples: [
+          {
+            object: dataFactory.variable!(`${variablePrefix}ContextWindow`),
+            predicate: dataFactory.namedNode(
+              "http://purl.archive.org/purl/knextract/ontology#languageModelContextWindow",
+            ),
+            subject,
+          },
+        ],
+        type: "bgp",
+      },
+      {
+        triples: [
+          {
+            object: dataFactory.variable!(`${variablePrefix}Family`),
+            predicate: dataFactory.namedNode(
+              "http://purl.archive.org/purl/knextract/ontology#languageModelFamily",
+            ),
+            subject,
+          },
+        ],
+        type: "bgp",
+      },
+      ...LanguageModelFamily.sparqlWherePatterns({
+        ignoreRdfType: true,
+        subject: dataFactory.variable!(`${variablePrefix}Family`),
+        variablePrefix: `${variablePrefix}Family`,
+      }),
       {
         triples: [
           {
@@ -27859,6 +28095,490 @@ export namespace LanguageModelInvocation {
           },
         ],
         type: "union",
+      },
+    ];
+  }
+}
+export class LanguageModelFamily extends InformationContentEntity {
+  readonly creator: rdfjs.NamedNode<"https://openai.com/">;
+  private _identifier: rdfjs.NamedNode | undefined;
+  /**
+   * has label
+   */
+  readonly label: string;
+  override readonly type = "LanguageModelFamily";
+
+  constructor(
+    parameters: {
+      readonly creator:
+        | "https://openai.com/"
+        | rdfjs.NamedNode<"https://openai.com/">;
+      readonly identifier?: rdfjs.NamedNode;
+      readonly label: string;
+    } & ConstructorParameters<typeof InformationContentEntity>[0],
+  ) {
+    super(parameters);
+    if (typeof parameters.creator === "object") {
+      this.creator = parameters.creator;
+    } else if (typeof parameters.creator === "string") {
+      this.creator = dataFactory.namedNode(parameters.creator);
+    } else {
+      this.creator = parameters.creator as never;
+    }
+
+    this._identifier = parameters.identifier;
+    this.label = parameters.label;
+  }
+
+  override get identifier(): rdfjs.NamedNode {
+    if (typeof this._identifier === "undefined") {
+      this._identifier = dataFactory.namedNode(
+        `urn:shaclmate:object:${this.type}:${this.hash(sha256.create())}`,
+      );
+    }
+    return this._identifier;
+  }
+
+  override equals(other: LanguageModelFamily): EqualsResult {
+    return super
+      .equals(other)
+      .chain(() =>
+        booleanEquals(this.creator, other.creator).mapLeft(
+          (propertyValuesUnequal) => ({
+            left: this,
+            right: other,
+            propertyName: "creator",
+            propertyValuesUnequal,
+            type: "Property" as const,
+          }),
+        ),
+      )
+      .chain(() =>
+        strictEquals(this.label, other.label).mapLeft(
+          (propertyValuesUnequal) => ({
+            left: this,
+            right: other,
+            propertyName: "label",
+            propertyValuesUnequal,
+            type: "Property" as const,
+          }),
+        ),
+      );
+  }
+
+  override hash<
+    HasherT extends {
+      update: (message: string | number[] | ArrayBuffer | Uint8Array) => void;
+    },
+  >(_hasher: HasherT): HasherT {
+    super.hash(_hasher);
+    _hasher.update(this.creator.termType);
+    _hasher.update(this.creator.value);
+    _hasher.update(this.label);
+    return _hasher;
+  }
+
+  override toJson(): {
+    readonly creator: { readonly "@id": "https://openai.com/" };
+    readonly label: string;
+  } & ReturnType<InformationContentEntity["toJson"]> {
+    return JSON.parse(
+      JSON.stringify({
+        ...super.toJson(),
+        creator: { "@id": this.creator.value },
+        label: this.label,
+      } satisfies ReturnType<LanguageModelFamily["toJson"]>),
+    );
+  }
+
+  override toRdf({
+    ignoreRdfType,
+    mutateGraph,
+    resourceSet,
+  }: {
+    ignoreRdfType?: boolean;
+    mutateGraph: rdfjsResource.MutableResource.MutateGraph;
+    resourceSet: rdfjsResource.MutableResourceSet;
+  }): rdfjsResource.MutableResource<rdfjs.NamedNode> {
+    const _resource = super.toRdf({
+      ignoreRdfType: true,
+      mutateGraph,
+      resourceSet,
+    });
+    if (!ignoreRdfType) {
+      _resource.add(
+        _resource.dataFactory.namedNode(
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        ),
+        _resource.dataFactory.namedNode(
+          "http://purl.archive.org/purl/knextract/ontology#LanguageModelFamily",
+        ),
+      );
+    }
+
+    _resource.add(
+      dataFactory.namedNode(
+        "http://purl.archive.org/purl/knextract/ontology#languageModelFamilyCreator",
+      ),
+      this.creator,
+    );
+    _resource.add(
+      dataFactory.namedNode("http://www.w3.org/2000/01/rdf-schema#label"),
+      this.label,
+    );
+    return _resource;
+  }
+
+  override toString(): string {
+    return JSON.stringify(this.toJson());
+  }
+}
+
+export namespace LanguageModelFamily {
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
+    zod.ZodError,
+    {
+      creator: rdfjs.NamedNode<"https://openai.com/">;
+      identifier: rdfjs.NamedNode;
+      label: string;
+    } & UnwrapR<ReturnType<typeof InformationContentEntity.propertiesFromJson>>
+  > {
+    const _jsonSafeParseResult =
+      languageModelFamilyJsonZodSchema().safeParse(_json);
+    if (!_jsonSafeParseResult.success) {
+      return purify.Left(_jsonSafeParseResult.error);
+    }
+
+    const _jsonObject = _jsonSafeParseResult.data;
+    const _super0Either =
+      InformationContentEntity.propertiesFromJson(_jsonObject);
+    if (_super0Either.isLeft()) {
+      return _super0Either;
+    }
+
+    const _super0 = _super0Either.unsafeCoerce();
+    const creator = dataFactory.namedNode(_jsonObject["creator"]["@id"]);
+    const identifier = dataFactory.namedNode(_jsonObject["@id"]);
+    const label = _jsonObject["label"];
+    return purify.Either.of({ ..._super0, creator, identifier, label });
+  }
+
+  export function fromJson(
+    json: unknown,
+  ): purify.Either<zod.ZodError, LanguageModelFamily> {
+    return LanguageModelFamily.propertiesFromJson(json).map(
+      (properties) => new LanguageModelFamily(properties),
+    );
+  }
+
+  export function propertiesFromRdf({
+    ignoreRdfType: _ignoreRdfType,
+    languageIn: _languageIn,
+    resource: _resource,
+    // @ts-ignore
+    ..._context
+  }: {
+    [_index: string]: any;
+    ignoreRdfType?: boolean;
+    languageIn?: readonly string[];
+    resource: rdfjsResource.Resource<rdfjs.NamedNode>;
+  }): purify.Either<
+    rdfjsResource.Resource.ValueError,
+    {
+      creator: rdfjs.NamedNode<"https://openai.com/">;
+      identifier: rdfjs.NamedNode;
+      label: string;
+    } & UnwrapR<ReturnType<typeof InformationContentEntity.propertiesFromRdf>>
+  > {
+    const _super0Either = InformationContentEntity.propertiesFromRdf({
+      ..._context,
+      ignoreRdfType: true,
+      languageIn: _languageIn,
+      resource: _resource,
+    });
+    if (_super0Either.isLeft()) {
+      return _super0Either;
+    }
+
+    const _super0 = _super0Either.unsafeCoerce();
+    if (
+      !_ignoreRdfType &&
+      !_resource.isInstanceOf(
+        dataFactory.namedNode(
+          "http://purl.archive.org/purl/knextract/ontology#LanguageModelFamily",
+        ),
+      )
+    ) {
+      return purify.Left(
+        new rdfjsResource.Resource.ValueError({
+          focusResource: _resource,
+          message: `${rdfjsResource.Resource.Identifier.toString(_resource.identifier)} has unexpected RDF type`,
+          predicate: dataFactory.namedNode(
+            "http://purl.archive.org/purl/knextract/ontology#LanguageModelFamily",
+          ),
+        }),
+      );
+    }
+
+    const _creatorEither: purify.Either<
+      rdfjsResource.Resource.ValueError,
+      rdfjs.NamedNode<"https://openai.com/">
+    > = _resource
+      .values(
+        dataFactory.namedNode(
+          "http://purl.archive.org/purl/knextract/ontology#languageModelFamilyCreator",
+        ),
+        { unique: true },
+      )
+      .head()
+      .chain((_value) =>
+        _value.toIri().chain((iri) => {
+          switch (iri.value) {
+            case "https://openai.com/":
+              return purify.Either.of<
+                rdfjsResource.Resource.ValueError,
+                rdfjs.NamedNode<"https://openai.com/">
+              >(iri as rdfjs.NamedNode<"https://openai.com/">);
+            default:
+              return purify.Left(
+                new rdfjsResource.Resource.MistypedValueError({
+                  actualValue: iri,
+                  expectedValueType: 'rdfjs.NamedNode<"https://openai.com/">',
+                  focusResource: _resource,
+                  predicate: dataFactory.namedNode(
+                    "http://purl.archive.org/purl/knextract/ontology#languageModelFamilyCreator",
+                  ),
+                }),
+              );
+          }
+        }),
+      );
+    if (_creatorEither.isLeft()) {
+      return _creatorEither;
+    }
+
+    const creator = _creatorEither.unsafeCoerce();
+    const identifier = _resource.identifier;
+    const _labelEither: purify.Either<
+      rdfjsResource.Resource.ValueError,
+      string
+    > = _resource
+      .values(
+        dataFactory.namedNode("http://www.w3.org/2000/01/rdf-schema#label"),
+        { unique: true },
+      )
+      .head()
+      .chain((_value) => _value.toString());
+    if (_labelEither.isLeft()) {
+      return _labelEither;
+    }
+
+    const label = _labelEither.unsafeCoerce();
+    return purify.Either.of({ ..._super0, creator, identifier, label });
+  }
+
+  export function fromRdf(
+    parameters: Parameters<typeof LanguageModelFamily.propertiesFromRdf>[0],
+  ): purify.Either<rdfjsResource.Resource.ValueError, LanguageModelFamily> {
+    return LanguageModelFamily.propertiesFromRdf(parameters).map(
+      (properties) => new LanguageModelFamily(properties),
+    );
+  }
+
+  export const fromRdfType: rdfjs.NamedNode<string> = dataFactory.namedNode(
+    "http://purl.archive.org/purl/knextract/ontology#LanguageModelFamily",
+  );
+
+  export function jsonSchema() {
+    return zodToJsonSchema(languageModelFamilyJsonZodSchema());
+  }
+
+  export function languageModelFamilyJsonUiSchema(parameters?: {
+    scopePrefix?: string;
+  }) {
+    const scopePrefix = parameters?.scopePrefix ?? "#";
+    return {
+      elements: [
+        InformationContentEntity.informationContentEntityJsonUiSchema({
+          scopePrefix,
+        }),
+        { scope: `${scopePrefix}/properties/creator`, type: "Control" },
+        {
+          label: "has label",
+          scope: `${scopePrefix}/properties/label`,
+          type: "Control",
+        },
+      ],
+      label: "LanguageModelFamily",
+      type: "Group",
+    };
+  }
+
+  export function languageModelFamilyJsonZodSchema() {
+    return InformationContentEntity.informationContentEntityJsonZodSchema().merge(
+      zod.object({
+        creator: zod.object({ "@id": zod.enum(["https://openai.com/"]) }),
+        "@id": zod.string().min(1),
+        label: zod.string(),
+        type: zod.literal("LanguageModelFamily"),
+      }),
+    );
+  }
+
+  export function sparqlConstructQuery(
+    parameters?: {
+      ignoreRdfType?: boolean;
+      prefixes?: { [prefix: string]: string };
+      subject?: sparqljs.Triple["subject"];
+    } & Omit<sparqljs.ConstructQuery, "prefixes" | "queryType" | "type">,
+  ): sparqljs.ConstructQuery {
+    const { ignoreRdfType, subject, ...queryParameters } = parameters ?? {};
+
+    return {
+      ...queryParameters,
+      prefixes: parameters?.prefixes ?? {},
+      queryType: "CONSTRUCT",
+      template: (queryParameters.template ?? []).concat(
+        LanguageModelFamily.sparqlConstructTemplateTriples({
+          ignoreRdfType,
+          subject,
+        }),
+      ),
+      type: "query",
+      where: (queryParameters.where ?? []).concat(
+        LanguageModelFamily.sparqlWherePatterns({ ignoreRdfType, subject }),
+      ),
+    };
+  }
+
+  export function sparqlConstructQueryString(
+    parameters?: {
+      ignoreRdfType?: boolean;
+      subject?: sparqljs.Triple["subject"];
+      variablePrefix?: string;
+    } & Omit<sparqljs.ConstructQuery, "prefixes" | "queryType" | "type"> &
+      sparqljs.GeneratorOptions,
+  ): string {
+    return new sparqljs.Generator(parameters).stringify(
+      LanguageModelFamily.sparqlConstructQuery(parameters),
+    );
+  }
+
+  export function sparqlConstructTemplateTriples(parameters?: {
+    ignoreRdfType?: boolean;
+    subject?: sparqljs.Triple["subject"];
+    variablePrefix?: string;
+  }): readonly sparqljs.Triple[] {
+    const subject =
+      parameters?.subject ?? dataFactory.variable!("languageModelFamily");
+    const variablePrefix =
+      parameters?.variablePrefix ??
+      (subject.termType === "Variable" ? subject.value : "languageModelFamily");
+    return [
+      ...InformationContentEntity.sparqlConstructTemplateTriples({
+        ignoreRdfType: true,
+        subject,
+        variablePrefix,
+      }),
+      ...(parameters?.ignoreRdfType
+        ? []
+        : [
+            {
+              subject,
+              predicate: dataFactory.namedNode(
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              ),
+              object: dataFactory.variable!(`${variablePrefix}RdfType`),
+            },
+          ]),
+      {
+        object: dataFactory.variable!(`${variablePrefix}Creator`),
+        predicate: dataFactory.namedNode(
+          "http://purl.archive.org/purl/knextract/ontology#languageModelFamilyCreator",
+        ),
+        subject,
+      },
+      {
+        object: dataFactory.variable!(`${variablePrefix}Label`),
+        predicate: dataFactory.namedNode(
+          "http://www.w3.org/2000/01/rdf-schema#label",
+        ),
+        subject,
+      },
+    ];
+  }
+
+  export function sparqlWherePatterns(parameters: {
+    ignoreRdfType?: boolean;
+    subject?: sparqljs.Triple["subject"];
+    variablePrefix?: string;
+  }): readonly sparqljs.Pattern[] {
+    const subject =
+      parameters?.subject ?? dataFactory.variable!("languageModelFamily");
+    const variablePrefix =
+      parameters?.variablePrefix ??
+      (subject.termType === "Variable" ? subject.value : "languageModelFamily");
+    return [
+      ...InformationContentEntity.sparqlWherePatterns({
+        ignoreRdfType: true,
+        subject,
+        variablePrefix,
+      }),
+      ...(parameters?.ignoreRdfType
+        ? []
+        : [
+            {
+              triples: [
+                {
+                  subject,
+                  predicate: dataFactory.namedNode(
+                    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                  ),
+                  object: dataFactory.namedNode(
+                    "http://purl.archive.org/purl/knextract/ontology#LanguageModelFamily",
+                  ),
+                },
+              ],
+              type: "bgp" as const,
+            },
+            {
+              triples: [
+                {
+                  subject,
+                  predicate: dataFactory.namedNode(
+                    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                  ),
+                  object: dataFactory.variable!(`${variablePrefix}RdfType`),
+                },
+              ],
+              type: "bgp" as const,
+            },
+          ]),
+      {
+        triples: [
+          {
+            object: dataFactory.variable!(`${variablePrefix}Creator`),
+            predicate: dataFactory.namedNode(
+              "http://purl.archive.org/purl/knextract/ontology#languageModelFamilyCreator",
+            ),
+            subject,
+          },
+        ],
+        type: "bgp",
+      },
+      {
+        triples: [
+          {
+            object: dataFactory.variable!(`${variablePrefix}Label`),
+            predicate: dataFactory.namedNode(
+              "http://www.w3.org/2000/01/rdf-schema#label",
+            ),
+            subject,
+          },
+        ],
+        type: "bgp",
       },
     ];
   }

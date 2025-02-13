@@ -72,10 +72,10 @@ export function stubify(
         identifier: model.identifier,
         title: model.title,
       });
-    case "LanguageModel":
+    case "LanguageModelSpecification":
       return new LanguageModelSpecificationStub({
         identifier: model.identifier,
-        name: model.name,
+        label: model.label,
       });
     case "Workflow":
       return new WorkflowStub({

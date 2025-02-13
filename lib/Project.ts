@@ -4,13 +4,12 @@ import { DocumentFactory } from "@/lib/DocumentFactory";
 import { BlobStore } from "@/lib/blob-stores/BlobStore";
 import { FsBlobStore } from "@/lib/blob-stores/FsBlobStore";
 import { S3BlobStore } from "@/lib/blob-stores/S3BlobStore";
-import { ontologyDataset } from "@/lib/data/ontology/ontologyDataset";
-import { referenceDataset } from "@/lib/data/reference/referenceDataset";
 import { LanguageModelFactory } from "@/lib/language-models";
 import { logger } from "@/lib/logger";
 import { ClientConfiguration, Locale, ModelSet } from "@/lib/models";
 import { FsModelSet } from "@/lib/models/FsModelSet";
 import { SparqlModelSet } from "@/lib/models/SparqlModelSet";
+import ontologyDataset from "@/lib/models/models.shaclmate.ttl";
 import { dataFactory, datasetCoreFactory } from "@/lib/rdfEnvironment";
 import { logShaclValidationReport } from "@/lib/utilities/logShaclValidationReport";
 import { RdfDirectory, intValidator } from "@kos-kit/next-utils/server";
@@ -202,7 +201,7 @@ export class Project {
   async *datasets(): AsyncGenerator<DatasetCore> {
     yield ontologyDataset;
 
-    yield referenceDataset;
+    // yield referenceDataset;
 
     for (const rdfDirectory of [
       this.managedRdfDirectory,

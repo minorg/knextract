@@ -47,14 +47,14 @@ export interface Knextract {
   // WorkflowSuperStep: NamedNode<"http://purl.archive.org/purl/knextract/ontology#WorkflowSuperStep">;
   // WorkflowSuperStepExecution: NamedNode<"http://purl.archive.org/purl/knextract/ontology#WorkflowSuperStepExecution">;
   // // Properties
-  // answers: NamedNode<"http://purl.archive.org/purl/knextract/ontology#answers">;
-  // claims: NamedNode<"http://purl.archive.org/purl/knextract/ontology#claims">;
+  answers: NamedNode<"http://purl.archive.org/purl/knextract/ontology#answers">;
+  claims: NamedNode<"http://purl.archive.org/purl/knextract/ontology#claims">;
   // completionMessageProcessing: NamedNode<"http://purl.archive.org/purl/knextract/ontology#completionMessageProcessing">;
   // conceptAnnotatorExecution: NamedNode<"http://purl.archive.org/purl/knextract/ontology#conceptAnnotatorExecution">;
   // conceptAnnotatorParameters: NamedNode<"http://purl.archive.org/purl/knextract/ontology#conceptAnnotatorParameters">;
   // conceptSelection: NamedNode<"http://purl.archive.org/purl/knextract/ontology#conceptSelection">;
   // conceptSelector: NamedNode<"http://purl.archive.org/purl/knextract/ontology#conceptSelector">;
-  // deleted: NamedNode<"http://purl.archive.org/purl/knextract/ontology#deleted">;
+  deleted: NamedNode<"http://purl.archive.org/purl/knextract/ontology#deleted">;
   // encodingType: NamedNode<"http://purl.archive.org/purl/knextract/ontology#encodingType">;
   // endedAtTime: NamedNode<"http://purl.archive.org/purl/knextract/ontology#endedAtTime">;
   // exception: NamedNode<"http://purl.archive.org/purl/knextract/ontology#exception">;
@@ -68,25 +68,25 @@ export interface Knextract {
   // languageModel: NamedNode<"http://purl.archive.org/purl/knextract/ontology#languageModel">;
   // languageModelInvocation: NamedNode<"http://purl.archive.org/purl/knextract/ontology#languageModelInvocation">;
   // literalForm: NamedNode<"http://purl.archive.org/purl/knextract/ontology#literalForm">;
-  // memberOfCorpus: NamedNode<"http://purl.archive.org/purl/knextract/ontology#memberOfCorpus">;
+  memberOfCorpus: NamedNode<"http://purl.archive.org/purl/knextract/ontology#memberOfCorpus">;
   // mutable: NamedNode<"http://purl.archive.org/purl/knextract/ontology#mutable">;
   // object: NamedNode<"http://purl.archive.org/purl/knextract/ontology#object">;
   // precedes: NamedNode<"http://purl.archive.org/purl/knextract/ontology#precedes">;
   // priority: NamedNode<"http://purl.archive.org/purl/knextract/ontology#priority">;
   // private: NamedNode<"http://purl.archive.org/purl/knextract/ontology#private">;
-  // processInput: NamedNode<"http://purl.archive.org/purl/knextract/ontology#processInput">;
-  // processOutput: NamedNode<"http://purl.archive.org/purl/knextract/ontology#processOutput">;
+  processInput: NamedNode<"http://purl.archive.org/purl/knextract/ontology#processInput">;
+  processOutput: NamedNode<"http://purl.archive.org/purl/knextract/ontology#processOutput">;
   // promptConstruction: NamedNode<"http://purl.archive.org/purl/knextract/ontology#promptConstruction">;
   // promptInputValue: NamedNode<"http://purl.archive.org/purl/knextract/ontology#promptInputValue">;
   // promptMessageRole: NamedNode<"http://purl.archive.org/purl/knextract/ontology#promptMessageRole">;
   // promptMessageTemplates: NamedNode<"http://purl.archive.org/purl/knextract/ontology#promptMessageTemplates">;
   // promptMessages: NamedNode<"http://purl.archive.org/purl/knextract/ontology#promptMessages">;
   // promptTemplate: NamedNode<"http://purl.archive.org/purl/knextract/ontology#promptTemplate">;
-  // questionnaireAdministration: NamedNode<"http://purl.archive.org/purl/knextract/ontology#questionnaireAdministration">;
+  questionnaireAdministration: NamedNode<"http://purl.archive.org/purl/knextract/ontology#questionnaireAdministration">;
   // recursive: NamedNode<"http://purl.archive.org/purl/knextract/ontology#recursive">;
   // sparqlSelect: NamedNode<"http://purl.archive.org/purl/knextract/ontology#sparqlSelect">;
   // startedAtTime: NamedNode<"http://purl.archive.org/purl/knextract/ontology#startedAtTime">;
-  // subProcesses: NamedNode<"http://purl.archive.org/purl/knextract/ontology#subProcesses">;
+  subProcesses: NamedNode<"http://purl.archive.org/purl/knextract/ontology#subProcesses">;
   // subject: NamedNode<"http://purl.archive.org/purl/knextract/ontology#subject">;
   // terminology: NamedNode<"http://purl.archive.org/purl/knextract/ontology#terminology">;
   // terminus: NamedNode<"http://purl.archive.org/purl/knextract/ontology#terminus">;
@@ -104,10 +104,10 @@ export interface Knextract {
   // usedWorkflow: NamedNode<"http://purl.archive.org/purl/knextract/ontology#usedWorkflow">;
   // usedWorkflowStep: NamedNode<"http://purl.archive.org/purl/knextract/ontology#usedWorkflowStep">;
   // variable: NamedNode<"http://purl.archive.org/purl/knextract/ontology#variable">;
-  // workflow: NamedNode<"http://purl.archive.org/purl/knextract/ontology#workflow">;
+  workflow: NamedNode<"http://purl.archive.org/purl/knextract/ontology#workflow">;
   // workflowStep: NamedNode<"http://purl.archive.org/purl/knextract/ontology#workflowStep">;
   // workflowStepExecution: NamedNode<"http://purl.archive.org/purl/knextract/ontology#workflowStepExecution">;
-  // workflowStepExecutions: NamedNode<"http://purl.archive.org/purl/knextract/ontology#workflowStepExecutions">;
+  workflowStepExecutions: NamedNode<"http://purl.archive.org/purl/knextract/ontology#workflowStepExecutions">;
 }
 
 const builder = namespace(

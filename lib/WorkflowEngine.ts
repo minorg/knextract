@@ -227,7 +227,13 @@ export class WorkflowEngine extends Emittery<EventData> {
         questionnaireAdministration,
       }),
     });
-    await this.emit("postStepExecution", stepExecution);
+    await this.emit(
+      "postStepExecution",
+      new PostWorkflowStepExecutionEvent({
+        payload: stepExecution,
+        timestamp: new Date(),
+      }),
+    );
     return stepExecution;
   }
 

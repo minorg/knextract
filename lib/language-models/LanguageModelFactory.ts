@@ -22,10 +22,12 @@ export class LanguageModelFactory {
     let availableSpecifications: readonly LanguageModelSpecification[];
     if (this.credentials.openai) {
       // Use the model with the largest context window
-      availableSpecifications = this.specifications.filter(
-        (specification) =>
-          specification.isVariantOf.manufacturer.name.value === "OpenAI",
-      );
+      availableSpecifications = this.specifications.filter((specification) => {
+        switch (specification.family.creator.value) {
+          case "https://openai.com/":
+            return true;
+        }
+      });
     } else {
       availableSpecifications = [];
     }
@@ -47,8 +49,8 @@ export class LanguageModelFactory {
   createLanguageModelFromSpecification(
     specification: LanguageModelSpecification,
   ): Either<Error, LanguageModel> {
-    switch (specification.isVariantOf.manufacturer.name.value) {
-      case "OpenAI": {
+    switch (specification.family.creator.value) {
+      case "https://openai.com/": {
         if (!this.credentials.openai) {
           return Left(new Error("no OpenAI credentials available"));
         }
@@ -62,7 +64,7 @@ export class LanguageModelFactory {
       default:
         return Left(
           new RangeError(
-            `unrecognized language model manufacturer: ${specification.isVariantOf.manufacturer.name.value}`,
+            `unrecognized language model creator: ${specification.family.creator.value}`,
           ),
         );
     }

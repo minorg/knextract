@@ -43,14 +43,12 @@ export class OpenAiLanguageModel implements LanguageModel {
     this.credentials = credentials;
     let encoding: Tiktoken;
     try {
-      encoding = encodingForModel(
-        specification.localIdentifier as TiktokenModel,
-      );
+      encoding = encodingForModel(specification.apiIdentifier as TiktokenModel);
     } catch (e) {
       invariant(e instanceof Error);
       logger.warn(
         "error getting encoding for model %s: %s",
-        specification.localIdentifier,
+        specification.apiIdentifier,
         e.message,
       );
       // Unknown model
@@ -84,7 +82,7 @@ export class OpenAiLanguageModel implements LanguageModel {
           content: message.literalForm,
           role: promptMessageToRoleToCoreMessageRole(message.role),
         })),
-        model: openai(this.specification.localIdentifier),
+        model: openai(this.specification.apiIdentifier),
       });
       return Either.of(
         new CompletionMessage({
