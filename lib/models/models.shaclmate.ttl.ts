@@ -563,6 +563,13 @@ _:n3-20 <http://www.w3.org/ns/shacl#node> <http://purl.archive.org/purl/knextrac
 <http://purl.archive.org/purl/knextract/ontology#PromptMessageTemplate> <http://www.w3.org/ns/shacl#property> <http://purl.archive.org/purl/knextract/ontology#promptMessageRole> .
 <http://purl.archive.org/purl/knextract/ontology#PromptMessageTemplate> <http://www.w3.org/ns/shacl#property> <http://purl.archive.org/purl/knextract/ontology#promptInputValue> .
 <http://purl.archive.org/purl/knextract/ontology#PromptMessageTemplate> <http://www.w3.org/2000/01/rdf-schema#label> "message template" .
+<http://purl.archive.org/purl/knextract/ontology#LanguageModelCreator> <http://minorg.github.io/shaclmate/ns#name> "LanguageModelCreator" .
+<http://purl.archive.org/purl/knextract/ontology#LanguageModelCreator> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://purl.archive.org/purl/knextract/ontology#LanguageModelCreator> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#NodeShape> .
+<http://purl.archive.org/purl/knextract/ontology#LanguageModelCreator> <http://www.w3.org/ns/shacl#property> <http://purl.archive.org/purl/knextract/ontology#label-required> .
+<http://purl.archive.org/purl/knextract/ontology#LanguageModelCreator> <http://www.w3.org/ns/shacl#in> _:n3-21 .
+_:n3-21 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://openai.com/> .
+_:n3-21 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
 <http://purl.archive.org/purl/knextract/ontology#LanguageModelFamily> <http://minorg.github.io/shaclmate/ns#name> "LanguageModelFamily" .
 <http://purl.archive.org/purl/knextract/ontology#LanguageModelFamily> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://purl.archive.org/purl/knextract/ontology#LanguageModelFamily> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#NodeShape> .
@@ -573,10 +580,8 @@ _:n3-20 <http://www.w3.org/ns/shacl#node> <http://purl.archive.org/purl/knextrac
 <http://purl.archive.org/purl/knextract/ontology#LanguageModelFamily-creator> <http://www.w3.org/ns/shacl#maxCount> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
 <http://purl.archive.org/purl/knextract/ontology#LanguageModelFamily-creator> <http://www.w3.org/ns/shacl#minCount> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
 <http://purl.archive.org/purl/knextract/ontology#LanguageModelFamily-creator> <http://www.w3.org/ns/shacl#name> "creator" .
-<http://purl.archive.org/purl/knextract/ontology#LanguageModelFamily-creator> <http://www.w3.org/ns/shacl#path> <http://purl.archive.org/purl/knextract/ontology#languageModelFamilyCreator> .
-<http://purl.archive.org/purl/knextract/ontology#LanguageModelFamily-creator> <http://www.w3.org/ns/shacl#in> _:n3-21 .
-_:n3-21 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <https://openai.com/> .
-_:n3-21 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+<http://purl.archive.org/purl/knextract/ontology#LanguageModelFamily-creator> <http://www.w3.org/ns/shacl#node> <http://purl.archive.org/purl/knextract/ontology#LanguageModelCreator> .
+<http://purl.archive.org/purl/knextract/ontology#LanguageModelFamily-creator> <http://www.w3.org/ns/shacl#path> <http://purl.archive.org/purl/knextract/ontology#languageModelCreator> .
 <http://purl.archive.org/purl/knextract/ontology#LanguageModelInvocation> <http://minorg.github.io/shaclmate/ns#name> "LanguageModelInvocation" .
 <http://purl.archive.org/purl/knextract/ontology#LanguageModelInvocation> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://purl.archive.org/purl/knextract/ontology#LanguageModelInvocation> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#NodeShape> .

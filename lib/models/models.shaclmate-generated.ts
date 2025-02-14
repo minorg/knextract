@@ -213,10 +213,18 @@ export interface LabelStub {
 
 export namespace LabelStub {
   export function create(parameters: {
-    readonly identifier: rdfjs.BlankNode | rdfjs.NamedNode;
+    readonly identifier: (rdfjs.BlankNode | rdfjs.NamedNode) | string;
     readonly literalForm: purify.NonEmptyList<rdfjs.Literal>;
   }): LabelStub {
-    const identifier = parameters.identifier;
+    let identifier: rdfjs.BlankNode | rdfjs.NamedNode;
+    if (typeof parameters.identifier === "object") {
+      identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      identifier = parameters.identifier as never;
+    }
+
     const literalForm = parameters.literalForm;
     const type = "LabelStub" as const;
     return { identifier, literalForm, type };
@@ -651,11 +659,19 @@ export interface KosResourceStub {
 
 export namespace KosResourceStub {
   export function create(parameters: {
-    readonly identifier: rdfjs.NamedNode;
+    readonly identifier: rdfjs.NamedNode | string;
     readonly prefLabel?: readonly rdfjs.Literal[];
     readonly prefLabelXl?: readonly LabelStub[];
   }): Omit<KosResourceStub, "type"> {
-    const identifier = parameters.identifier;
+    let identifier: rdfjs.NamedNode;
+    if (typeof parameters.identifier === "object") {
+      identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      identifier = parameters.identifier as never;
+    }
+
     let prefLabel: readonly rdfjs.Literal[];
     if (typeof parameters.prefLabel === "undefined") {
       prefLabel = [];
@@ -1717,14 +1733,21 @@ export class WorkflowQuestionnaireStepExecutionSubProcesses extends ProcessSubPr
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly questionnaireAdministration?:
         | QuestionnaireAdministration
         | purify.Maybe<QuestionnaireAdministration>;
     } & ConstructorParameters<typeof ProcessSubProcesses>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     if (purify.Maybe.isMaybe(parameters.questionnaireAdministration)) {
       this.questionnaireAdministration = parameters.questionnaireAdministration;
     } else if (
@@ -2413,12 +2436,18 @@ export class WorkflowQuestionnaireStepExecutionOutput extends ProcessOutput {
   constructor(
     parameters: {
       readonly answers: readonly Answer[];
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
     } & ConstructorParameters<typeof ProcessOutput>[0],
   ) {
     super(parameters);
     this.answers = parameters.answers;
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
   }
 
   override get identifier(): rdfjs.NamedNode {
@@ -3248,13 +3277,20 @@ export class WorkflowQuestionnaireStepExecutionInput extends ProcessInput {
   constructor(
     parameters: {
       readonly document: DocumentStub;
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly step: WorkflowQuestionnaireStep;
     } & ConstructorParameters<typeof ProcessInput>[0],
   ) {
     super(parameters);
     this.document = parameters.document;
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.step = parameters.step;
   }
 
@@ -4161,14 +4197,21 @@ export class WorkflowQuestionnaireStepExecution extends Process {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly input: WorkflowQuestionnaireStepExecutionInput;
       readonly output: Exception | WorkflowQuestionnaireStepExecutionOutput;
       readonly subProcesses: WorkflowQuestionnaireStepExecutionSubProcesses;
     } & ConstructorParameters<typeof Process>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.input = parameters.input;
     this.output = parameters.output;
     this.subProcesses = parameters.subProcesses;
@@ -5169,7 +5212,7 @@ export class WorkflowQuestionnaireStep extends InformationContentEntity {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly languageModel?:
         | LanguageModelSpecificationStub
         | purify.Maybe<LanguageModelSpecificationStub>;
@@ -5177,7 +5220,14 @@ export class WorkflowQuestionnaireStep extends InformationContentEntity {
     } & ConstructorParameters<typeof InformationContentEntity>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     if (purify.Maybe.isMaybe(parameters.languageModel)) {
       this.languageModel = parameters.languageModel;
     } else if (
@@ -5722,11 +5772,17 @@ export class WorkflowExecutionStub extends Process {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
     } & ConstructorParameters<typeof Process>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
   }
 
   override get identifier(): rdfjs.NamedNode {
@@ -6021,12 +6077,19 @@ export class WorkflowExecutionSubProcesses extends ProcessSubProcesses {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly stepExecutions: readonly WorkflowStepExecution[];
     } & ConstructorParameters<typeof ProcessSubProcesses>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.stepExecutions = parameters.stepExecutions;
   }
 
@@ -6664,11 +6727,17 @@ export class WorkflowExecutionOutput extends ProcessOutput {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
     } & ConstructorParameters<typeof ProcessOutput>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
   }
 
   override get identifier(): rdfjs.NamedNode {
@@ -6970,7 +7039,7 @@ export class WorkflowStub {
 
   constructor(parameters: {
     readonly deleted?: boolean;
-    readonly identifier: rdfjs.NamedNode;
+    readonly identifier: rdfjs.NamedNode | string;
     readonly label?: purify.Maybe<string> | string;
   }) {
     if (typeof parameters.deleted === "boolean") {
@@ -6981,7 +7050,14 @@ export class WorkflowStub {
       this.deleted = parameters.deleted as never;
     }
 
-    this.identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this.identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this.identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this.identifier = parameters.identifier as never;
+    }
+
     if (purify.Maybe.isMaybe(parameters.label)) {
       this.label = parameters.label;
     } else if (typeof parameters.label === "string") {
@@ -7451,12 +7527,19 @@ export class WorkflowDeletionInput extends ProcessInput {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly workflow: WorkflowStub;
     } & ConstructorParameters<typeof ProcessInput>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.workflow = parameters.workflow;
   }
 
@@ -7862,12 +7945,19 @@ export class WorkflowDeletion extends Process {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly input: WorkflowDeletionInput;
     } & ConstructorParameters<typeof Process>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.input = parameters.input;
   }
 
@@ -8274,7 +8364,7 @@ export class Workflow extends InformationContentEntity {
   constructor(
     parameters: {
       readonly deleted?: boolean;
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly label: string;
       readonly steps: readonly WorkflowStep[];
     } & ConstructorParameters<typeof InformationContentEntity>[0],
@@ -8288,7 +8378,14 @@ export class Workflow extends InformationContentEntity {
       this.deleted = parameters.deleted as never;
     }
 
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.label = parameters.label;
     this.steps = parameters.steps;
   }
@@ -9019,12 +9116,19 @@ export class ValueExtractionOutput extends ProcessOutput {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly values: readonly Value[];
     } & ConstructorParameters<typeof ProcessOutput>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.values = parameters.values;
   }
 
@@ -9622,12 +9726,18 @@ export class ValueExtractionInput extends ProcessInput {
   constructor(
     parameters: {
       readonly completionMessage: CompletionMessage;
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
     } & ConstructorParameters<typeof ProcessInput>[0],
   ) {
     super(parameters);
     this.completionMessage = parameters.completionMessage;
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
   }
 
   override get identifier(): rdfjs.NamedNode {
@@ -10231,12 +10341,19 @@ export class TextValue extends BaseValue {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly value: string;
     } & ConstructorParameters<typeof BaseValue>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.value = parameters.value;
   }
 
@@ -10602,12 +10719,19 @@ export class RealValue extends BaseValue {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly value: number;
     } & ConstructorParameters<typeof BaseValue>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.value = parameters.value;
   }
 
@@ -10973,12 +11097,19 @@ export class QuestionnaireAdministrationSubProcesses extends ProcessSubProcesses
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly questionAdministrations: readonly QuestionAdministration[];
     } & ConstructorParameters<typeof ProcessSubProcesses>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.questionAdministrations = parameters.questionAdministrations;
   }
 
@@ -11654,12 +11785,18 @@ export class QuestionnaireAdministrationOutput extends ProcessOutput {
   constructor(
     parameters: {
       readonly answers: readonly Answer[];
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
     } & ConstructorParameters<typeof ProcessOutput>[0],
   ) {
     super(parameters);
     this.answers = parameters.answers;
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
   }
 
   override get identifier(): rdfjs.NamedNode {
@@ -12275,14 +12412,21 @@ export class QuestionnaireAdministrationInput extends ProcessInput {
   constructor(
     parameters: {
       readonly document: DocumentStub;
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly languageModel: LanguageModelSpecificationStub;
       readonly questionnaire: Questionnaire;
     } & ConstructorParameters<typeof ProcessInput>[0],
   ) {
     super(parameters);
     this.document = parameters.document;
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.languageModel = parameters.languageModel;
     this.questionnaire = parameters.questionnaire;
   }
@@ -12891,14 +13035,21 @@ export class QuestionnaireAdministration extends Process {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly input: QuestionnaireAdministrationInput;
       readonly output: Exception | QuestionnaireAdministrationOutput;
       readonly subProcesses: QuestionnaireAdministrationSubProcesses;
     } & ConstructorParameters<typeof Process>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.input = parameters.input;
     this.output = parameters.output;
     this.subProcesses = parameters.subProcesses;
@@ -13623,12 +13774,19 @@ export class Questionnaire extends InformationContentEntity {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly members: readonly QuestionnaireMember[];
     } & ConstructorParameters<typeof InformationContentEntity>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.members = parameters.members;
   }
 
@@ -14231,13 +14389,20 @@ export class ValueExtraction extends Process {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly input: ValueExtractionInput;
       readonly output: Exception | ValueExtractionOutput;
     } & ConstructorParameters<typeof Process>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.input = parameters.input;
     this.output = parameters.output;
   }
@@ -14842,7 +15007,7 @@ export class QuestionAdministrationSubProcesses extends ProcessSubProcesses {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly languageModelInvocation?:
         | LanguageModelInvocation
         | purify.Maybe<LanguageModelInvocation>;
@@ -14855,7 +15020,14 @@ export class QuestionAdministrationSubProcesses extends ProcessSubProcesses {
     } & ConstructorParameters<typeof ProcessSubProcesses>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     if (purify.Maybe.isMaybe(parameters.languageModelInvocation)) {
       this.languageModelInvocation = parameters.languageModelInvocation;
     } else if (
@@ -15558,12 +15730,18 @@ export class QuestionAdministrationOutput extends ProcessOutput {
   constructor(
     parameters: {
       readonly answer: Answer;
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
     } & ConstructorParameters<typeof ProcessOutput>[0],
   ) {
     super(parameters);
     this.answer = parameters.answer;
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
   }
 
   override get identifier(): rdfjs.NamedNode {
@@ -15976,14 +16154,21 @@ export class QuestionAdministrationInput extends ProcessInput {
   constructor(
     parameters: {
       readonly document: DocumentStub;
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly languageModel: LanguageModelSpecificationStub;
       readonly question: Question;
     } & ConstructorParameters<typeof ProcessInput>[0],
   ) {
     super(parameters);
     this.document = parameters.document;
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.languageModel = parameters.languageModel;
     this.question = parameters.question;
   }
@@ -16586,14 +16771,21 @@ export class QuestionAdministration extends Process {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly input: QuestionAdministrationInput;
       readonly output: Exception | QuestionAdministrationOutput;
       readonly subProcesses: QuestionAdministrationSubProcesses;
     } & ConstructorParameters<typeof Process>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.input = parameters.input;
     this.output = parameters.output;
     this.subProcesses = parameters.subProcesses;
@@ -17311,12 +17503,19 @@ abstract class BaseQuestion extends InformationContentEntity {
 
   constructor(
     parameters: {
-      readonly path: rdfjs.NamedNode;
+      readonly path: rdfjs.NamedNode | string;
       readonly promptTemplate: PromptTemplateLike;
     } & ConstructorParameters<typeof InformationContentEntity>[0],
   ) {
     super(parameters);
-    this.path = parameters.path;
+    if (typeof parameters.path === "object") {
+      this.path = parameters.path;
+    } else if (typeof parameters.path === "string") {
+      this.path = dataFactory.namedNode(parameters.path);
+    } else {
+      this.path = parameters.path as never;
+    }
+
     this.promptTemplate = parameters.promptTemplate;
   }
 
@@ -17673,11 +17872,17 @@ export class TextQuestion extends BaseQuestion {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
     } & ConstructorParameters<typeof BaseQuestion>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
   }
 
   override get identifier(): rdfjs.NamedNode {
@@ -17963,11 +18168,17 @@ export class RealValuedQuestion extends BaseQuestion {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
     } & ConstructorParameters<typeof BaseQuestion>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
   }
 
   override get identifier(): rdfjs.NamedNode {
@@ -18265,13 +18476,20 @@ export class PromptTemplate extends InformationContentEntity {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly inputValues?: readonly PromptInputValue[];
       readonly messageTemplates: readonly PromptMessageTemplate[];
     } & ConstructorParameters<typeof InformationContentEntity>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     if (typeof parameters.inputValues === "undefined") {
       this.inputValues = [];
     } else if (Array.isArray(parameters.inputValues)) {
@@ -19019,12 +19237,19 @@ export class PromptSparqlSelectInputValue extends InformationContentEntity {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly sparqlSelect: string;
     } & ConstructorParameters<typeof InformationContentEntity>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.sparqlSelect = parameters.sparqlSelect;
   }
 
@@ -19421,13 +19646,20 @@ export class PromptLiteralInputValue extends InformationContentEntity {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly literalForm: string;
       readonly variable: string;
     } & ConstructorParameters<typeof InformationContentEntity>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.literalForm = parameters.literalForm;
     this.variable = parameters.variable;
   }
@@ -19878,12 +20110,19 @@ export class PromptConstructionOutput extends ProcessOutput {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly prompt: Prompt;
     } & ConstructorParameters<typeof ProcessOutput>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.prompt = parameters.prompt;
   }
 
@@ -20298,7 +20537,7 @@ export class PromptConstructionInput extends ProcessInput {
         | purify.Maybe<readonly ConceptStub[]>
         | readonly ConceptStub[];
       readonly document: DocumentStub;
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly question: Question;
     } & ConstructorParameters<typeof ProcessInput>[0],
   ) {
@@ -20314,7 +20553,14 @@ export class PromptConstructionInput extends ProcessInput {
     }
 
     this.document = parameters.document;
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.question = parameters.question;
   }
 
@@ -21133,13 +21379,20 @@ export class PromptConstruction extends Process {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly input: PromptConstructionInput;
       readonly output: Exception | PromptConstructionOutput;
     } & ConstructorParameters<typeof Process>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.input = parameters.input;
     this.output = parameters.output;
   }
@@ -22023,12 +22276,19 @@ export class PreWorkflowStepExecutionEvent extends BaseEvent {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly payload: WorkflowStepExecutionInput;
     } & ConstructorParameters<typeof BaseEvent>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.payload = parameters.payload;
   }
 
@@ -22445,13 +22705,20 @@ export class WorkflowExecutionInput extends ProcessInput {
   constructor(
     parameters: {
       readonly document: DocumentStub;
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly workflow: WorkflowStub;
     } & ConstructorParameters<typeof ProcessInput>[0],
   ) {
     super(parameters);
     this.document = parameters.document;
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.workflow = parameters.workflow;
   }
 
@@ -22946,12 +23213,19 @@ export class PreWorkflowExecutionEvent extends BaseEvent {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly payload: WorkflowExecutionInput;
     } & ConstructorParameters<typeof BaseEvent>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.payload = parameters.payload;
   }
 
@@ -23365,12 +23639,19 @@ export class PostWorkflowStepExecutionEvent extends BaseEvent {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly payload: WorkflowStepExecution;
     } & ConstructorParameters<typeof BaseEvent>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.payload = parameters.payload;
   }
 
@@ -23780,14 +24061,21 @@ export class WorkflowExecution extends Process {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly input: WorkflowExecutionInput;
       readonly output: Exception | WorkflowExecutionOutput;
       readonly subProcesses: WorkflowExecutionSubProcesses;
     } & ConstructorParameters<typeof Process>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.input = parameters.input;
     this.output = parameters.output;
     this.subProcesses = parameters.subProcesses;
@@ -24491,12 +24779,19 @@ export class PostWorkflowExecutionEvent extends BaseEvent {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly payload: WorkflowExecution;
     } & ConstructorParameters<typeof BaseEvent>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.payload = parameters.payload;
   }
 
@@ -24921,7 +25216,7 @@ export class LanguageModelSpecification extends InformationContentEntity {
       readonly apiIdentifier: string;
       readonly contextWindow: number;
       readonly family: LanguageModelFamily;
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly label: string;
     } & ConstructorParameters<typeof InformationContentEntity>[0],
   ) {
@@ -24929,7 +25224,14 @@ export class LanguageModelSpecification extends InformationContentEntity {
     this.apiIdentifier = parameters.apiIdentifier;
     this.contextWindow = parameters.contextWindow;
     this.family = parameters.family;
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.label = parameters.label;
   }
 
@@ -25550,12 +25852,19 @@ export class Prompt extends InformationContentEntity {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly messages: readonly PromptMessage[];
     } & ConstructorParameters<typeof InformationContentEntity>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.messages = parameters.messages;
   }
 
@@ -26156,10 +26465,17 @@ export class LanguageModelSpecificationStub {
   readonly type = "LanguageModelSpecificationStub";
 
   constructor(parameters: {
-    readonly identifier: rdfjs.NamedNode;
+    readonly identifier: rdfjs.NamedNode | string;
     readonly label?: purify.Maybe<string> | string;
   }) {
-    this.identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this.identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this.identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this.identifier = parameters.identifier as never;
+    }
+
     if (purify.Maybe.isMaybe(parameters.label)) {
       this.label = parameters.label;
     } else if (typeof parameters.label === "string") {
@@ -26557,12 +26873,18 @@ export class LanguageModelInvocationOutput extends ProcessOutput {
   constructor(
     parameters: {
       readonly completionMessage: CompletionMessage;
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
     } & ConstructorParameters<typeof ProcessOutput>[0],
   ) {
     super(parameters);
     this.completionMessage = parameters.completionMessage;
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
   }
 
   override get identifier(): rdfjs.NamedNode {
@@ -26980,13 +27302,20 @@ export class LanguageModelInvocationInput extends ProcessInput {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly languageModel: LanguageModelSpecificationStub;
       readonly prompt: Prompt;
     } & ConstructorParameters<typeof ProcessInput>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.languageModel = parameters.languageModel;
     this.prompt = parameters.prompt;
   }
@@ -27490,13 +27819,20 @@ export class LanguageModelInvocation extends Process {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly input: LanguageModelInvocationInput;
       readonly output: Exception | LanguageModelInvocationOutput;
     } & ConstructorParameters<typeof Process>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.input = parameters.input;
     this.output = parameters.output;
   }
@@ -28100,7 +28436,7 @@ export namespace LanguageModelInvocation {
   }
 }
 export class LanguageModelFamily extends InformationContentEntity {
-  readonly creator: rdfjs.NamedNode<"https://openai.com/">;
+  readonly creator: LanguageModelCreator;
   private _identifier: rdfjs.NamedNode | undefined;
   /**
    * has label
@@ -28110,23 +28446,21 @@ export class LanguageModelFamily extends InformationContentEntity {
 
   constructor(
     parameters: {
-      readonly creator:
-        | "https://openai.com/"
-        | rdfjs.NamedNode<"https://openai.com/">;
-      readonly identifier?: rdfjs.NamedNode;
+      readonly creator: LanguageModelCreator;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly label: string;
     } & ConstructorParameters<typeof InformationContentEntity>[0],
   ) {
     super(parameters);
-    if (typeof parameters.creator === "object") {
-      this.creator = parameters.creator;
-    } else if (typeof parameters.creator === "string") {
-      this.creator = dataFactory.namedNode(parameters.creator);
+    this.creator = parameters.creator;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
     } else {
-      this.creator = parameters.creator as never;
+      this._identifier = parameters.identifier as never;
     }
 
-    this._identifier = parameters.identifier;
     this.label = parameters.label;
   }
 
@@ -28143,15 +28477,16 @@ export class LanguageModelFamily extends InformationContentEntity {
     return super
       .equals(other)
       .chain(() =>
-        booleanEquals(this.creator, other.creator).mapLeft(
-          (propertyValuesUnequal) => ({
-            left: this,
-            right: other,
-            propertyName: "creator",
-            propertyValuesUnequal,
-            type: "Property" as const,
-          }),
-        ),
+        ((left, right) => left.equals(right))(
+          this.creator,
+          other.creator,
+        ).mapLeft((propertyValuesUnequal) => ({
+          left: this,
+          right: other,
+          propertyName: "creator",
+          propertyValuesUnequal,
+          type: "Property" as const,
+        })),
       )
       .chain(() =>
         strictEquals(this.label, other.label).mapLeft(
@@ -28172,20 +28507,19 @@ export class LanguageModelFamily extends InformationContentEntity {
     },
   >(_hasher: HasherT): HasherT {
     super.hash(_hasher);
-    _hasher.update(this.creator.termType);
-    _hasher.update(this.creator.value);
+    this.creator.hash(_hasher);
     _hasher.update(this.label);
     return _hasher;
   }
 
   override toJson(): {
-    readonly creator: { readonly "@id": "https://openai.com/" };
+    readonly creator: ReturnType<LanguageModelCreator["toJson"]>;
     readonly label: string;
   } & ReturnType<InformationContentEntity["toJson"]> {
     return JSON.parse(
       JSON.stringify({
         ...super.toJson(),
-        creator: { "@id": this.creator.value },
+        creator: this.creator.toJson(),
         label: this.label,
       } satisfies ReturnType<LanguageModelFamily["toJson"]>),
     );
@@ -28218,9 +28552,12 @@ export class LanguageModelFamily extends InformationContentEntity {
 
     _resource.add(
       dataFactory.namedNode(
-        "http://purl.archive.org/purl/knextract/ontology#languageModelFamilyCreator",
+        "http://purl.archive.org/purl/knextract/ontology#languageModelCreator",
       ),
-      this.creator,
+      this.creator.toRdf({
+        mutateGraph: mutateGraph,
+        resourceSet: resourceSet,
+      }),
     );
     _resource.add(
       dataFactory.namedNode("http://www.w3.org/2000/01/rdf-schema#label"),
@@ -28240,7 +28577,7 @@ export namespace LanguageModelFamily {
   ): purify.Either<
     zod.ZodError,
     {
-      creator: rdfjs.NamedNode<"https://openai.com/">;
+      creator: LanguageModelCreator;
       identifier: rdfjs.NamedNode;
       label: string;
     } & UnwrapR<ReturnType<typeof InformationContentEntity.propertiesFromJson>>
@@ -28259,7 +28596,9 @@ export namespace LanguageModelFamily {
     }
 
     const _super0 = _super0Either.unsafeCoerce();
-    const creator = dataFactory.namedNode(_jsonObject["creator"]["@id"]);
+    const creator = LanguageModelCreator.fromJson(
+      _jsonObject["creator"],
+    ).unsafeCoerce();
     const identifier = dataFactory.namedNode(_jsonObject["@id"]);
     const label = _jsonObject["label"];
     return purify.Either.of({ ..._super0, creator, identifier, label });
@@ -28287,7 +28626,7 @@ export namespace LanguageModelFamily {
   }): purify.Either<
     rdfjsResource.Resource.ValueError,
     {
-      creator: rdfjs.NamedNode<"https://openai.com/">;
+      creator: LanguageModelCreator;
       identifier: rdfjs.NamedNode;
       label: string;
     } & UnwrapR<ReturnType<typeof InformationContentEntity.propertiesFromRdf>>
@@ -28324,35 +28663,22 @@ export namespace LanguageModelFamily {
 
     const _creatorEither: purify.Either<
       rdfjsResource.Resource.ValueError,
-      rdfjs.NamedNode<"https://openai.com/">
+      LanguageModelCreator
     > = _resource
       .values(
         dataFactory.namedNode(
-          "http://purl.archive.org/purl/knextract/ontology#languageModelFamilyCreator",
+          "http://purl.archive.org/purl/knextract/ontology#languageModelCreator",
         ),
         { unique: true },
       )
       .head()
-      .chain((_value) =>
-        _value.toIri().chain((iri) => {
-          switch (iri.value) {
-            case "https://openai.com/":
-              return purify.Either.of<
-                rdfjsResource.Resource.ValueError,
-                rdfjs.NamedNode<"https://openai.com/">
-              >(iri as rdfjs.NamedNode<"https://openai.com/">);
-            default:
-              return purify.Left(
-                new rdfjsResource.Resource.MistypedValueError({
-                  actualValue: iri,
-                  expectedValueType: 'rdfjs.NamedNode<"https://openai.com/">',
-                  focusResource: _resource,
-                  predicate: dataFactory.namedNode(
-                    "http://purl.archive.org/purl/knextract/ontology#languageModelFamilyCreator",
-                  ),
-                }),
-              );
-          }
+      .chain((value) => value.toNamedResource())
+      .chain((_resource) =>
+        LanguageModelCreator.fromRdf({
+          ..._context,
+          ignoreRdfType: true,
+          languageIn: _languageIn,
+          resource: _resource,
         }),
       );
     if (_creatorEither.isLeft()) {
@@ -28404,7 +28730,9 @@ export namespace LanguageModelFamily {
         InformationContentEntity.informationContentEntityJsonUiSchema({
           scopePrefix,
         }),
-        { scope: `${scopePrefix}/properties/creator`, type: "Control" },
+        LanguageModelCreator.jsonUiSchema({
+          scopePrefix: `${scopePrefix}/properties/creator`,
+        }),
         {
           label: "has label",
           scope: `${scopePrefix}/properties/label`,
@@ -28419,7 +28747,7 @@ export namespace LanguageModelFamily {
   export function languageModelFamilyJsonZodSchema() {
     return InformationContentEntity.informationContentEntityJsonZodSchema().merge(
       zod.object({
-        creator: zod.object({ "@id": zod.enum(["https://openai.com/"]) }),
+        creator: LanguageModelCreator.jsonZodSchema(),
         "@id": zod.string().min(1),
         label: zod.string(),
         type: zod.literal("LanguageModelFamily"),
@@ -28496,10 +28824,15 @@ export namespace LanguageModelFamily {
       {
         object: dataFactory.variable!(`${variablePrefix}Creator`),
         predicate: dataFactory.namedNode(
-          "http://purl.archive.org/purl/knextract/ontology#languageModelFamilyCreator",
+          "http://purl.archive.org/purl/knextract/ontology#languageModelCreator",
         ),
         subject,
       },
+      ...LanguageModelCreator.sparqlConstructTemplateTriples({
+        ignoreRdfType: true,
+        subject: dataFactory.variable!(`${variablePrefix}Creator`),
+        variablePrefix: `${variablePrefix}Creator`,
+      }),
       {
         object: dataFactory.variable!(`${variablePrefix}Label`),
         predicate: dataFactory.namedNode(
@@ -28561,13 +28894,417 @@ export namespace LanguageModelFamily {
           {
             object: dataFactory.variable!(`${variablePrefix}Creator`),
             predicate: dataFactory.namedNode(
-              "http://purl.archive.org/purl/knextract/ontology#languageModelFamilyCreator",
+              "http://purl.archive.org/purl/knextract/ontology#languageModelCreator",
             ),
             subject,
           },
         ],
         type: "bgp",
       },
+      ...LanguageModelCreator.sparqlWherePatterns({
+        ignoreRdfType: true,
+        subject: dataFactory.variable!(`${variablePrefix}Creator`),
+        variablePrefix: `${variablePrefix}Creator`,
+      }),
+      {
+        triples: [
+          {
+            object: dataFactory.variable!(`${variablePrefix}Label`),
+            predicate: dataFactory.namedNode(
+              "http://www.w3.org/2000/01/rdf-schema#label",
+            ),
+            subject,
+          },
+        ],
+        type: "bgp",
+      },
+    ];
+  }
+}
+export class LanguageModelCreator {
+  readonly identifier: rdfjs.NamedNode<"http://openai.com/">;
+  /**
+   * has label
+   */
+  readonly label: string;
+  readonly type = "LanguageModelCreator";
+
+  constructor(parameters: {
+    readonly identifier:
+      | "http://openai.com/"
+      | rdfjs.NamedNode<"http://openai.com/">;
+    readonly label: string;
+  }) {
+    if (typeof parameters.identifier === "object") {
+      this.identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this.identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this.identifier = parameters.identifier as never;
+    }
+
+    this.label = parameters.label;
+  }
+
+  equals(other: LanguageModelCreator): EqualsResult {
+    return booleanEquals(this.identifier, other.identifier)
+      .mapLeft((propertyValuesUnequal) => ({
+        left: this,
+        right: other,
+        propertyName: "identifier",
+        propertyValuesUnequal,
+        type: "Property" as const,
+      }))
+      .chain(() =>
+        strictEquals(this.label, other.label).mapLeft(
+          (propertyValuesUnequal) => ({
+            left: this,
+            right: other,
+            propertyName: "label",
+            propertyValuesUnequal,
+            type: "Property" as const,
+          }),
+        ),
+      )
+      .chain(() =>
+        strictEquals(this.type, other.type).mapLeft(
+          (propertyValuesUnequal) => ({
+            left: this,
+            right: other,
+            propertyName: "type",
+            propertyValuesUnequal,
+            type: "Property" as const,
+          }),
+        ),
+      );
+  }
+
+  hash<
+    HasherT extends {
+      update: (message: string | number[] | ArrayBuffer | Uint8Array) => void;
+    },
+  >(_hasher: HasherT): HasherT {
+    _hasher.update(this.label);
+    return _hasher;
+  }
+
+  toJson(): {
+    readonly "@id": string;
+    readonly label: string;
+    readonly type: "LanguageModelCreator";
+  } {
+    return JSON.parse(
+      JSON.stringify({
+        "@id": this.identifier.value,
+        label: this.label,
+        type: this.type,
+      } satisfies ReturnType<LanguageModelCreator["toJson"]>),
+    );
+  }
+
+  toRdf({
+    ignoreRdfType,
+    mutateGraph,
+    resourceSet,
+  }: {
+    ignoreRdfType?: boolean;
+    mutateGraph: rdfjsResource.MutableResource.MutateGraph;
+    resourceSet: rdfjsResource.MutableResourceSet;
+  }): rdfjsResource.MutableResource<rdfjs.NamedNode> {
+    const _resource = resourceSet.mutableNamedResource({
+      identifier: this.identifier,
+      mutateGraph,
+    });
+    if (!ignoreRdfType) {
+      _resource.add(
+        _resource.dataFactory.namedNode(
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        ),
+        _resource.dataFactory.namedNode(
+          "http://purl.archive.org/purl/knextract/ontology#LanguageModelCreator",
+        ),
+      );
+    }
+
+    _resource.add(
+      dataFactory.namedNode("http://www.w3.org/2000/01/rdf-schema#label"),
+      this.label,
+    );
+    return _resource;
+  }
+
+  toString(): string {
+    return JSON.stringify(this.toJson());
+  }
+}
+
+export namespace LanguageModelCreator {
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
+    zod.ZodError,
+    { identifier: rdfjs.NamedNode<"http://openai.com/">; label: string }
+  > {
+    const _jsonSafeParseResult = jsonZodSchema().safeParse(_json);
+    if (!_jsonSafeParseResult.success) {
+      return purify.Left(_jsonSafeParseResult.error);
+    }
+
+    const _jsonObject = _jsonSafeParseResult.data;
+    const identifier = dataFactory.namedNode(_jsonObject["@id"]);
+    const label = _jsonObject["label"];
+    return purify.Either.of({ identifier, label });
+  }
+
+  export function fromJson(
+    json: unknown,
+  ): purify.Either<zod.ZodError, LanguageModelCreator> {
+    return LanguageModelCreator.propertiesFromJson(json).map(
+      (properties) => new LanguageModelCreator(properties),
+    );
+  }
+
+  export function propertiesFromRdf({
+    ignoreRdfType: _ignoreRdfType,
+    languageIn: _languageIn,
+    resource: _resource,
+    // @ts-ignore
+    ..._context
+  }: {
+    [_index: string]: any;
+    ignoreRdfType?: boolean;
+    languageIn?: readonly string[];
+    resource: rdfjsResource.Resource<rdfjs.NamedNode>;
+  }): purify.Either<
+    rdfjsResource.Resource.ValueError,
+    { identifier: rdfjs.NamedNode<"http://openai.com/">; label: string }
+  > {
+    if (
+      !_ignoreRdfType &&
+      !_resource.isInstanceOf(
+        dataFactory.namedNode(
+          "http://purl.archive.org/purl/knextract/ontology#LanguageModelCreator",
+        ),
+      )
+    ) {
+      return purify.Left(
+        new rdfjsResource.Resource.ValueError({
+          focusResource: _resource,
+          message: `${rdfjsResource.Resource.Identifier.toString(_resource.identifier)} has unexpected RDF type`,
+          predicate: dataFactory.namedNode(
+            "http://purl.archive.org/purl/knextract/ontology#LanguageModelCreator",
+          ),
+        }),
+      );
+    }
+
+    let identifier: rdfjs.NamedNode<"http://openai.com/">;
+    switch (_resource.identifier.value) {
+      case "http://openai.com/":
+        identifier = dataFactory.namedNode("http://openai.com/");
+        break;
+      default:
+        return purify.Left(
+          new rdfjsResource.Resource.MistypedValueError({
+            actualValue: _resource.identifier,
+            expectedValueType: 'rdfjs.NamedNode<"http://openai.com/">',
+            focusResource: _resource,
+            predicate: dataFactory.namedNode(
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#subject",
+            ),
+          }),
+        );
+    }
+
+    const _labelEither: purify.Either<
+      rdfjsResource.Resource.ValueError,
+      string
+    > = _resource
+      .values(
+        dataFactory.namedNode("http://www.w3.org/2000/01/rdf-schema#label"),
+        { unique: true },
+      )
+      .head()
+      .chain((_value) => _value.toString());
+    if (_labelEither.isLeft()) {
+      return _labelEither;
+    }
+
+    const label = _labelEither.unsafeCoerce();
+    return purify.Either.of({ identifier, label });
+  }
+
+  export function fromRdf(
+    parameters: Parameters<typeof LanguageModelCreator.propertiesFromRdf>[0],
+  ): purify.Either<rdfjsResource.Resource.ValueError, LanguageModelCreator> {
+    return LanguageModelCreator.propertiesFromRdf(parameters).map(
+      (properties) => new LanguageModelCreator(properties),
+    );
+  }
+
+  export const fromRdfType: rdfjs.NamedNode<string> = dataFactory.namedNode(
+    "http://purl.archive.org/purl/knextract/ontology#LanguageModelCreator",
+  );
+
+  export function jsonSchema() {
+    return zodToJsonSchema(jsonZodSchema());
+  }
+
+  export function jsonUiSchema(parameters?: { scopePrefix?: string }) {
+    const scopePrefix = parameters?.scopePrefix ?? "#";
+    return {
+      elements: [
+        {
+          label: "Identifier",
+          scope: `${scopePrefix}/properties/@id`,
+          type: "Control",
+        },
+        {
+          label: "has label",
+          scope: `${scopePrefix}/properties/label`,
+          type: "Control",
+        },
+        {
+          rule: {
+            condition: {
+              schema: { const: "LanguageModelCreator" },
+              scope: `${scopePrefix}/properties/type`,
+            },
+            effect: "HIDE",
+          },
+          scope: `${scopePrefix}/properties/type`,
+          type: "Control",
+        },
+      ],
+      label: "LanguageModelCreator",
+      type: "Group",
+    };
+  }
+
+  export function jsonZodSchema() {
+    return zod.object({
+      "@id": zod.enum(["http://openai.com/"]),
+      label: zod.string(),
+      type: zod.literal("LanguageModelCreator"),
+    });
+  }
+
+  export function sparqlConstructQuery(
+    parameters?: {
+      ignoreRdfType?: boolean;
+      prefixes?: { [prefix: string]: string };
+      subject?: sparqljs.Triple["subject"];
+    } & Omit<sparqljs.ConstructQuery, "prefixes" | "queryType" | "type">,
+  ): sparqljs.ConstructQuery {
+    const { ignoreRdfType, subject, ...queryParameters } = parameters ?? {};
+
+    return {
+      ...queryParameters,
+      prefixes: parameters?.prefixes ?? {},
+      queryType: "CONSTRUCT",
+      template: (queryParameters.template ?? []).concat(
+        LanguageModelCreator.sparqlConstructTemplateTriples({
+          ignoreRdfType,
+          subject,
+        }),
+      ),
+      type: "query",
+      where: (queryParameters.where ?? []).concat(
+        LanguageModelCreator.sparqlWherePatterns({ ignoreRdfType, subject }),
+      ),
+    };
+  }
+
+  export function sparqlConstructQueryString(
+    parameters?: {
+      ignoreRdfType?: boolean;
+      subject?: sparqljs.Triple["subject"];
+      variablePrefix?: string;
+    } & Omit<sparqljs.ConstructQuery, "prefixes" | "queryType" | "type"> &
+      sparqljs.GeneratorOptions,
+  ): string {
+    return new sparqljs.Generator(parameters).stringify(
+      LanguageModelCreator.sparqlConstructQuery(parameters),
+    );
+  }
+
+  export function sparqlConstructTemplateTriples(parameters?: {
+    ignoreRdfType?: boolean;
+    subject?: sparqljs.Triple["subject"];
+    variablePrefix?: string;
+  }): readonly sparqljs.Triple[] {
+    const subject =
+      parameters?.subject ?? dataFactory.variable!("languageModelCreator");
+    const variablePrefix =
+      parameters?.variablePrefix ??
+      (subject.termType === "Variable"
+        ? subject.value
+        : "languageModelCreator");
+    return [
+      ...(parameters?.ignoreRdfType
+        ? []
+        : [
+            {
+              subject,
+              predicate: dataFactory.namedNode(
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              ),
+              object: dataFactory.variable!(`${variablePrefix}RdfType`),
+            },
+          ]),
+      {
+        object: dataFactory.variable!(`${variablePrefix}Label`),
+        predicate: dataFactory.namedNode(
+          "http://www.w3.org/2000/01/rdf-schema#label",
+        ),
+        subject,
+      },
+    ];
+  }
+
+  export function sparqlWherePatterns(parameters: {
+    ignoreRdfType?: boolean;
+    subject?: sparqljs.Triple["subject"];
+    variablePrefix?: string;
+  }): readonly sparqljs.Pattern[] {
+    const subject =
+      parameters?.subject ?? dataFactory.variable!("languageModelCreator");
+    const variablePrefix =
+      parameters?.variablePrefix ??
+      (subject.termType === "Variable"
+        ? subject.value
+        : "languageModelCreator");
+    return [
+      ...(parameters?.ignoreRdfType
+        ? []
+        : [
+            {
+              triples: [
+                {
+                  subject,
+                  predicate: dataFactory.namedNode(
+                    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                  ),
+                  object: dataFactory.namedNode(
+                    "http://purl.archive.org/purl/knextract/ontology#LanguageModelCreator",
+                  ),
+                },
+              ],
+              type: "bgp" as const,
+            },
+            {
+              triples: [
+                {
+                  subject,
+                  predicate: dataFactory.namedNode(
+                    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                  ),
+                  object: dataFactory.variable!(`${variablePrefix}RdfType`),
+                },
+              ],
+              type: "bgp" as const,
+            },
+          ]),
       {
         triples: [
           {
@@ -28605,7 +29342,7 @@ export class PromptMessageTemplate extends InformationContentEntity {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly inputValues?: readonly PromptInputValue[];
       readonly literalForm: string;
       readonly role?:
@@ -28620,7 +29357,14 @@ export class PromptMessageTemplate extends InformationContentEntity {
     } & ConstructorParameters<typeof InformationContentEntity>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     if (typeof parameters.inputValues === "undefined") {
       this.inputValues = [];
     } else if (Array.isArray(parameters.inputValues)) {
@@ -29301,12 +30045,19 @@ export class Instruction extends InformationContentEntity {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly promptMessage: PromptMessage | PromptMessageTemplate;
     } & ConstructorParameters<typeof InformationContentEntity>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.promptMessage = parameters.promptMessage;
   }
 
@@ -29832,12 +30583,19 @@ export class Exception extends InformationContentEntity {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly message: string;
     } & ConstructorParameters<typeof InformationContentEntity>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.message = parameters.message;
   }
 
@@ -30212,7 +30970,7 @@ export class DocumentStub {
 
   constructor(parameters: {
     readonly deleted?: boolean;
-    readonly identifier: rdfjs.NamedNode;
+    readonly identifier: rdfjs.NamedNode | string;
     readonly title?: DocumentTitle | purify.Maybe<DocumentTitle>;
   }) {
     if (typeof parameters.deleted === "boolean") {
@@ -30223,7 +30981,14 @@ export class DocumentStub {
       this.deleted = parameters.deleted as never;
     }
 
-    this.identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this.identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this.identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this.identifier = parameters.identifier as never;
+    }
+
     if (purify.Maybe.isMaybe(parameters.title)) {
       this.title = parameters.title;
     } else if (
@@ -30722,12 +31487,18 @@ export class DocumentDeletionInput extends ProcessInput {
   constructor(
     parameters: {
       readonly document: DocumentStub;
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
     } & ConstructorParameters<typeof ProcessInput>[0],
   ) {
     super(parameters);
     this.document = parameters.document;
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
   }
 
   override get identifier(): rdfjs.NamedNode {
@@ -31132,12 +31903,19 @@ export class DocumentDeletion extends Process {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly input: DocumentDeletionInput;
     } & ConstructorParameters<typeof Process>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.input = parameters.input;
   }
 
@@ -31552,7 +32330,7 @@ export class TextualEntity extends InformationContentEntity {
             | "http://purl.archive.org/purl/knextract/cbox#_EncodingType_TextHtml"
             | "http://purl.archive.org/purl/knextract/cbox#_EncodingType_TextPlain"
           >;
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly literalForm: string;
     } & ConstructorParameters<typeof InformationContentEntity>[0],
   ) {
@@ -31565,7 +32343,14 @@ export class TextualEntity extends InformationContentEntity {
       this.encodingType = parameters.encodingType as never;
     }
 
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.literalForm = parameters.literalForm;
   }
 
@@ -32081,7 +32866,7 @@ export class DocumentTitle extends TextualEntity {
   // biome-ignore lint/complexity/noUselessConstructor: Always have a constructor
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
     } & ConstructorParameters<typeof TextualEntity>[0],
   ) {
     super(parameters);
@@ -32377,14 +33162,21 @@ export class Image extends InformationContentEntity {
   constructor(
     parameters: {
       readonly heightPx: number;
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly url: string;
       readonly widthPx: number;
     } & ConstructorParameters<typeof InformationContentEntity>[0],
   ) {
     super(parameters);
     this.heightPx = parameters.heightPx;
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.url = parameters.url;
     this.widthPx = parameters.widthPx;
   }
@@ -32887,7 +33679,7 @@ export class Document extends InformationContentEntity {
   constructor(
     parameters: {
       readonly deleted?: boolean;
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly images?: readonly Image[];
       readonly memberOfCorpus: CorpusStub;
       readonly mutable?: boolean;
@@ -32905,7 +33697,14 @@ export class Document extends InformationContentEntity {
       this.deleted = parameters.deleted as never;
     }
 
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     if (typeof parameters.images === "undefined") {
       this.images = [];
     } else if (Array.isArray(parameters.images)) {
@@ -33916,7 +34715,7 @@ export class DichotomousQuestion extends BaseQuestion {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly noLabel?:
         | rdfjs.Literal
         | Date
@@ -33934,7 +34733,14 @@ export class DichotomousQuestion extends BaseQuestion {
     } & ConstructorParameters<typeof BaseQuestion>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     if (purify.Maybe.isMaybe(parameters.noLabel)) {
       this.noLabel = parameters.noLabel;
     } else if (typeof parameters.noLabel === "boolean") {
@@ -34536,7 +35342,7 @@ export class CorpusStub {
 
   constructor(parameters: {
     readonly deleted?: boolean;
-    readonly identifier: rdfjs.NamedNode;
+    readonly identifier: rdfjs.NamedNode | string;
     readonly label?: purify.Maybe<string> | string;
   }) {
     if (typeof parameters.deleted === "boolean") {
@@ -34547,7 +35353,14 @@ export class CorpusStub {
       this.deleted = parameters.deleted as never;
     }
 
-    this.identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this.identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this.identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this.identifier = parameters.identifier as never;
+    }
+
     if (purify.Maybe.isMaybe(parameters.label)) {
       this.label = parameters.label;
     } else if (typeof parameters.label === "string") {
@@ -35016,12 +35829,18 @@ export class CorpusDeletionInput extends ProcessInput {
   constructor(
     parameters: {
       readonly corpus: CorpusStub;
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
     } & ConstructorParameters<typeof ProcessInput>[0],
   ) {
     super(parameters);
     this.corpus = parameters.corpus;
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
   }
 
   override get identifier(): rdfjs.NamedNode {
@@ -35417,12 +36236,19 @@ export class CorpusDeletion extends Process {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly input: CorpusDeletionInput;
     } & ConstructorParameters<typeof Process>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.input = parameters.input;
   }
 
@@ -35831,7 +36657,7 @@ export class Corpus extends InformationContentEntity {
   constructor(
     parameters: {
       readonly deleted?: boolean;
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly label: string;
       readonly mutable?: boolean;
     } & ConstructorParameters<typeof InformationContentEntity>[0],
@@ -35845,7 +36671,14 @@ export class Corpus extends InformationContentEntity {
       this.deleted = parameters.deleted as never;
     }
 
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.label = parameters.label;
     if (typeof parameters.mutable === "boolean") {
       this.mutable = parameters.mutable;
@@ -36924,11 +37757,17 @@ export class NarrowerTransitiveConceptSelector extends BaseFocusConceptSelector 
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
     } & ConstructorParameters<typeof BaseFocusConceptSelector>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
   }
 
   override get identifier(): rdfjs.NamedNode {
@@ -37237,11 +38076,17 @@ export class NarrowerConceptSelector extends BaseFocusConceptSelector {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
     } & ConstructorParameters<typeof BaseFocusConceptSelector>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
   }
 
   override get identifier(): rdfjs.NamedNode {
@@ -37542,12 +38387,18 @@ export class EnumeratedConceptSelector extends BaseConceptSelector {
   constructor(
     parameters: {
       readonly concepts: readonly ConceptStub[];
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
     } & ConstructorParameters<typeof BaseConceptSelector>[0],
   ) {
     super(parameters);
     this.concepts = parameters.concepts;
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
   }
 
   override get identifier(): rdfjs.NamedNode {
@@ -38481,11 +39332,17 @@ export class ConceptSchemeTopConceptSelector extends BaseConceptSchemeConceptSel
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
     } & ConstructorParameters<typeof BaseConceptSchemeConceptSelector>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
   }
 
   override get identifier(): rdfjs.NamedNode {
@@ -38794,11 +39651,17 @@ export class ConceptSchemeConceptSelector extends BaseConceptSchemeConceptSelect
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
     } & ConstructorParameters<typeof BaseConceptSchemeConceptSelector>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
   }
 
   override get identifier(): rdfjs.NamedNode {
@@ -39123,7 +39986,7 @@ export class PromptMessage extends InformationContentEntity {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly literalForm: string;
       readonly role?:
         | "http://purl.archive.org/purl/knextract/cbox#_Role_AI"
@@ -39137,7 +40000,14 @@ export class PromptMessage extends InformationContentEntity {
     } & ConstructorParameters<typeof InformationContentEntity>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.literalForm = parameters.literalForm;
     if (typeof parameters.role === "undefined") {
       this.role = dataFactory.namedNode(
@@ -39694,7 +40564,7 @@ export class CompletionMessage extends PromptMessage {
   // biome-ignore lint/complexity/noUselessConstructor: Always have a constructor
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
     } & ConstructorParameters<typeof PromptMessage>[0],
   ) {
     super(parameters);
@@ -39989,7 +40859,7 @@ export class ClaimProperty {
 
   constructor(parameters: {
     readonly comments?: readonly rdfjs.Literal[];
-    readonly identifier: rdfjs.NamedNode;
+    readonly identifier: rdfjs.NamedNode | string;
     readonly labels?: readonly rdfjs.Literal[];
   }) {
     if (typeof parameters.comments === "undefined") {
@@ -40000,7 +40870,14 @@ export class ClaimProperty {
       this.comments = parameters.comments as never;
     }
 
-    this.identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this.identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this.identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this.identifier = parameters.identifier as never;
+    }
+
     if (typeof parameters.labels === "undefined") {
       this.labels = [];
     } else if (Array.isArray(parameters.labels)) {
@@ -40553,10 +41430,10 @@ export class Claim extends InformationContentEntity {
   constructor(
     parameters: {
       readonly gold?: boolean;
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly object: Value;
-      readonly predicate: rdfjs.NamedNode;
-      readonly subject: rdfjs.NamedNode;
+      readonly predicate: rdfjs.NamedNode | string;
+      readonly subject: rdfjs.NamedNode | string;
     } & ConstructorParameters<typeof InformationContentEntity>[0],
   ) {
     super(parameters);
@@ -40568,10 +41445,30 @@ export class Claim extends InformationContentEntity {
       this.gold = parameters.gold as never;
     }
 
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.object = parameters.object;
-    this.predicate = parameters.predicate;
-    this.subject = parameters.subject;
+    if (typeof parameters.predicate === "object") {
+      this.predicate = parameters.predicate;
+    } else if (typeof parameters.predicate === "string") {
+      this.predicate = dataFactory.namedNode(parameters.predicate);
+    } else {
+      this.predicate = parameters.predicate as never;
+    }
+
+    if (typeof parameters.subject === "object") {
+      this.subject = parameters.subject;
+    } else if (typeof parameters.subject === "string") {
+      this.subject = dataFactory.namedNode(parameters.subject);
+    } else {
+      this.subject = parameters.subject as never;
+    }
   }
 
   override get identifier(): rdfjs.NamedNode {
@@ -41184,12 +42081,19 @@ export class CategoricalValue extends BaseValue {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly value: ConceptStub;
     } & ConstructorParameters<typeof BaseValue>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.value = parameters.value;
   }
 
@@ -41587,9 +42491,9 @@ export class CategoricalQuestion extends BaseQuestion {
 
   constructor(
     parameters: {
-      readonly class_?: rdfjs.NamedNode;
+      readonly class_?: rdfjs.NamedNode | string;
       readonly conceptSelector: ConceptSelector;
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
     } & ConstructorParameters<typeof BaseQuestion>[0],
   ) {
     super(parameters);
@@ -41599,12 +42503,20 @@ export class CategoricalQuestion extends BaseQuestion {
       );
     } else if (typeof parameters.class_ === "object") {
       this.class_ = parameters.class_;
+    } else if (typeof parameters.class_ === "string") {
+      this.class_ = dataFactory.namedNode(parameters.class_);
     } else {
       this.class_ = parameters.class_ as never;
     }
 
     this.conceptSelector = parameters.conceptSelector;
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
   }
 
   override get identifier(): rdfjs.NamedNode {
@@ -42100,12 +43012,19 @@ export class BooleanValue extends BaseValue {
 
   constructor(
     parameters: {
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
       readonly value: boolean;
     } & ConstructorParameters<typeof BaseValue>[0],
   ) {
     super(parameters);
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
     this.value = parameters.value;
   }
 
@@ -42475,11 +43394,19 @@ export interface ConceptStub extends KosResourceStub {
 
 export namespace ConceptStub {
   export function create(
-    parameters: { readonly identifier: rdfjs.NamedNode } & Parameters<
+    parameters: { readonly identifier: rdfjs.NamedNode | string } & Parameters<
       typeof KosResourceStub.create
     >[0],
   ): ConceptStub {
-    const identifier = parameters.identifier;
+    let identifier: rdfjs.NamedNode;
+    if (typeof parameters.identifier === "object") {
+      identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      identifier = parameters.identifier as never;
+    }
+
     const type = "ConceptStub" as const;
     return { ...KosResourceStub.create(parameters), identifier, type };
   }
@@ -42773,11 +43700,19 @@ export interface ConceptSchemeStub extends KosResourceStub {
 
 export namespace ConceptSchemeStub {
   export function create(
-    parameters: { readonly identifier: rdfjs.NamedNode } & Parameters<
+    parameters: { readonly identifier: rdfjs.NamedNode | string } & Parameters<
       typeof KosResourceStub.create
     >[0],
   ): ConceptSchemeStub {
-    const identifier = parameters.identifier;
+    let identifier: rdfjs.NamedNode;
+    if (typeof parameters.identifier === "object") {
+      identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      identifier = parameters.identifier as never;
+    }
+
     const type = "ConceptSchemeStub" as const;
     return { ...KosResourceStub.create(parameters), identifier, type };
   }
@@ -43083,12 +44018,18 @@ export class Answer extends InformationContentEntity {
   constructor(
     parameters: {
       readonly claims: readonly Claim[];
-      readonly identifier?: rdfjs.NamedNode;
+      readonly identifier?: rdfjs.NamedNode | string;
     } & ConstructorParameters<typeof InformationContentEntity>[0],
   ) {
     super(parameters);
     this.claims = parameters.claims;
-    this._identifier = parameters.identifier;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
   }
 
   override get identifier(): rdfjs.NamedNode {

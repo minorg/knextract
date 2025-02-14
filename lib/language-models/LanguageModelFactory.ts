@@ -23,8 +23,8 @@ export class LanguageModelFactory {
     if (this.credentials.openai) {
       // Use the model with the largest context window
       availableSpecifications = this.specifications.filter((specification) => {
-        switch (specification.family.creator.value) {
-          case "https://openai.com/":
+        switch (specification.family.creator.identifier.value) {
+          case "http://openai.com/":
             return true;
         }
       });
@@ -49,8 +49,8 @@ export class LanguageModelFactory {
   createLanguageModelFromSpecification(
     specification: LanguageModelSpecification,
   ): Either<Error, LanguageModel> {
-    switch (specification.family.creator.value) {
-      case "https://openai.com/": {
+    switch (specification.family.creator.identifier.value) {
+      case "http://openai.com/": {
         if (!this.credentials.openai) {
           return Left(new Error("no OpenAI credentials available"));
         }
@@ -64,7 +64,7 @@ export class LanguageModelFactory {
       default:
         return Left(
           new RangeError(
-            `unrecognized language model creator: ${specification.family.creator.value}`,
+            `unrecognized language model creator: ${specification.family.creator.identifier.value}`,
           ),
         );
     }
