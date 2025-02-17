@@ -18,7 +18,6 @@ export function PromptTemplateViewer({
           return (
             <TableRow key={messageI}>
               <TableCell>
-                {" "}
                 <PromptMessageRoleLabel
                   promptMessageRole={messageTemplate.role}
                 />

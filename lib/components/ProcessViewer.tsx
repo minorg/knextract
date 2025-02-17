@@ -28,36 +28,26 @@ function renderSections(sections: readonly SectionProps[]) {
   );
 }
 
-export async function ProcessViewer<InputT, OutputT, SubProcessesT>({
+export async function ProcessViewer<ProcessT extends Process>({
   process,
   renderInput,
   renderOutput,
   renderSubProcesses,
 }: {
-  process: Process<InputT, OutputT, SubProcessesT>;
-  renderInput: (input: InputT) => Promise<readonly SectionProps[]>;
-  renderOutput: (output: OutputT) => Promise<readonly SectionProps[]>;
-  renderSubProcesses: (
-    subProcesses: SubProcessesT,
-  ) => Promise<readonly SectionProps[]>;
+  process: ProcessT;
+  renderInput: (process: ProcessT) => Promise<readonly SectionProps[]>;
+  renderOutput: (process: ProcessT) => Promise<readonly SectionProps[]>;
+  renderSubProcesses: (process: ProcessT) => Promise<readonly SectionProps[]>;
 }) {
   const translations = await getTranslations("ProcessViewer");
 
-  const outputSections = await process.output
-    .map(async (output) => await renderOutput(output))
-    .mapLeft(async (exception) => [
-      {
-        title: translations("Exception"),
-        content: <span>{exception.message}</span>,
-      } as SectionProps,
-    ])
-    .extract();
-  const subProcessSections = await renderSubProcesses(process.subProcesses);
+  const outputSections = await renderOutput(process);
+  const subProcessSections = await renderSubProcesses(process);
 
   return (
     <div className="flex flex-col ps-2">
       <Section title={translations("Input")}>
-        {renderSections(await renderInput(process.input))}
+        {renderSections(await renderInput(process))}
       </Section>
       {outputSections.length > 0 ? (
         <Section title={translations("Output")}>

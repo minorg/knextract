@@ -1,17 +1,10 @@
 import { ClientProvidersServer } from "@/lib/components/ClientProvidersServer";
-import { ConceptAnnotatorParametersViewer } from "@/lib/components/ConceptAnnotatorParametersViewer";
 import { ConceptSelectorViewer } from "@/lib/components/ConceptSelectorViewer";
 import { ConceptsDataTable } from "@/lib/components/ConceptsDataTable";
 import { DocumentAnnotationsDataTable } from "@/lib/components/DocumentAnnotationsDataTable";
 import { ProcessViewer } from "@/lib/components/ProcessViewer";
 import { PromptTemplateViewer } from "@/lib/components/PromptTemplateViewer";
 import { PromptViewer } from "@/lib/components/PromptViewer";
-import {
-  Annotation,
-  ConceptAnnotatorExecution,
-  LanguageModelConceptAnnotatorExecution,
-} from "@/lib/models";
-import { json } from "@/lib/models/impl";
 import { getTranslations } from "next-intl/server";
 import React from "react";
 
@@ -169,7 +162,7 @@ async function PromptConstructionViewer({
   );
 }
 
-export async function ConceptAnnotatorExecutionViewer({
+export async function QuestionnaireAdministration({
   conceptAnnotatorExecution,
 }: {
   conceptAnnotatorExecution: ConceptAnnotatorExecution;

@@ -30,8 +30,12 @@ export async function WorkflowViewer({
         <Section title={translations("Executions")}>
           <ClientProvidersServer>
             <WorkflowExecutionsDataTable
-              workflowExecutions={executions.concat()}
-              workflowIdentifier={Identifier.toString(workflow.identifier)}
+              workflow={{
+                identifier: Identifier.toString(workflow.identifier),
+              }}
+              workflowExecutions={executions.map((execution) =>
+                execution.toJson(),
+              )}
             />
           </ClientProvidersServer>
         </Section>

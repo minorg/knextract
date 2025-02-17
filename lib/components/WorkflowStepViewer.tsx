@@ -1,8 +1,8 @@
-import { ConceptAnnotatorParametersViewer } from "@/lib/components/ConceptAnnotatorParametersViewer";
 import { ConceptSelectorViewer } from "@/lib/components/ConceptSelectorViewer";
+import { ConceptAnnotatorParametersViewer } from "@/lib/components/LanguageModelSpecificationViewer";
 import { Section } from "@/lib/components/Section";
 import { WorkflowStepsViewer } from "@/lib/components/WorkflowStepsViewer";
-import { Workflow } from "@/lib/models";
+import { WorkflowStep } from "@/lib/models";
 import { getTranslations } from "next-intl/server";
 import React, { ReactElement } from "react";
 
@@ -17,22 +17,8 @@ export async function WorkflowStepViewer({
 
   const parts: ReactElement[] = [];
 
-  parts.push(
-    <span className="text-sm" key={parts.length}>
-      <b>{translations("Priority")}</b>: {step.priority}
-    </span>,
-  );
-
   switch (step.type) {
-    case "WorkflowConceptAnnotatorStep": {
-      if (step.recursive) {
-        parts.push(
-          <span className="text-sm" key={parts.length}>
-            <b>{translations("Recursive")}</b>
-          </span>,
-        );
-      }
-
+    case "WorkflowQuestionnaireStep": {
       parts.push(
         <ConceptAnnotatorParametersViewer
           conceptAnnotatorParameters={step.conceptAnnotatorParameters}
@@ -48,18 +34,6 @@ export async function WorkflowStepViewer({
 
       break;
     }
-    case "WorkflowSuperStep":
-      break;
-  }
-
-  if (includeSubSteps && step.subSteps.length > 0) {
-    parts.push(
-      <WorkflowStepsViewer
-        includeSubSteps={includeSubSteps}
-        steps={step.subSteps}
-        key={parts.length}
-      />,
-    );
   }
 
   return <div className="flex flex-col gap-4">{parts}</div>;

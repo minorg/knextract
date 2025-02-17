@@ -25,28 +25,6 @@
     "Type": "Type",
     "Workflow execution": "Workflow execution"
   },
-  "CompletionMessageProcessingViewer": {
-    "Annotations": "Annotations",
-    "Completion message": "Completion message"
-  },
-  "ConceptAnnotatorExecutionViewer": {
-    "Annotations": "Annotations",
-    "Completion message processing": "Completion message processing",
-    "Concept annotator execution": "Concept annotator execution",
-    "Concept annotator parameters": "Concept annotator parameters",
-    "Concept selection": "Concept selection",
-    "Concept selector": "Concept selector",
-    "Language model invocation": "Language model invocation",
-    "Prompt construction": "Prompt construction"
-  },
-  "ConceptAnnotatorParametersViewer": {
-    "Annotator": "Annotator",
-    "Concept annotator parameters": "Concept annotator parameters",
-    "Default": "Default",
-    "Language model": "Language model",
-    "Missing language model": "Missing language model",
-    "Prompt template": "Prompt template"
-  },
   "ConceptPage": {
     "Concept": "Concept",
     "In schemes": "In schemes",
@@ -245,6 +223,22 @@
     "AI": "AI",
     "Human": "Human",
     "System": "System"
+  },
+  "QuestionAdministrationViewer": {},
+  "QuestionnaireAdministrationViewer": {},
+  "QuestionnaireViewer": {
+    "Instructions": "Instructions"
+  },
+  "QuestionViewer": {
+    "Categorical question": "Categorical question",
+    "Concept selector": "Concept selector",
+    "Dichotomous question": "Dichotomous question",
+    "No label": "No label",
+    "Path": "Path",
+    "Prompt template": "Prompt template",
+    "Real-valued question": "Real-valued question",
+    "Text question": "Text question",
+    "Yes label": "Yes label"
   },
   "SemanticRelationTypes": {
     "http://www_w3_org/2004/02/skos/core#broader": "Broader concepts",

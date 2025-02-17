@@ -1,32 +1,29 @@
 "use client";
 
 import { useHrefs } from "@/lib/hooks";
-import { json } from "@/lib/models/impl";
+import { ConceptSchemeStub, kosLabels } from "@/lib/models";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
 import { DataTable } from "./DataTable";
 import { Link } from "./Link";
 
-const columnHelper = createColumnHelper<json.ConceptScheme>();
+const columnHelper = createColumnHelper<ConceptSchemeStub>();
 
-export function ConceptSchemesDataTable({
-  conceptSchemes,
-}: {
-  conceptSchemes: json.ConceptScheme[];
+export function ConceptSchemesDataTable(json: {
+  conceptSchemes: ReturnType<typeof ConceptSchemeStub.toJson>[];
 }) {
   const hrefs = useHrefs();
   const translations = useTranslations("ConceptSchemesDataTable");
 
-  const columns: ColumnDef<json.ConceptScheme, any>[] = [
-    columnHelper.accessor("identifier", {}),
-    columnHelper.accessor("displayLabel", {
+  const columns: ColumnDef<ConceptSchemeStub, any>[] = [
+    columnHelper.accessor("identifier", {
       cell: (context) => (
         <Link
           href={hrefs.conceptScheme({
             identifier: context.row.original.identifier,
           })}
         >
-          {context.row.original.displayLabel}
+          {kosLabels(context.row.original).display}
         </Link>
       ),
       enableSorting: true,
@@ -39,7 +36,9 @@ export function ConceptSchemesDataTable({
   return (
     <DataTable
       columns={columns}
-      data={conceptSchemes}
+      data={json.conceptSchemes.flatMap((json) =>
+        ConceptSchemeStub.fromJson(json).toMaybe().toList(),
+      )}
       excludeHeader={true}
       initialState={{
         columnVisibility: {

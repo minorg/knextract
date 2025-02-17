@@ -1,19 +1,18 @@
 "use server";
 
 import { project } from "@/app/project";
-import { UploadAction } from "@/lib/actions/UploadAction";
+import type { UploadAction } from "@/lib/actions/UploadAction";
 import { getHrefs } from "@/lib/getHrefs";
 import { logger } from "@/lib/logger";
 import {
-  Corpus,
   CorpusStub,
-  Document,
+  type Document,
   Exception,
   Identifier,
-  Locale,
+  type Locale,
 } from "@/lib/models";
 import { sha256 } from "js-sha256";
-import { Either } from "purify-ts";
+import type { Either } from "purify-ts";
 import { zfd } from "zod-form-data";
 
 const formDataSchema = zfd.formData({

@@ -186,7 +186,7 @@ function GroupedWorkflowExecutionEventsViewer({
   );
 }
 
-export function WorkflowExecutionEventsViewerjson(json: {
+export function WorkflowExecutionEventsViewer(json: {
   abortedWorkflowExecution: boolean;
   workflowExecutionEvents: readonly ReturnType<
     typeof WorkflowExecutionEvent.toJson
