@@ -64,7 +64,7 @@ function GroupedWorkflowExecutionEventsViewer({
                 {" "}
                 {displayLabel({
                   locale,
-                  model: groupedWorkflowExecutionEvents.pre.document,
+                  model: groupedWorkflowExecutionEvents.pre.payload.document,
                 })}
               </span>
             </div>

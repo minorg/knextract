@@ -1,41 +1,41 @@
 "use client";
 
 import { useHrefs } from "@/lib/hooks";
-import { json } from "@/lib/models/impl";
+import { Concept, ConceptStub, displayLabel, kosLabels } from "@/lib/models";
 import {
   ColumnDef,
   OnChangeFn,
   PaginationState,
   createColumnHelper,
 } from "@tanstack/react-table";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { DataTable } from "./DataTable";
 import { Link } from "./Link";
 
-const columnHelper = createColumnHelper<json.Concept>();
+const columnHelper = createColumnHelper<ConceptStub>();
 
 export function ConceptsDataTable({
   concepts,
   pagination,
   setPagination,
 }: {
-  concepts: json.Concept[];
+  concepts: readonly ReturnType<typeof ConceptStub.toJson>[];
   pagination: PaginationState;
   setPagination?: OnChangeFn<PaginationState>;
 }) {
   const hrefs = useHrefs();
+  const locale = useLocale();
   const translations = useTranslations("ConceptsDataTable");
 
-  const columns: ColumnDef<json.Concept, any>[] = [
-    columnHelper.accessor("identifier", {}),
-    columnHelper.accessor("displayLabel", {
+  const columns: ColumnDef<ConceptStub, any>[] = [
+    columnHelper.accessor("identifier", {
       cell: (context) => (
         <Link
           href={hrefs.concept({
             identifier: context.row.original.identifier,
           })}
         >
-          {context.row.original.displayLabel}
+          {displayLabel(context.row.original, { locale })}
         </Link>
       ),
       enableSorting: true,
@@ -48,7 +48,9 @@ export function ConceptsDataTable({
   return (
     <DataTable
       columns={columns}
-      data={concepts}
+      data={concepts.flatMap((json) =>
+        ConceptStub.fromJson(json).toMaybe().toList(),
+      )}
       initialState={{
         columnVisibility: {
           identifier: false,

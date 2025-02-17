@@ -15,7 +15,7 @@ export async function getCorpusDocuments({
   locale: Locale;
   offset: number;
 }): Promise<{
-  documents: ReturnType<DocumentStub["toJson"]>;
+  documents: readonly ReturnType<DocumentStub["toJson"]>[];
 }> {
   return {
     documents: (
@@ -33,7 +33,7 @@ export async function getCorpusDocuments({
     )
       .mapLeft((error) => {
         logger.warn("error getting documents: %s", error.message);
-        return [] as;
+        return [];
       })
       .map((documents) => documents.map((document) => document.toJson()))
       .extract(),

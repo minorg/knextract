@@ -5,14 +5,14 @@ import { DataTable } from "@/lib/components/DataTable";
 import { Link } from "@/lib/components/Link";
 import { LoadingSpinner } from "@/lib/components/ui/loading-spinner";
 import { useHrefs } from "@/lib/hooks";
-import { Concept, Locale, kosLabels } from "@/lib/models";
+import { ConceptStub, Locale, displayLabel, kosLabels } from "@/lib/models";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { useLocale, useTranslations } from "next-intl";
 import { parseAsInteger, useQueryStates } from "nuqs";
 import React from "react";
 
-const columnHelper = createColumnHelper<Concept>();
+const columnHelper = createColumnHelper<ConceptStub>();
 
 export function ConceptSchemeConceptsDataTable({
   conceptSchemeIdentifier,
@@ -54,7 +54,7 @@ export function ConceptSchemeConceptsDataTable({
     );
   }
 
-  const columns: ColumnDef<Concept, any>[] = [
+  const columns: ColumnDef<ConceptStub, any>[] = [
     columnHelper.accessor("identifier", {
       cell: (context) => (
         <Link
@@ -62,7 +62,7 @@ export function ConceptSchemeConceptsDataTable({
             identifier: context.row.original.identifier,
           })}
         >
-          {kosLabels(context.row.original).display}
+          {displayLabel(context.row.original, { locale })}
         </Link>
       ),
       enableColumnFilter: false,
@@ -76,7 +76,9 @@ export function ConceptSchemeConceptsDataTable({
   return (
     <DataTable
       columns={columns}
-      data={data.concepts}
+      data={data.concepts.flatMap((json) =>
+        ConceptStub.fromJson(json).toMaybe().toList(),
+      )}
       manualPagination
       pagination={pagination}
       rowCount={conceptsCount}

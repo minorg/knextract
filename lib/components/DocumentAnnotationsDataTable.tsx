@@ -3,7 +3,6 @@
 import { DataTable as DelegateDataTable } from "@/lib/components/DataTable";
 import { Link } from "@/lib/components/Link";
 import { useHrefs } from "@/lib/hooks";
-import { json } from "@/lib/models/impl";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { CircleCheck, CircleSlash, Info } from "lucide-react";
 import { useTranslations } from "next-intl";

@@ -1,32 +1,31 @@
 "use client";
 
 import { useHrefs } from "@/lib/hooks";
-import { json } from "@/lib/models/impl";
+import { Corpus, CorpusStub, displayLabel } from "@/lib/models";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { DataTable } from "./DataTable";
 import { Link } from "./Link";
 
-const columnHelper = createColumnHelper<json.Corpus>();
+const columnHelper = createColumnHelper<CorpusStub>();
 
-export function CorporaDataTable({
-  corpora,
-}: {
-  corpora: json.Corpus[];
+export function CorporaDataTable(json: {
+  corpora: readonly ReturnType<CorpusStub["toJson"]>[];
 }) {
   const hrefs = useHrefs();
+  const locale = useLocale();
   const translations = useTranslations("CorporaDataTable");
 
-  const columns: ColumnDef<json.Corpus, any>[] = [
-    columnHelper.accessor("displayLabel", {
+  const columns: ColumnDef<CorpusStub, any>[] = [
+    columnHelper.accessor("identifier", {
       cell: (context) => (
         <Link
           href={hrefs.corpus({
             identifier: context.row.original.identifier,
           })}
         >
-          {context.row.original.displayLabel}
+          {displayLabel(context.row.original, { locale })}
         </Link>
       ),
       header: () => translations("Label"),
@@ -35,10 +34,14 @@ export function CorporaDataTable({
 
   const data = useMemo(
     () =>
-      corpora.toSorted((left, right) =>
-        left.displayLabel.localeCompare(right.displayLabel),
-      ),
-    [corpora],
+      json.corpora
+        .flatMap((json) => CorpusStub.fromJson(json).toMaybe().toList())
+        .toSorted((left, right) =>
+          displayLabel(left, { locale }).localeCompare(
+            displayLabel(right, { locale }),
+          ),
+        ),
+    [json, locale],
   );
 
   return (

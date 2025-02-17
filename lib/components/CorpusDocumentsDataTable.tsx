@@ -3,8 +3,7 @@
 import { getCorpusDocuments } from "@/lib/actions/getCorpusDocuments";
 import { LoadingSpinner } from "@/lib/components/ui/loading-spinner";
 import { useHrefs } from "@/lib/hooks";
-import { Locale } from "@/lib/models";
-import { json } from "@/lib/models/impl";
+import { DocumentStub, Locale, displayLabel } from "@/lib/models";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { useLocale, useTranslations } from "next-intl";
@@ -13,7 +12,7 @@ import React from "react";
 import { DataTable } from "./DataTable";
 import { Link } from "./Link";
 
-const columnHelper = createColumnHelper<json.Document>();
+const columnHelper = createColumnHelper<DocumentStub>();
 
 export function CorpusDocumentsDataTable({
   corpusIdentifier,
@@ -54,15 +53,15 @@ export function CorpusDocumentsDataTable({
     );
   }
 
-  const columns: ColumnDef<json.Document, any>[] = [
-    columnHelper.accessor("displayLabel", {
+  const columns: ColumnDef<DocumentStub, any>[] = [
+    columnHelper.accessor("identifier", {
       cell: (context) => (
         <Link
           href={hrefs.document({
             identifier: context.row.original.identifier,
           })}
         >
-          {context.row.original.displayLabel}
+          {displayLabel(context.row.original, { locale })}
         </Link>
       ),
       enableColumnFilter: false,
@@ -74,7 +73,9 @@ export function CorpusDocumentsDataTable({
   return (
     <DataTable
       columns={columns}
-      data={data!.documents}
+      data={data!.documents.flatMap((json) =>
+        DocumentStub.fromJson(json).toMaybe().toList(),
+      )}
       enableRowSelection
       initialState={{
         columnVisibility: {

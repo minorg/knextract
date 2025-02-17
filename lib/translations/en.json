@@ -240,7 +240,7 @@
     "Text question": "Text question",
     "Yes label": "Yes label"
   },
-  "SemanticRelationTypes": {
+  "SemanticRelationProperties": {
     "http://www_w3_org/2004/02/skos/core#broader": "Broader concepts",
     "http://www_w3_org/2004/02/skos/core#broaderTransitive": "Broader concepts (transitive)",
     "http://www_w3_org/2004/02/skos/core#broadMatch": "Broad match concepts",

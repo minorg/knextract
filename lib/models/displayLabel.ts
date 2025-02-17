@@ -13,10 +13,7 @@ import {
   kosLabels,
 } from "@/lib/models";
 
-export function displayLabel({
-  model,
-}: {
-  locale: string;
+export function displayLabel(
   model:
     | Concept
     | ConceptScheme
@@ -27,8 +24,12 @@ export function displayLabel({
     | Document
     | DocumentStub
     | Workflow
-    | WorkflowStub;
-}): string {
+    | WorkflowStub,
+  // biome-ignore lint/correctness/noEmptyPattern: <explanation>
+  {}: {
+    locale: string;
+  },
+): string {
   switch (model.type) {
     case "Concept":
     case "ConceptScheme":

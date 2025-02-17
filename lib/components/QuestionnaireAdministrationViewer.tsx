@@ -32,14 +32,15 @@ export async function QuestionnaireAdministrationViewer({
       ]}
       renderOutput={async () => {
         if (questionnaireAdministration.output.type === "Exception") {
-            return [{
+          return [
+            {
               content: questionnaireAdministration.output.message,
               title: translations("Exception"),
-            }];
-          }
+            },
+          ];
+        }
 
-          return [{
-          }]
+        return [{}];
       }}
       // [
       //   {

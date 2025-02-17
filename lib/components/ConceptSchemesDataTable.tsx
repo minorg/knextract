@@ -1,18 +1,19 @@
 "use client";
 
 import { useHrefs } from "@/lib/hooks";
-import { ConceptSchemeStub, kosLabels } from "@/lib/models";
+import { ConceptSchemeStub, displayLabel, kosLabels } from "@/lib/models";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { DataTable } from "./DataTable";
 import { Link } from "./Link";
 
 const columnHelper = createColumnHelper<ConceptSchemeStub>();
 
 export function ConceptSchemesDataTable(json: {
-  conceptSchemes: ReturnType<typeof ConceptSchemeStub.toJson>[];
+  conceptSchemes: readonly ReturnType<typeof ConceptSchemeStub.toJson>[];
 }) {
   const hrefs = useHrefs();
+  const locale = useLocale();
   const translations = useTranslations("ConceptSchemesDataTable");
 
   const columns: ColumnDef<ConceptSchemeStub, any>[] = [
@@ -23,7 +24,7 @@ export function ConceptSchemesDataTable(json: {
             identifier: context.row.original.identifier,
           })}
         >
-          {kosLabels(context.row.original).display}
+          {displayLabel(context.row.original, { locale })}
         </Link>
       ),
       enableSorting: true,

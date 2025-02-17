@@ -7,21 +7,25 @@ import {
   Locale,
   WorkflowExecution,
   WorkflowStub,
-  kosLabels,
+  displayLabel,
 } from "@/lib/models";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 export class PageMetadata {
+  private readonly _locale: Locale;
   private readonly translations: Awaited<
     ReturnType<typeof getTranslations<"PageMetadata">>
   >;
 
   private constructor({
+    locale,
     translations,
   }: {
+    locale: Locale;
     translations: PageMetadata["translations"];
   }) {
+    this._locale = locale;
     this.translations = translations;
   }
 
@@ -78,6 +82,7 @@ export class PageMetadata {
 
   static async get({ locale }: { locale: Locale }) {
     return new PageMetadata({
+      locale,
       translations: await getTranslations({
         locale,
         namespace: "PageMetadata",
@@ -99,7 +104,7 @@ export class PageMetadata {
       title: titlePartsToString([
         this.locale.title! as string,
         this.translations("Concept"),
-        kosLabels(concept).display,
+        displayLabel(concept, { locale: this._locale }),
       ]),
     };
   }
@@ -109,7 +114,7 @@ export class PageMetadata {
       title: titlePartsToString([
         this.locale.title! as string,
         this.translations("Concept scheme"),
-        kosLabels(conceptScheme).display,
+        displayLabel(conceptScheme, { locale: this._locale }),
       ]),
     };
   }
