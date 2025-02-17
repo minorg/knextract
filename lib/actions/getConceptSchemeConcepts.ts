@@ -2,8 +2,7 @@
 
 import { project } from "@/app/project";
 import { logger } from "@/lib/logger";
-import { Identifier, Locale } from "@/lib/models";
-import { json } from "@/lib/models/impl";
+import { Concept, ConceptStub, Identifier, Locale } from "@/lib/models";
 
 export async function getConceptSchemeConcepts({
   conceptSchemeIdentifier,
@@ -16,30 +15,28 @@ export async function getConceptSchemeConcepts({
   limit: number;
   offset: number;
 }): Promise<{
-  concepts: json.Concept[];
+  concepts: readonly ReturnType<typeof ConceptStub.toJson>[];
 }> {
-  const modelSet = await project.modelSet({ locale });
-
-  const conceptScheme = (
-    await modelSet
-      .conceptScheme(Identifier.fromString(conceptSchemeIdentifier))
-      .resolve()
-  )
-    .toMaybe()
-    .extractNullable();
-  if (!conceptScheme) {
-    logger.warn("no such concept scheme: %s", conceptSchemeIdentifier);
-    return { concepts: [] };
-  }
-
-  const concepts: json.Concept[] = await Promise.all(
-    (await (await conceptScheme.concepts({ limit, offset })).resolve()).map(
-      (concept) =>
-        concept.map(json.Concept.clone).mapLeft(json.Concept.missing).extract(),
-    ),
-  );
-
   return {
-    concepts,
+    concepts: (
+      await (
+        await project.modelSet({ locale })
+      ).conceptStubs({
+        limit,
+        offset,
+        query: {
+          conceptSchemeIdentifier: Identifier.fromString(
+            conceptSchemeIdentifier,
+          ),
+          type: "InScheme",
+        },
+      })
+    )
+      .mapLeft((error) => {
+        logger.warn("error getting concepts: %s", error.message);
+        return [];
+      })
+      .map((conceptStubs) => conceptStubs.map(ConceptStub.toJson))
+      .extract(),
   };
 }

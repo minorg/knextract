@@ -17,9 +17,7 @@ export async function deleteWorkflow({
 
   const modelSet = await project.modelSet({ locale });
 
-  const workflow = (
-    await modelSet.workflow(Identifier.fromString(identifier)).resolve()
-  )
+  const workflow = (await modelSet.workflow(Identifier.fromString(identifier)))
     .toMaybe()
     .extractNullable();
 

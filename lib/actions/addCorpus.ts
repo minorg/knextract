@@ -16,7 +16,7 @@ export async function addCorpus(
   },
   _formData: FormData,
 ): Promise<void> {
-  const corpus = Corpus.create({
+  const corpus = new Corpus({
     label,
     mutable: true,
   });

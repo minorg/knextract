@@ -17,9 +17,7 @@ export async function deleteDocument({
 
   const modelSet = await project.modelSet({ locale });
 
-  const document = (
-    await modelSet.document(Identifier.fromString(identifier)).resolve()
-  )
+  const document = (await modelSet.document(Identifier.fromString(identifier)))
     .toMaybe()
     .extractNullable();
 

@@ -4,8 +4,14 @@ import { project } from "@/app/project";
 import { UploadAction } from "@/lib/actions/UploadAction";
 import { getHrefs } from "@/lib/getHrefs";
 import { logger } from "@/lib/logger";
-import { Corpus, Document, Exception, Identifier, Locale } from "@/lib/models";
-import { json, synthetic } from "@/lib/models/impl";
+import {
+  Corpus,
+  CorpusStub,
+  Document,
+  Exception,
+  Identifier,
+  Locale,
+} from "@/lib/models";
 import { sha256 } from "js-sha256";
 import { Either } from "purify-ts";
 import { zfd } from "zod-form-data";
@@ -27,11 +33,9 @@ export const uploadDocument: UploadAction = async (formData) => {
     );
     return {
       type: "failure",
-      value: json.Exception.clone(
-        new Exception({
-          message: parseResult.error.message,
-        }),
-      ),
+      value: new Exception({
+        message: parseResult.error.message,
+      }).toJson(),
     };
   }
 
@@ -62,7 +66,7 @@ export const uploadDocument: UploadAction = async (formData) => {
       const fileArrayBuffer = await file.arrayBuffer();
       url = (
         await blobStore.put(["file", sha256(fileArrayBuffer)], {
-          buffer: Buffer.from(fileArrayBuffer),
+          buffer: fileArrayBuffer,
           type: "buffer",
         })
       )
@@ -79,7 +83,7 @@ export const uploadDocument: UploadAction = async (formData) => {
     } else if (text) {
       url = (
         await blobStore.put(["file", sha256(text)], {
-          buffer: Buffer.from(text),
+          buffer: new TextEncoder().encode(text).buffer,
           type: "buffer",
         })
       )
@@ -96,12 +100,10 @@ export const uploadDocument: UploadAction = async (formData) => {
   }
 
   const createDocumentParameters = {
-    memberOfCorpus: synthetic.Stub.fromModel(
-      Corpus.create({
-        identifier: Identifier.fromString(corpusIdentifier),
-        label: "Temporary corpus",
-      }),
-    ),
+    memberOfCorpus: new CorpusStub({
+      identifier: Identifier.fromString(corpusIdentifier),
+      label: "Temporary corpus",
+    }),
     mutable: true,
     title,
     url,
@@ -126,11 +128,9 @@ export const uploadDocument: UploadAction = async (formData) => {
   } else {
     return {
       type: "failure",
-      value: json.Exception.clone(
-        new Exception({
-          message: "document upload doesn't include a file or text",
-        }),
-      ),
+      value: new Exception({
+        message: "document upload doesn't include a file or text",
+      }).toJson(),
     };
   }
 
@@ -139,7 +139,7 @@ export const uploadDocument: UploadAction = async (formData) => {
     logger.debug("uploadDocument: error creating document: %s", error.message);
     return {
       type: "failure",
-      value: json.Exception.clone(new Exception({ message: error.message })),
+      value: new Exception({ message: error.message }).toJson(),
     };
   }
 
@@ -163,7 +163,7 @@ export const uploadDocument: UploadAction = async (formData) => {
   return {
     type: "success",
     value: {
-      ...json.Document.clone(document),
+      ...document.toJson(),
       href: documentHref,
     },
   };

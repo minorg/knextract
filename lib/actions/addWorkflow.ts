@@ -3,42 +3,24 @@
 import { project } from "@/app/project";
 import { getHrefs } from "@/lib/getHrefs";
 import { logger } from "@/lib/logger";
-import { Identifier, Locale } from "@/lib/models";
-import { rdf } from "@/lib/models/impl";
-import { rdfEnvironment } from "@/lib/rdfEnvironment";
-import { LanguageTagSet } from "@kos-kit/models";
+import { Identifier, Locale, Workflow } from "@/lib/models";
 import { redirect } from "next/navigation";
 
 export async function addWorkflow(
-  {
-    locale,
-    workflowRdfString,
-  }: {
+  json: {
     locale: Locale;
-    workflowRdfString: string;
+    workflow: ReturnType<Workflow["toJson"]>;
   },
   _formData: FormData,
 ): Promise<void> {
-  const workflowModelSet = new rdf.mem.ModelSet({
-    dataset: rdfEnvironment.parsers
-      .parseString(workflowRdfString, {
-        format: "application/n-quads",
-      })
-      .unsafeCoerce(),
-    includeLanguageTags: new LanguageTagSet(),
+  const locale = json.locale;
+
+  const workflowEither = Workflow.fromJson(json.workflow);
+  workflowEither.ifLeft((error) => {
+    logger.error("error deserializing workflow to add: %s", error);
+    throw error;
   });
-  const workflowStubs = await workflowModelSet.workflows({
-    query: { includeDeleted: true, type: "All" },
-  });
-  if (workflowStubs.length !== 1) {
-    throw new Error("expected one workflow");
-  }
-  const workflow = (await workflowStubs.at(0)!.resolve())
-    .toMaybe()
-    .extractNullable();
-  if (!workflow) {
-    throw new Error("expected one workflow");
-  }
+  const workflow = workflowEither.unsafeCoerce();
 
   const modelSet = await project.modelSet({ locale });
 

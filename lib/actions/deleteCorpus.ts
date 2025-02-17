@@ -3,7 +3,7 @@
 import { project } from "@/app/project";
 import { getHrefs } from "@/lib/getHrefs";
 import { logger } from "@/lib/logger";
-import { Identifier, Locale } from "@/lib/models";
+import { DocumentStub, Identifier, Locale } from "@/lib/models";
 import { redirect } from "next/navigation";
 
 export async function deleteCorpus({
@@ -17,9 +17,7 @@ export async function deleteCorpus({
 
   const modelSet = await project.modelSet({ locale });
 
-  const corpus = (
-    await modelSet.corpus(Identifier.fromString(identifier)).resolve()
-  )
+  const corpus = (await modelSet.corpus(Identifier.fromString(identifier)))
     .toMaybe()
     .extractNullable();
   if (corpus === null) {
@@ -37,11 +35,22 @@ export async function deleteCorpus({
 
   await modelSet.deleteModel(corpus);
 
-  for (const documentStub of await corpus.documents({
-    includeDeleted: true,
-    limit: null,
-    offset: 0,
-  })) {
+  for (const documentStub of (
+    await modelSet.documentStubs({
+      limit: null,
+      offset: 0,
+      query: {
+        corpusIdentifier: corpus.identifier,
+        includeDeleted: false,
+        type: "MemberOfCorpus",
+      },
+    })
+  )
+    .mapLeft((error) => {
+      logger.error("error getting corpus documents: %s", error.message);
+      return [] as DocumentStub[];
+    })
+    .extract()) {
     logger.debug(
       "deleting corpus %s document %s",
       Identifier.toString(corpus.identifier),

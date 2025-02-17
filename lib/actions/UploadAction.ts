@@ -1,8 +1,11 @@
-import { json } from "@/lib/models/impl";
+import { Exception } from "@/lib/models";
 
 export type UploadAction = (
   formData: FormData,
 ) => Promise<
-  | { type: "success"; value: json.Model & { readonly href: string } }
-  | { type: "failure"; value: json.Exception }
+  | {
+      type: "success";
+      value: { readonly "@id": string; readonly href: string };
+    }
+  | { type: "failure"; value: ReturnType<Exception["toJson"]> }
 >;
