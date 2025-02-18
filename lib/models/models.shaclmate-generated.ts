@@ -1146,6 +1146,7 @@ abstract class Entity {
     | "DocumentDeletionInput"
     | "DocumentTitle"
     | "EnumeratedConceptSelector"
+    | "EvaluatedClaims"
     | "Exception"
     | "Image"
     | "Instruction"
@@ -1183,6 +1184,8 @@ abstract class Entity {
     | "TextQuestion"
     | "TextValue"
     | "TextualEntity"
+    | "TruePositiveClaimPair"
+    | "UnevaluatedClaims"
     | "ValueExtraction"
     | "ValueExtractionInput"
     | "ValueExtractionOutput"
@@ -1253,6 +1256,7 @@ abstract class Entity {
       | "DocumentDeletionInput"
       | "DocumentTitle"
       | "EnumeratedConceptSelector"
+      | "EvaluatedClaims"
       | "Exception"
       | "Image"
       | "Instruction"
@@ -1290,6 +1294,8 @@ abstract class Entity {
       | "TextQuestion"
       | "TextValue"
       | "TextualEntity"
+      | "TruePositiveClaimPair"
+      | "UnevaluatedClaims"
       | "ValueExtraction"
       | "ValueExtractionInput"
       | "ValueExtractionOutput"
@@ -1419,6 +1425,7 @@ namespace Entity {
         "DocumentDeletionInput",
         "DocumentTitle",
         "EnumeratedConceptSelector",
+        "EvaluatedClaims",
         "Exception",
         "Image",
         "Instruction",
@@ -1456,6 +1463,8 @@ namespace Entity {
         "TextQuestion",
         "TextValue",
         "TextualEntity",
+        "TruePositiveClaimPair",
+        "UnevaluatedClaims",
         "ValueExtraction",
         "ValueExtractionInput",
         "ValueExtractionOutput",
@@ -4640,6 +4649,7 @@ abstract class InformationContentEntity extends Entity {
     | "Document"
     | "DocumentTitle"
     | "EnumeratedConceptSelector"
+    | "EvaluatedClaims"
     | "Exception"
     | "Image"
     | "Instruction"
@@ -4659,6 +4669,8 @@ abstract class InformationContentEntity extends Entity {
     | "TextQuestion"
     | "TextValue"
     | "TextualEntity"
+    | "TruePositiveClaimPair"
+    | "UnevaluatedClaims"
     | "Workflow"
     | "WorkflowQuestionnaireStep";
 
@@ -4779,6 +4791,7 @@ namespace InformationContentEntity {
           "Document",
           "DocumentTitle",
           "EnumeratedConceptSelector",
+          "EvaluatedClaims",
           "Exception",
           "Image",
           "Instruction",
@@ -4798,6 +4811,8 @@ namespace InformationContentEntity {
           "TextQuestion",
           "TextValue",
           "TextualEntity",
+          "TruePositiveClaimPair",
+          "UnevaluatedClaims",
           "Workflow",
           "WorkflowQuestionnaireStep",
         ]),
@@ -9820,6 +9835,181 @@ export namespace ValueExtractionInput {
         variablePrefix: `${variablePrefix}CompletionMessage`,
       }),
     ];
+  }
+}
+export class TruePositiveClaimPair extends InformationContentEntity {
+  readonly goldClaim: Claim;
+  private _identifier: rdfjs.NamedNode | undefined;
+  readonly inferredClaim: Claim;
+  override readonly type = "TruePositiveClaimPair";
+
+  constructor(
+    parameters: {
+      readonly goldClaim: Claim;
+      readonly identifier?: rdfjs.NamedNode | string;
+      readonly inferredClaim: Claim;
+    } & ConstructorParameters<typeof InformationContentEntity>[0],
+  ) {
+    super(parameters);
+    this.goldClaim = parameters.goldClaim;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
+    this.inferredClaim = parameters.inferredClaim;
+  }
+
+  override get identifier(): rdfjs.NamedNode {
+    if (typeof this._identifier === "undefined") {
+      this._identifier = dataFactory.namedNode(
+        `urn:shaclmate:object:${this.type}:${this.hash(sha256.create())}`,
+      );
+    }
+    return this._identifier;
+  }
+
+  override equals(other: TruePositiveClaimPair): EqualsResult {
+    return super
+      .equals(other)
+      .chain(() =>
+        ((left, right) => left.equals(right))(
+          this.goldClaim,
+          other.goldClaim,
+        ).mapLeft((propertyValuesUnequal) => ({
+          left: this,
+          right: other,
+          propertyName: "goldClaim",
+          propertyValuesUnequal,
+          type: "Property" as const,
+        })),
+      )
+      .chain(() =>
+        ((left, right) => left.equals(right))(
+          this.inferredClaim,
+          other.inferredClaim,
+        ).mapLeft((propertyValuesUnequal) => ({
+          left: this,
+          right: other,
+          propertyName: "inferredClaim",
+          propertyValuesUnequal,
+          type: "Property" as const,
+        })),
+      );
+  }
+
+  override hash<
+    HasherT extends {
+      update: (message: string | number[] | ArrayBuffer | Uint8Array) => void;
+    },
+  >(_hasher: HasherT): HasherT {
+    super.hash(_hasher);
+    this.goldClaim.hash(_hasher);
+    this.inferredClaim.hash(_hasher);
+    return _hasher;
+  }
+
+  override toJson(): {
+    readonly goldClaim: ReturnType<Claim["toJson"]>;
+    readonly inferredClaim: ReturnType<Claim["toJson"]>;
+  } & ReturnType<InformationContentEntity["toJson"]> {
+    return JSON.parse(
+      JSON.stringify({
+        ...super.toJson(),
+        goldClaim: this.goldClaim.toJson(),
+        inferredClaim: this.inferredClaim.toJson(),
+      } satisfies ReturnType<TruePositiveClaimPair["toJson"]>),
+    );
+  }
+
+  override toString(): string {
+    return JSON.stringify(this.toJson());
+  }
+}
+
+export namespace TruePositiveClaimPair {
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
+    zod.ZodError,
+    {
+      goldClaim: Claim;
+      identifier: rdfjs.NamedNode;
+      inferredClaim: Claim;
+    } & UnwrapR<ReturnType<typeof InformationContentEntity.propertiesFromJson>>
+  > {
+    const _jsonSafeParseResult =
+      truePositiveClaimPairJsonZodSchema().safeParse(_json);
+    if (!_jsonSafeParseResult.success) {
+      return purify.Left(_jsonSafeParseResult.error);
+    }
+
+    const _jsonObject = _jsonSafeParseResult.data;
+    const _super0Either =
+      InformationContentEntity.propertiesFromJson(_jsonObject);
+    if (_super0Either.isLeft()) {
+      return _super0Either;
+    }
+
+    const _super0 = _super0Either.unsafeCoerce();
+    const goldClaim = Claim.fromJson(_jsonObject["goldClaim"]).unsafeCoerce();
+    const identifier = dataFactory.namedNode(_jsonObject["@id"]);
+    const inferredClaim = Claim.fromJson(
+      _jsonObject["inferredClaim"],
+    ).unsafeCoerce();
+    return purify.Either.of({
+      ..._super0,
+      goldClaim,
+      identifier,
+      inferredClaim,
+    });
+  }
+
+  export function fromJson(
+    json: unknown,
+  ): purify.Either<zod.ZodError, TruePositiveClaimPair> {
+    return TruePositiveClaimPair.propertiesFromJson(json).map(
+      (properties) => new TruePositiveClaimPair(properties),
+    );
+  }
+
+  export function jsonSchema() {
+    return zodToJsonSchema(truePositiveClaimPairJsonZodSchema());
+  }
+
+  export function truePositiveClaimPairJsonUiSchema(parameters?: {
+    scopePrefix?: string;
+  }) {
+    const scopePrefix = parameters?.scopePrefix ?? "#";
+    return {
+      elements: [
+        InformationContentEntity.informationContentEntityJsonUiSchema({
+          scopePrefix,
+        }),
+        Claim.claimJsonUiSchema({
+          scopePrefix: `${scopePrefix}/properties/goldClaim`,
+        }),
+        Claim.claimJsonUiSchema({
+          scopePrefix: `${scopePrefix}/properties/inferredClaim`,
+        }),
+      ],
+      label: "TruePositiveClaimPair",
+      type: "Group",
+    };
+  }
+
+  export function truePositiveClaimPairJsonZodSchema() {
+    return InformationContentEntity.informationContentEntityJsonZodSchema().merge(
+      zod.object({
+        goldClaim: Claim.claimJsonZodSchema(),
+        "@id": zod.string().min(1),
+        inferredClaim: Claim.claimJsonZodSchema(),
+        type: zod.literal("TruePositiveClaimPair"),
+      }),
+    );
   }
 }
 abstract class BaseValue extends InformationContentEntity {
@@ -23296,15 +23486,206 @@ export namespace WorkflowExecution {
     ];
   }
 }
+export class PostWorkflowExecutionEventPayload {
+  readonly documentClaims: DocumentClaims;
+  private _identifier: (rdfjs.BlankNode | rdfjs.NamedNode) | undefined;
+  readonly type = "PostWorkflowExecutionEventPayload";
+  readonly workflowExecution: WorkflowExecution;
+
+  constructor(parameters: {
+    readonly documentClaims: DocumentClaims;
+    readonly identifier?: (rdfjs.BlankNode | rdfjs.NamedNode) | string;
+    readonly workflowExecution: WorkflowExecution;
+  }) {
+    this.documentClaims = parameters.documentClaims;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
+    this.workflowExecution = parameters.workflowExecution;
+  }
+
+  get identifier(): rdfjs.BlankNode | rdfjs.NamedNode {
+    if (typeof this._identifier === "undefined") {
+      this._identifier = dataFactory.blankNode();
+    }
+    return this._identifier;
+  }
+
+  equals(other: PostWorkflowExecutionEventPayload): EqualsResult {
+    return DocumentClaims.equals(this.documentClaims, other.documentClaims)
+      .mapLeft((propertyValuesUnequal) => ({
+        left: this,
+        right: other,
+        propertyName: "documentClaims",
+        propertyValuesUnequal,
+        type: "Property" as const,
+      }))
+      .chain(() =>
+        booleanEquals(this.identifier, other.identifier).mapLeft(
+          (propertyValuesUnequal) => ({
+            left: this,
+            right: other,
+            propertyName: "identifier",
+            propertyValuesUnequal,
+            type: "Property" as const,
+          }),
+        ),
+      )
+      .chain(() =>
+        strictEquals(this.type, other.type).mapLeft(
+          (propertyValuesUnequal) => ({
+            left: this,
+            right: other,
+            propertyName: "type",
+            propertyValuesUnequal,
+            type: "Property" as const,
+          }),
+        ),
+      )
+      .chain(() =>
+        ((left, right) => left.equals(right))(
+          this.workflowExecution,
+          other.workflowExecution,
+        ).mapLeft((propertyValuesUnequal) => ({
+          left: this,
+          right: other,
+          propertyName: "workflowExecution",
+          propertyValuesUnequal,
+          type: "Property" as const,
+        })),
+      );
+  }
+
+  hash<
+    HasherT extends {
+      update: (message: string | number[] | ArrayBuffer | Uint8Array) => void;
+    },
+  >(_hasher: HasherT): HasherT {
+    this.documentClaims.hash(_hasher);
+    this.workflowExecution.hash(_hasher);
+    return _hasher;
+  }
+
+  toJson(): {
+    readonly documentClaims:
+      | ReturnType<EvaluatedClaims["toJson"]>
+      | ReturnType<UnevaluatedClaims["toJson"]>;
+    readonly "@id": string;
+    readonly type: "PostWorkflowExecutionEventPayload";
+    readonly workflowExecution: ReturnType<WorkflowExecution["toJson"]>;
+  } {
+    return JSON.parse(
+      JSON.stringify({
+        documentClaims: this.documentClaims.toJson(),
+        "@id":
+          this.identifier.termType === "BlankNode"
+            ? `_:${this.identifier.value}`
+            : this.identifier.value,
+        type: this.type,
+        workflowExecution: this.workflowExecution.toJson(),
+      } satisfies ReturnType<PostWorkflowExecutionEventPayload["toJson"]>),
+    );
+  }
+
+  toString(): string {
+    return JSON.stringify(this.toJson());
+  }
+}
+
+export namespace PostWorkflowExecutionEventPayload {
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
+    zod.ZodError,
+    {
+      documentClaims: DocumentClaims;
+      identifier: rdfjs.BlankNode | rdfjs.NamedNode;
+      workflowExecution: WorkflowExecution;
+    }
+  > {
+    const _jsonSafeParseResult = jsonZodSchema().safeParse(_json);
+    if (!_jsonSafeParseResult.success) {
+      return purify.Left(_jsonSafeParseResult.error);
+    }
+
+    const _jsonObject = _jsonSafeParseResult.data;
+    const documentClaims = DocumentClaims.fromJson(
+      _jsonObject["documentClaims"],
+    ).unsafeCoerce();
+    const identifier = _jsonObject["@id"].startsWith("_:")
+      ? dataFactory.blankNode(_jsonObject["@id"].substring(2))
+      : dataFactory.namedNode(_jsonObject["@id"]);
+    const workflowExecution = WorkflowExecution.fromJson(
+      _jsonObject["workflowExecution"],
+    ).unsafeCoerce();
+    return purify.Either.of({ documentClaims, identifier, workflowExecution });
+  }
+
+  export function fromJson(
+    json: unknown,
+  ): purify.Either<zod.ZodError, PostWorkflowExecutionEventPayload> {
+    return PostWorkflowExecutionEventPayload.propertiesFromJson(json).map(
+      (properties) => new PostWorkflowExecutionEventPayload(properties),
+    );
+  }
+
+  export function jsonSchema() {
+    return zodToJsonSchema(jsonZodSchema());
+  }
+
+  export function jsonUiSchema(parameters?: { scopePrefix?: string }) {
+    const scopePrefix = parameters?.scopePrefix ?? "#";
+    return {
+      elements: [
+        { scope: `${scopePrefix}/properties/documentClaims`, type: "Control" },
+        {
+          label: "Identifier",
+          scope: `${scopePrefix}/properties/@id`,
+          type: "Control",
+        },
+        {
+          rule: {
+            condition: {
+              schema: { const: "PostWorkflowExecutionEventPayload" },
+              scope: `${scopePrefix}/properties/type`,
+            },
+            effect: "HIDE",
+          },
+          scope: `${scopePrefix}/properties/type`,
+          type: "Control",
+        },
+        WorkflowExecution.workflowExecutionJsonUiSchema({
+          scopePrefix: `${scopePrefix}/properties/workflowExecution`,
+        }),
+      ],
+      label: "PostWorkflowExecutionEventPayload",
+      type: "Group",
+    };
+  }
+
+  export function jsonZodSchema() {
+    return zod.object({
+      documentClaims: DocumentClaims.jsonZodSchema(),
+      "@id": zod.string().min(1),
+      type: zod.literal("PostWorkflowExecutionEventPayload"),
+      workflowExecution: WorkflowExecution.workflowExecutionJsonZodSchema(),
+    });
+  }
+}
 export class PostWorkflowExecutionEvent extends BaseEvent {
   private _identifier: rdfjs.NamedNode | undefined;
-  readonly payload: WorkflowExecution;
+  readonly payload: PostWorkflowExecutionEventPayload;
   override readonly type = "PostWorkflowExecutionEvent";
 
   constructor(
     parameters: {
       readonly identifier?: rdfjs.NamedNode | string;
-      readonly payload: WorkflowExecution;
+      readonly payload: PostWorkflowExecutionEventPayload;
     } & ConstructorParameters<typeof BaseEvent>[0],
   ) {
     super(parameters);
@@ -23356,7 +23737,7 @@ export class PostWorkflowExecutionEvent extends BaseEvent {
   }
 
   override toJson(): {
-    readonly payload: ReturnType<WorkflowExecution["toJson"]>;
+    readonly payload: ReturnType<PostWorkflowExecutionEventPayload["toJson"]>;
   } & ReturnType<BaseEvent["toJson"]> {
     return JSON.parse(
       JSON.stringify({
@@ -23376,9 +23757,10 @@ export namespace PostWorkflowExecutionEvent {
     _json: unknown,
   ): purify.Either<
     zod.ZodError,
-    { identifier: rdfjs.NamedNode; payload: WorkflowExecution } & UnwrapR<
-      ReturnType<typeof BaseEvent.propertiesFromJson>
-    >
+    {
+      identifier: rdfjs.NamedNode;
+      payload: PostWorkflowExecutionEventPayload;
+    } & UnwrapR<ReturnType<typeof BaseEvent.propertiesFromJson>>
   > {
     const _jsonSafeParseResult =
       postWorkflowExecutionEventJsonZodSchema().safeParse(_json);
@@ -23394,7 +23776,7 @@ export namespace PostWorkflowExecutionEvent {
 
     const _super0 = _super0Either.unsafeCoerce();
     const identifier = dataFactory.namedNode(_jsonObject["@id"]);
-    const payload = WorkflowExecution.fromJson(
+    const payload = PostWorkflowExecutionEventPayload.fromJson(
       _jsonObject["payload"],
     ).unsafeCoerce();
     return purify.Either.of({ ..._super0, identifier, payload });
@@ -23419,7 +23801,7 @@ export namespace PostWorkflowExecutionEvent {
     return {
       elements: [
         BaseEvent.baseEventJsonUiSchema({ scopePrefix }),
-        WorkflowExecution.workflowExecutionJsonUiSchema({
+        PostWorkflowExecutionEventPayload.jsonUiSchema({
           scopePrefix: `${scopePrefix}/properties/payload`,
         }),
       ],
@@ -23432,7 +23814,7 @@ export namespace PostWorkflowExecutionEvent {
     return BaseEvent.baseEventJsonZodSchema().merge(
       zod.object({
         "@id": zod.string().min(1),
-        payload: WorkflowExecution.workflowExecutionJsonZodSchema(),
+        payload: PostWorkflowExecutionEventPayload.jsonZodSchema(),
         type: zod.literal("PostWorkflowExecutionEvent"),
       }),
     );
@@ -30542,6 +30924,379 @@ export namespace DocumentDeletion {
         variablePrefix: `${variablePrefix}Input`,
       }),
     ];
+  }
+}
+export class UnevaluatedClaims extends InformationContentEntity {
+  readonly claims: readonly Claim[];
+  private _identifier: rdfjs.NamedNode | undefined;
+  override readonly type = "UnevaluatedClaims";
+
+  constructor(
+    parameters: {
+      readonly claims: readonly Claim[];
+      readonly identifier?: rdfjs.NamedNode | string;
+    } & ConstructorParameters<typeof InformationContentEntity>[0],
+  ) {
+    super(parameters);
+    this.claims = parameters.claims;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+  }
+
+  override get identifier(): rdfjs.NamedNode {
+    if (typeof this._identifier === "undefined") {
+      this._identifier = dataFactory.namedNode(
+        `urn:shaclmate:object:${this.type}:${this.hash(sha256.create())}`,
+      );
+    }
+    return this._identifier;
+  }
+
+  override equals(other: UnevaluatedClaims): EqualsResult {
+    return super
+      .equals(other)
+      .chain(() =>
+        ((left, right) =>
+          arrayEquals(left, right, (left, right) => left.equals(right)))(
+          this.claims,
+          other.claims,
+        ).mapLeft((propertyValuesUnequal) => ({
+          left: this,
+          right: other,
+          propertyName: "claims",
+          propertyValuesUnequal,
+          type: "Property" as const,
+        })),
+      );
+  }
+
+  override hash<
+    HasherT extends {
+      update: (message: string | number[] | ArrayBuffer | Uint8Array) => void;
+    },
+  >(_hasher: HasherT): HasherT {
+    super.hash(_hasher);
+    for (const _element0 of this.claims) {
+      _element0.hash(_hasher);
+    }
+
+    return _hasher;
+  }
+
+  override toJson(): {
+    readonly claims: readonly ReturnType<Claim["toJson"]>[];
+  } & ReturnType<InformationContentEntity["toJson"]> {
+    return JSON.parse(
+      JSON.stringify({
+        ...super.toJson(),
+        claims: this.claims.map((_item) => _item.toJson()),
+      } satisfies ReturnType<UnevaluatedClaims["toJson"]>),
+    );
+  }
+
+  override toString(): string {
+    return JSON.stringify(this.toJson());
+  }
+}
+
+export namespace UnevaluatedClaims {
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
+    zod.ZodError,
+    { claims: readonly Claim[]; identifier: rdfjs.NamedNode } & UnwrapR<
+      ReturnType<typeof InformationContentEntity.propertiesFromJson>
+    >
+  > {
+    const _jsonSafeParseResult =
+      unevaluatedClaimsJsonZodSchema().safeParse(_json);
+    if (!_jsonSafeParseResult.success) {
+      return purify.Left(_jsonSafeParseResult.error);
+    }
+
+    const _jsonObject = _jsonSafeParseResult.data;
+    const _super0Either =
+      InformationContentEntity.propertiesFromJson(_jsonObject);
+    if (_super0Either.isLeft()) {
+      return _super0Either;
+    }
+
+    const _super0 = _super0Either.unsafeCoerce();
+    const claims = _jsonObject["claims"].map((_item) =>
+      Claim.fromJson(_item).unsafeCoerce(),
+    );
+    const identifier = dataFactory.namedNode(_jsonObject["@id"]);
+    return purify.Either.of({ ..._super0, claims, identifier });
+  }
+
+  export function fromJson(
+    json: unknown,
+  ): purify.Either<zod.ZodError, UnevaluatedClaims> {
+    return UnevaluatedClaims.propertiesFromJson(json).map(
+      (properties) => new UnevaluatedClaims(properties),
+    );
+  }
+
+  export function jsonSchema() {
+    return zodToJsonSchema(unevaluatedClaimsJsonZodSchema());
+  }
+
+  export function unevaluatedClaimsJsonUiSchema(parameters?: {
+    scopePrefix?: string;
+  }) {
+    const scopePrefix = parameters?.scopePrefix ?? "#";
+    return {
+      elements: [
+        InformationContentEntity.informationContentEntityJsonUiSchema({
+          scopePrefix,
+        }),
+        Claim.claimJsonUiSchema({
+          scopePrefix: `${scopePrefix}/properties/claims`,
+        }),
+      ],
+      label: "UnevaluatedClaims",
+      type: "Group",
+    };
+  }
+
+  export function unevaluatedClaimsJsonZodSchema() {
+    return InformationContentEntity.informationContentEntityJsonZodSchema().merge(
+      zod.object({
+        claims: Claim.claimJsonZodSchema().array(),
+        "@id": zod.string().min(1),
+        type: zod.literal("UnevaluatedClaims"),
+      }),
+    );
+  }
+}
+export class EvaluatedClaims extends InformationContentEntity {
+  readonly falseNegativeClaims: readonly Claim[];
+  readonly falsePositiveClaims: readonly Claim[];
+  private _identifier: rdfjs.NamedNode | undefined;
+  readonly truePositiveClaims: readonly TruePositiveClaimPair[];
+  override readonly type = "EvaluatedClaims";
+
+  constructor(
+    parameters: {
+      readonly falseNegativeClaims: readonly Claim[];
+      readonly falsePositiveClaims: readonly Claim[];
+      readonly identifier?: rdfjs.NamedNode | string;
+      readonly truePositiveClaims: readonly TruePositiveClaimPair[];
+    } & ConstructorParameters<typeof InformationContentEntity>[0],
+  ) {
+    super(parameters);
+    this.falseNegativeClaims = parameters.falseNegativeClaims;
+    this.falsePositiveClaims = parameters.falsePositiveClaims;
+    if (typeof parameters.identifier === "object") {
+      this._identifier = parameters.identifier;
+    } else if (typeof parameters.identifier === "string") {
+      this._identifier = dataFactory.namedNode(parameters.identifier);
+    } else {
+      this._identifier = parameters.identifier as never;
+    }
+
+    this.truePositiveClaims = parameters.truePositiveClaims;
+  }
+
+  override get identifier(): rdfjs.NamedNode {
+    if (typeof this._identifier === "undefined") {
+      this._identifier = dataFactory.namedNode(
+        `urn:shaclmate:object:${this.type}:${this.hash(sha256.create())}`,
+      );
+    }
+    return this._identifier;
+  }
+
+  override equals(other: EvaluatedClaims): EqualsResult {
+    return super
+      .equals(other)
+      .chain(() =>
+        ((left, right) =>
+          arrayEquals(left, right, (left, right) => left.equals(right)))(
+          this.falseNegativeClaims,
+          other.falseNegativeClaims,
+        ).mapLeft((propertyValuesUnequal) => ({
+          left: this,
+          right: other,
+          propertyName: "falseNegativeClaims",
+          propertyValuesUnequal,
+          type: "Property" as const,
+        })),
+      )
+      .chain(() =>
+        ((left, right) =>
+          arrayEquals(left, right, (left, right) => left.equals(right)))(
+          this.falsePositiveClaims,
+          other.falsePositiveClaims,
+        ).mapLeft((propertyValuesUnequal) => ({
+          left: this,
+          right: other,
+          propertyName: "falsePositiveClaims",
+          propertyValuesUnequal,
+          type: "Property" as const,
+        })),
+      )
+      .chain(() =>
+        ((left, right) =>
+          arrayEquals(left, right, (left, right) => left.equals(right)))(
+          this.truePositiveClaims,
+          other.truePositiveClaims,
+        ).mapLeft((propertyValuesUnequal) => ({
+          left: this,
+          right: other,
+          propertyName: "truePositiveClaims",
+          propertyValuesUnequal,
+          type: "Property" as const,
+        })),
+      );
+  }
+
+  override hash<
+    HasherT extends {
+      update: (message: string | number[] | ArrayBuffer | Uint8Array) => void;
+    },
+  >(_hasher: HasherT): HasherT {
+    super.hash(_hasher);
+    for (const _element0 of this.falseNegativeClaims) {
+      _element0.hash(_hasher);
+    }
+
+    for (const _element0 of this.falsePositiveClaims) {
+      _element0.hash(_hasher);
+    }
+
+    for (const _element0 of this.truePositiveClaims) {
+      _element0.hash(_hasher);
+    }
+
+    return _hasher;
+  }
+
+  override toJson(): {
+    readonly falseNegativeClaims: readonly ReturnType<Claim["toJson"]>[];
+    readonly falsePositiveClaims: readonly ReturnType<Claim["toJson"]>[];
+    readonly truePositiveClaims: readonly ReturnType<
+      TruePositiveClaimPair["toJson"]
+    >[];
+  } & ReturnType<InformationContentEntity["toJson"]> {
+    return JSON.parse(
+      JSON.stringify({
+        ...super.toJson(),
+        falseNegativeClaims: this.falseNegativeClaims.map((_item) =>
+          _item.toJson(),
+        ),
+        falsePositiveClaims: this.falsePositiveClaims.map((_item) =>
+          _item.toJson(),
+        ),
+        truePositiveClaims: this.truePositiveClaims.map((_item) =>
+          _item.toJson(),
+        ),
+      } satisfies ReturnType<EvaluatedClaims["toJson"]>),
+    );
+  }
+
+  override toString(): string {
+    return JSON.stringify(this.toJson());
+  }
+}
+
+export namespace EvaluatedClaims {
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
+    zod.ZodError,
+    {
+      falseNegativeClaims: readonly Claim[];
+      falsePositiveClaims: readonly Claim[];
+      identifier: rdfjs.NamedNode;
+      truePositiveClaims: readonly TruePositiveClaimPair[];
+    } & UnwrapR<ReturnType<typeof InformationContentEntity.propertiesFromJson>>
+  > {
+    const _jsonSafeParseResult =
+      evaluatedClaimsJsonZodSchema().safeParse(_json);
+    if (!_jsonSafeParseResult.success) {
+      return purify.Left(_jsonSafeParseResult.error);
+    }
+
+    const _jsonObject = _jsonSafeParseResult.data;
+    const _super0Either =
+      InformationContentEntity.propertiesFromJson(_jsonObject);
+    if (_super0Either.isLeft()) {
+      return _super0Either;
+    }
+
+    const _super0 = _super0Either.unsafeCoerce();
+    const falseNegativeClaims = _jsonObject["falseNegativeClaims"].map(
+      (_item) => Claim.fromJson(_item).unsafeCoerce(),
+    );
+    const falsePositiveClaims = _jsonObject["falsePositiveClaims"].map(
+      (_item) => Claim.fromJson(_item).unsafeCoerce(),
+    );
+    const identifier = dataFactory.namedNode(_jsonObject["@id"]);
+    const truePositiveClaims = _jsonObject["truePositiveClaims"].map((_item) =>
+      TruePositiveClaimPair.fromJson(_item).unsafeCoerce(),
+    );
+    return purify.Either.of({
+      ..._super0,
+      falseNegativeClaims,
+      falsePositiveClaims,
+      identifier,
+      truePositiveClaims,
+    });
+  }
+
+  export function fromJson(
+    json: unknown,
+  ): purify.Either<zod.ZodError, EvaluatedClaims> {
+    return EvaluatedClaims.propertiesFromJson(json).map(
+      (properties) => new EvaluatedClaims(properties),
+    );
+  }
+
+  export function jsonSchema() {
+    return zodToJsonSchema(evaluatedClaimsJsonZodSchema());
+  }
+
+  export function evaluatedClaimsJsonUiSchema(parameters?: {
+    scopePrefix?: string;
+  }) {
+    const scopePrefix = parameters?.scopePrefix ?? "#";
+    return {
+      elements: [
+        InformationContentEntity.informationContentEntityJsonUiSchema({
+          scopePrefix,
+        }),
+        Claim.claimJsonUiSchema({
+          scopePrefix: `${scopePrefix}/properties/falseNegativeClaims`,
+        }),
+        Claim.claimJsonUiSchema({
+          scopePrefix: `${scopePrefix}/properties/falsePositiveClaims`,
+        }),
+        TruePositiveClaimPair.truePositiveClaimPairJsonUiSchema({
+          scopePrefix: `${scopePrefix}/properties/truePositiveClaims`,
+        }),
+      ],
+      label: "EvaluatedClaims",
+      type: "Group",
+    };
+  }
+
+  export function evaluatedClaimsJsonZodSchema() {
+    return InformationContentEntity.informationContentEntityJsonZodSchema().merge(
+      zod.object({
+        falseNegativeClaims: Claim.claimJsonZodSchema().array(),
+        falsePositiveClaims: Claim.claimJsonZodSchema().array(),
+        "@id": zod.string().min(1),
+        truePositiveClaims:
+          TruePositiveClaimPair.truePositiveClaimPairJsonZodSchema().array(),
+        type: zod.literal("EvaluatedClaims"),
+      }),
+    );
   }
 }
 export class TextualEntity extends InformationContentEntity {
@@ -43824,6 +44579,73 @@ export namespace Value {
         return _value.toRdf(_parameters);
       case "TextValue":
         return _value.toRdf(_parameters);
+    }
+  }
+}
+export type DocumentClaims = EvaluatedClaims | UnevaluatedClaims;
+
+export namespace DocumentClaims {
+  export function equals(
+    left: DocumentClaims,
+    right: DocumentClaims,
+  ): EqualsResult {
+    return strictEquals(left.type, right.type).chain(() => {
+      switch (left.type) {
+        case "EvaluatedClaims":
+          return left.equals(right as unknown as EvaluatedClaims);
+        case "UnevaluatedClaims":
+          return left.equals(right as unknown as UnevaluatedClaims);
+      }
+    });
+  }
+
+  export function fromJson(
+    json: unknown,
+  ): purify.Either<zod.ZodError, DocumentClaims> {
+    return (
+      EvaluatedClaims.fromJson(json) as purify.Either<
+        zod.ZodError,
+        DocumentClaims
+      >
+    ).altLazy(
+      () =>
+        UnevaluatedClaims.fromJson(json) as purify.Either<
+          zod.ZodError,
+          DocumentClaims
+        >,
+    );
+  }
+
+  export function hash<
+    HasherT extends {
+      update: (message: string | number[] | ArrayBuffer | Uint8Array) => void;
+    },
+  >(_documentClaims: DocumentClaims, _hasher: HasherT): HasherT {
+    switch (_documentClaims.type) {
+      case "EvaluatedClaims":
+        return _documentClaims.hash(_hasher);
+      case "UnevaluatedClaims":
+        return _documentClaims.hash(_hasher);
+    }
+  }
+
+  export function jsonZodSchema() {
+    return zod.discriminatedUnion("type", [
+      EvaluatedClaims.evaluatedClaimsJsonZodSchema(),
+      UnevaluatedClaims.unevaluatedClaimsJsonZodSchema(),
+    ]);
+  }
+
+  export function toJson(
+    _documentClaims: DocumentClaims,
+  ):
+    | ReturnType<EvaluatedClaims["toJson"]>
+    | ReturnType<UnevaluatedClaims["toJson"]> {
+    switch (_documentClaims.type) {
+      case "EvaluatedClaims":
+        return _documentClaims.toJson();
+      case "UnevaluatedClaims":
+        return _documentClaims.toJson();
     }
   }
 }

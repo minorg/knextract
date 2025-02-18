@@ -59,6 +59,7 @@ export {
   DocumentTitle,
   EnumeratedConceptSelector,
   EqualsResult,
+  EvaluatedClaims,
   Exception,
   Image,
   Instruction,
@@ -70,6 +71,7 @@ export {
   NarrowerConceptSelector,
   NarrowerTransitiveConceptSelector,
   PostWorkflowExecutionEvent,
+  PostWorkflowExecutionEventPayload,
   PostWorkflowStepExecutionEvent,
   PreWorkflowExecutionEvent,
   PreWorkflowStepExecutionEvent,
@@ -103,6 +105,8 @@ export {
   TextQuestion,
   TextualEntity,
   TextValue,
+  TruePositiveClaimPair,
+  UnevaluatedClaims,
   Value,
   ValueExtraction,
   ValueExtractionInput,
@@ -129,14 +133,12 @@ export {
 
 // Re-export handwritten classes
 export * from "./claims";
-export * from "./ClaimsEvaluation";
-export * from "./InformationRetrievalMetrics";
 export * from "./ClaimQuery";
 export * from "./ClientConfiguration";
-export * from "./ConfusionMatrix";
 export * from "./CorpusQuery";
 export * from "./displayLabel";
 export * from "./DocumentQuery";
+export * from "./evaluateClaims";
 export * from "./Identifier";
 export * from "./Locale";
 export * from "./ModelSet";

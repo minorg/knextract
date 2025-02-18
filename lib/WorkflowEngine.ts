@@ -7,9 +7,11 @@ import {
   Identifier,
   ModelSet,
   PostWorkflowExecutionEvent,
+  PostWorkflowExecutionEventPayload,
   PostWorkflowStepExecutionEvent,
   PreWorkflowExecutionEvent,
   PreWorkflowStepExecutionEvent,
+  UnevaluatedClaims,
   WorkflowExecution,
   WorkflowExecutionInput,
   WorkflowExecutionOutput,
@@ -22,6 +24,7 @@ import {
   WorkflowStep,
   WorkflowStepExecution,
   WorkflowStub,
+  evaluateClaims,
 } from "@/lib/models";
 import Emittery, { Options as EmitteryOptions } from "emittery";
 import { Either, Maybe } from "purify-ts";
@@ -132,10 +135,24 @@ export class WorkflowEngine extends Emittery<EventData> {
       }),
     });
 
+    const documentClaims = (
+      await this.modelSet.claims({
+        query: {
+          documentIdentifier: document.identifier,
+          type: "Document",
+        },
+      })
+    ).orDefault([]);
+
     await this.emit(
       "postExecution",
       new PostWorkflowExecutionEvent({
-        payload: workflowExecution,
+        payload: new PostWorkflowExecutionEventPayload({
+          documentClaims:
+            evaluateClaims(documentClaims).extract() ??
+            new UnevaluatedClaims({ claims: documentClaims }),
+          workflowExecution,
+        }),
         timestamp: new Date(),
       }),
     );

@@ -412,6 +412,14 @@ knextract:Document-url
     sh:name "url" ;
     sh:path knextract:url .
 
+knextract:DocumentClaims
+    shaclmate:name "DocumentClaims" ;
+    shaclmate:tsFeatureExclude shaclmate:_TsFeature_Rdf, shaclmate:_TsFeature_Sparql ;
+    a sh:NodeShape ;
+    sh:xone (knextract:EvaluatedClaims
+        knextract:UnevaluatedClaims
+    ) .
+
 knextract:DocumentDeletion
     shaclmate:name "DocumentDeletion" ;
     a owl:Class, sh:NodeShape ;
@@ -473,6 +481,45 @@ knextract:EnumeratedConceptSelector-concepts
     sh:name "concepts" ;
     sh:node knextract:ConceptStubList ;
     sh:path knextract:enumeratedConcepts .
+
+knextract:EvaluatedClaims
+    shaclmate:name "EvaluatedClaims" ;
+    shaclmate:tsFeatureExclude shaclmate:_TsFeature_Rdf, shaclmate:_TsFeature_Sparql ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:InformationContentEntity ;
+    sh:property knextract:EvaluatedClaims-falseNegativeClaims, knextract:EvaluatedClaims-falsePositiveClaims, knextract:EvaluatedClaims-truePositiveClaims .
+
+knextract:EvaluatedClaims-falseNegativeClaims
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "falseNegativeClaims" ;
+    sh:node knextract:ClaimList ;
+    sh:path knextract:falseNegativeClaims .
+
+knextract:EvaluatedClaims-falsePositiveClaims
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "falsePositiveClaims" ;
+    sh:node knextract:ClaimList ;
+    sh:path knextract:falsePositiveClaims .
+
+knextract:EvaluatedClaims-otherClaims
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "otherClaims" ;
+    sh:node knextract:ClaimList ;
+    sh:path knextract:otherClaims .
+
+knextract:EvaluatedClaims-truePositiveClaims
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "truePositiveClaims" ;
+    sh:node knextract:TruePositiveClaimPairList ;
+    sh:path knextract:truePositiveClaims .
 
 knextract:Exception
     shaclmate:name "Exception" ;
@@ -691,8 +738,30 @@ knextract:PostWorkflowExecutionEvent-payload
     sh:maxCount 1 ;
     sh:minCount 1 ;
     sh:name "payload" ;
-    sh:node knextract:WorkflowExecution ;
+    sh:node knextract:PostWorkflowExecutionEventPayload ;
     sh:path knextract:eventPayload .
+
+knextract:PostWorkflowExecutionEventPayload
+    shaclmate:name "PostWorkflowExecutionEventPayload" ;
+    shaclmate:tsFeatureExclude shaclmate:_TsFeature_Rdf, shaclmate:_TsFeature_Sparql ;
+    a sh:NodeShape ;
+    sh:property knextract:PostWorkflowExecutionEventPayload-documentClaims, knextract:PostWorkflowExecutionEventPayload-workflowExecution .
+
+knextract:PostWorkflowExecutionEventPayload-documentClaims
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "documentClaims" ;
+    sh:node knextract:DocumentClaims ;
+    sh:path knextract:documentClaims .
+
+knextract:PostWorkflowExecutionEventPayload-workflowExecution
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "workflowExecution" ;
+    sh:node knextract:WorkflowExecution ;
+    sh:path knextract:workflowExecution .
 
 knextract:PostWorkflowStepExecutionEvent
     shaclmate:name "PostWorkflowStepExecutionEvent" ;
@@ -1351,6 +1420,74 @@ knextract:TextualEntity-encodingType
     sh:minCount 1 ;
     sh:name "encodingType" ;
     sh:path knextract:encodingType .
+
+knextract:TruePositiveClaimPair
+    shaclmate:name "TruePositiveClaimPair" ;
+    shaclmate:tsFeatureExclude shaclmate:_TsFeature_Rdf, shaclmate:_TsFeature_Sparql ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:InformationContentEntity ;
+    sh:property knextract:TruePositiveClaimPair-goldClaim, knextract:TruePositiveClaimPair-inferredClaim .
+
+knextract:TruePositiveClaimPair-goldClaim
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "goldClaim" ;
+    sh:node knextract:Claim ;
+    sh:path knextract:goldClaim .
+
+knextract:TruePositiveClaimPair-inferredClaim
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "inferredClaim" ;
+    sh:node knextract:Claim ;
+    sh:path knextract:inferredClaim .
+
+knextract:TruePositiveClaimPairList
+    shaclmate:name "TruePositiveClaimPairList" ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf rdf:List ;
+    sh:nodeKind sh:IRI ;
+    sh:property knextract:TruePositiveClaimPairList-first, knextract:TruePositiveClaimPairList-rest .
+
+knextract:TruePositiveClaimPairList-first
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "first" ;
+    sh:node knextract:TruePositiveClaimPair ;
+    sh:path rdf:first .
+
+knextract:TruePositiveClaimPairList-rest
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "rest" ;
+    sh:nodeKind sh:IRI ;
+    sh:path rdf:rest ;
+    sh:xone ([
+            sh:class knextract:TruePositiveClaimPairList
+        ]
+        [
+            sh:hasValue ( )
+        ]
+    ) .
+
+knextract:UnevaluatedClaims
+    shaclmate:name "UnevaluatedClaims" ;
+    shaclmate:tsFeatureExclude shaclmate:_TsFeature_Rdf, shaclmate:_TsFeature_Sparql ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:InformationContentEntity ;
+    sh:property knextract:UnevaluatedClaims-claims .
+
+knextract:UnevaluatedClaims-claims
+    a sh:PropertyShape ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "claims" ;
+    sh:node knextract:ClaimList ;
+    sh:path knextract:claims .
 
 knextract:Value
     shaclmate:name "Value" ;

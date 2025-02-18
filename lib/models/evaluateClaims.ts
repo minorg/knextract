@@ -1,11 +1,12 @@
 import { logger } from "@/lib/logger";
 import {
   Claim,
-  ClaimsEvaluation,
+  EvaluatedClaims,
   Identifier,
-  InformationRetrievalMetrics,
+  TruePositiveClaimPair,
   Value,
 } from "@/lib/models";
+import TermSet from "@rdfjs/term-set";
 import { Maybe } from "purify-ts";
 
 function claimEquals(left: Claim, right: Claim): boolean {
@@ -18,19 +19,19 @@ function claimEquals(left: Claim, right: Claim): boolean {
 
 export function evaluateClaims(
   claims: readonly Claim[],
-): Maybe<ClaimsEvaluation> {
-  const claimIdentifiers = new Set<string>();
+): Maybe<EvaluatedClaims> {
+  const claimIdentifiers = new TermSet<Identifier>();
   const uniqueGoldClaims: Claim[] = [];
   const uniqueInferredClaims: Claim[] = [];
   for (const claim of claims) {
-    if (claimIdentifiers.has(Identifier.toString(claim.identifier))) {
+    if (claimIdentifiers.has(claim.identifier)) {
       logger.debug(
         "duplicate claim identifier: %s",
         Identifier.toString(claim.identifier),
       );
       continue;
     }
-    claimIdentifiers.add(Identifier.toString(claim.identifier));
+    claimIdentifiers.add(claim.identifier);
 
     if (claim.gold) {
       if (
@@ -63,36 +64,45 @@ export function evaluateClaims(
     return Maybe.empty();
   }
 
-  let falseNegativeCount = 0;
-  const truePositives: ClaimsEvaluation["truePositives"] = [];
+  const falseNegativeClaims: Claim[] = [];
+  const falsePositiveClaims: Claim[] = [];
+  const truePositiveClaims: TruePositiveClaimPair[] = [];
 
   uniqueGoldClaims.forEach((goldClaim) => {
     for (const inferredClaim of uniqueInferredClaims) {
       if (claimEquals(goldClaim, inferredClaim)) {
         // Gold matched inferred -> true positive
-        truePositives.push({
-          goldClaim: goldClaim.toJson(),
-          inferredClaim: inferredClaim.toJson(),
-        });
+        truePositiveClaims.push(
+          new TruePositiveClaimPair({
+            goldClaim,
+            inferredClaim,
+          }),
+        );
         return;
       }
     }
     // Gold did not match any inferred -> false negative
-    falseNegativeCount++;
+    falseNegativeClaims.push(goldClaim);
   });
-  // Inferred did not correspond to any gold -> false positive
-  const falsePositiveCount =
-    uniqueInferredClaims.length -
-    new Set(
-      truePositives.map((truePositive) => truePositive.inferredClaim["@id"]),
-    ).size;
 
-  return Maybe.of({
-    ...InformationRetrievalMetrics.fromConfusionMatrix({
-      falseNegativeCount,
-      falsePositiveCount,
-      truePositiveCount: truePositives.length,
+  // Inferred did not correspond to any gold -> false positive
+  for (const inferredClaim of uniqueInferredClaims) {
+    if (
+      !truePositiveClaims.some((truePositiveClaimPair) =>
+        truePositiveClaimPair.inferredClaim.identifier.equals(
+          inferredClaim.identifier,
+        ),
+      )
+    ) {
+      falsePositiveClaims.push(inferredClaim);
+    }
+  }
+
+  return Maybe.of(
+    new EvaluatedClaims({
+      falseNegativeClaims,
+      falsePositiveClaims,
+      truePositiveClaims,
     }),
-    truePositives,
-  });
+  );
 }
