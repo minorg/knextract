@@ -202,6 +202,35 @@ export async function behavesLikeModelSet({
     });
   });
 
+  it("claims (gold)", async ({ expect }) => {
+    const expectedModels = (
+      await medlinePlusTestData.modelSet.claims({
+        query: {
+          documentIdentifier: medlinePlusTestData.document.identifier,
+          gold: true,
+          type: "Document",
+        },
+      })
+    ).orDefault([]);
+    expect(expectedModels).not.toHaveLength(0);
+
+    const actualModels = (
+      await immutableModelSet.claims({
+        query: {
+          documentIdentifier: medlinePlusTestData.document.identifier,
+          gold: true,
+          type: "Document",
+        },
+      })
+    ).orDefault([]);
+
+    expect(
+      arrayEquals(expectedModels, actualModels, (left, right) =>
+        left.equals(right),
+      ).extract(),
+    ).toStrictEqual(true);
+  });
+
   it("claims (Medline Plus document)", async ({ expect }) => {
     const expectedModels = (
       await medlinePlusTestData.modelSet.claims({
@@ -227,6 +256,20 @@ export async function behavesLikeModelSet({
         left.equals(right),
       ).extract(),
     ).toStrictEqual(true);
+  });
+
+  it("corpus", async ({ expect }) => {
+    for (const model of (
+      await immutableModelSet.corpusStubs({
+        query: { includeDeleted: true, type: "All" },
+      })
+    ).orDefault([])) {
+      expect(
+        (await immutableModelSet.corpus(model.identifier))
+          .toMaybe()
+          .extractNullable()?.identifier,
+      ).toStrictEqual(model.identifier);
+    }
   });
 
   for (const includeDeleted of [false, true]) {
@@ -278,20 +321,6 @@ export async function behavesLikeModelSet({
         }));
     }
   }
-
-  it("corpus", async ({ expect }) => {
-    for (const model of (
-      await immutableModelSet.corpusStubs({
-        query: { includeDeleted: true, type: "All" },
-      })
-    ).orDefault([])) {
-      expect(
-        (await immutableModelSet.corpus(model.identifier))
-          .toMaybe()
-          .extractNullable()?.identifier,
-      ).toStrictEqual(model.identifier);
-    }
-  });
 
   Object.entries(syntheticTestData.corpora).forEach(([key, corpus]) => {
     it(`deleteModel (Corpus) ${key}`, ({ expect }) =>

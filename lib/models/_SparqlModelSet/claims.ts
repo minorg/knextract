@@ -2,9 +2,11 @@ import { Claim, ClaimQuery } from "@/lib/models";
 import { RdfjsDatasetModelSet } from "@/lib/models/RdfjsDatasetModelSet";
 import { SparqlModelSet } from "@/lib/models/SparqlModelSet";
 import { dataFactory, datasetCoreFactory } from "@/lib/rdfEnvironment";
+import { knextract } from "@/lib/vocabularies";
 import { sparqlRdfTypePattern } from "@kos-kit/models/sparqlRdfTypePattern";
 import { rdf } from "@tpluscode/rdf-ns-builders";
 import { Either, EitherAsync } from "purify-ts";
+import { toRdf } from "rdf-literal";
 import * as sparqljs from "sparqljs";
 
 const claimVariable = dataFactory.variable!("claim");
@@ -23,14 +25,22 @@ function claimQueryToWherePatterns(
     case "All":
       return patterns;
     case "Document": {
+      const triples: sparqljs.Triple[] = [
+        {
+          object: query.documentIdentifier,
+          predicate: rdf.subject,
+          subject: claimVariable,
+        },
+      ];
+      if (typeof query.gold !== "undefined") {
+        triples.push({
+          object: toRdf(query.gold),
+          predicate: knextract.gold,
+          subject: claimVariable,
+        });
+      }
       patterns.push({
-        triples: [
-          {
-            object: query.documentIdentifier,
-            predicate: rdf.subject,
-            subject: claimVariable,
-          },
-        ],
+        triples,
         type: "bgp",
       });
       return patterns;

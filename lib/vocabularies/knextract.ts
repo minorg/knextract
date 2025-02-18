@@ -64,6 +64,7 @@ export interface Knextract {
   // generatedCompletionMessage: NamedNode<"http://purl.archive.org/purl/knextract/ontology#generatedCompletionMessage">;
   // generatedConceptList: NamedNode<"http://purl.archive.org/purl/knextract/ontology#generatedConceptList">;
   // generatedPrompt: NamedNode<"http://purl.archive.org/purl/knextract/ontology#generatedPrompt">;
+  gold: NamedNode<"http://purl.archive.org/purl/knextract/ontology#gold">;
   // ignored: NamedNode<"http://purl.archive.org/purl/knextract/ontology#ignored">;
   // languageModel: NamedNode<"http://purl.archive.org/purl/knextract/ontology#languageModel">;
   // languageModelInvocation: NamedNode<"http://purl.archive.org/purl/knextract/ontology#languageModelInvocation">;

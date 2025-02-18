@@ -35,21 +35,24 @@ export function claimsSync(
               .toList(),
           ),
       ]);
-    case "Document":
-      return sortModelsByIdentifier([
-        ...this.resourceSet
-          .resource(query.documentIdentifier)
-          .valuesOf(rdf.subject)
-          .flatMap((value) => value.toNamedResource().toMaybe().toList())
-          .flatMap((resource) =>
-            Claim.fromRdf({
-              ignoreRdfType: true,
-              languageIn: this.languageIn,
-              resource,
-            })
-              .toMaybe()
-              .toList(),
-          ),
-      ]);
+    case "Document": {
+      let claims = this.resourceSet
+        .resource(query.documentIdentifier)
+        .valuesOf(rdf.subject)
+        .flatMap((value) => value.toNamedResource().toMaybe().toList())
+        .flatMap((resource) =>
+          Claim.fromRdf({
+            ignoreRdfType: true,
+            languageIn: this.languageIn,
+            resource,
+          })
+            .toMaybe()
+            .toList(),
+        );
+      if (typeof query.gold !== "undefined") {
+        claims = claims.filter((claim) => claim.gold === query.gold);
+      }
+      return sortModelsByIdentifier(claims);
+    }
   }
 }

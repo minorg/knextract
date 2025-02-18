@@ -7,5 +7,6 @@ export type ClaimQuery =
   | {
       // Claims on the given document
       readonly documentIdentifier: Identifier;
+      readonly gold?: boolean;
       readonly type: "Document";
     };
