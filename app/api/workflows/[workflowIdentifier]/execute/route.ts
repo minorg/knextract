@@ -116,11 +116,11 @@ export async function POST(
     return requestParametersEither.extract() as Response;
   }
   const {
-    documentStubs,
+    documents,
     locale,
     modelSet,
     skipPreviouslyAnnotatedDocuments,
-    workflowStub,
+    workflow,
   } = requestParametersEither.extract() as RequestParameters;
 
   const responseStream = new ReadableStream({
@@ -133,35 +133,35 @@ export async function POST(
       });
 
       workflowEngine.onAny(async (_eventName, eventData) => {
-        const jsonEventData =
-          await json.WorkflowExecutionEvent.clone(eventData);
         controller.enqueue(
-          textEncoder.encode(`data: ${JSON.stringify(jsonEventData)}\n\n`),
+          textEncoder.encode(`data: ${JSON.stringify(eventData.toJson())}\n\n`),
         );
       });
 
-      for (const documentStub of documentStubs) {
+      for (const document of documents) {
         if (skipPreviouslyAnnotatedDocuments) {
-          const document = (await documentStub.resolve())
-            .toMaybe()
-            .extractNullable();
-          if (document !== null) {
-            const annotations = await (
-              await document.annotations()
-            ).flatResolve();
-            if (annotations.some((annotation) => !annotation.gold)) {
-              logger.info(
-                "skipping previously-annotated document %s",
-                Identifier.toString(documentStub.identifier),
-              );
-              continue;
-            }
+          if (
+            (
+              await modelSet.claims({
+                query: {
+                  documentIdentifier: document.identifier,
+                  gold: false,
+                  type: "Document",
+                },
+              })
+            ).orDefault([]).length > 0
+          ) {
+            logger.info(
+              "skipping previously-annotated document %s",
+              Identifier.toString(document.identifier),
+            );
           }
+          continue;
         }
 
         const workflowExecution = await workflowEngine.execute({
-          documentStub,
-          workflowStub,
+          document,
+          workflow,
         });
 
         await modelSet.addModel(workflowExecution);

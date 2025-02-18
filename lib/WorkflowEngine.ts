@@ -56,11 +56,11 @@ export class WorkflowEngine extends Emittery<EventData> {
   }
 
   async execute({
-    documentStub,
-    workflowStub,
+    document: documentStub,
+    workflow: workflowStub,
   }: {
-    documentStub: DocumentStub;
-    workflowStub: WorkflowStub;
+    document: DocumentStub;
+    workflow: WorkflowStub;
   }): Promise<WorkflowExecution> {
     const startedAtTime = new Date();
 
@@ -219,9 +219,7 @@ export class WorkflowEngine extends Emittery<EventData> {
       output:
         questionnaireAdministration.output.type === "Exception"
           ? questionnaireAdministration.output
-          : new WorkflowQuestionnaireStepExecutionOutput({
-              answers: questionnaireAdministration.output.answers,
-            }),
+          : new WorkflowQuestionnaireStepExecutionOutput({}),
       startedAtTime,
       subProcesses: new WorkflowQuestionnaireStepExecutionSubProcesses({
         questionnaireAdministration,
