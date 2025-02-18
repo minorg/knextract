@@ -681,6 +681,7 @@ knextract:NarrowerTransitiveConceptSelector
 
 knextract:PostWorkflowExecutionEvent
     shaclmate:name "PostWorkflowExecutionEvent" ;
+    shaclmate:tsFeatureExclude shaclmate:_TsFeature_Rdf, shaclmate:_TsFeature_Sparql ;
     a owl:Class, sh:NodeShape ;
     rdfs:subClassOf knextract:BaseEvent ;
     sh:property knextract:PostWorkflowExecutionEvent-payload .
@@ -695,6 +696,7 @@ knextract:PostWorkflowExecutionEvent-payload
 
 knextract:PostWorkflowStepExecutionEvent
     shaclmate:name "PostWorkflowStepExecutionEvent" ;
+    shaclmate:tsFeatureExclude shaclmate:_TsFeature_Rdf, shaclmate:_TsFeature_Sparql ;
     a owl:Class, sh:NodeShape ;
     rdfs:subClassOf knextract:BaseEvent ;
     sh:property knextract:PostWorkflowStepExecutionEvent-payload .
@@ -709,6 +711,7 @@ knextract:PostWorkflowStepExecutionEvent-payload
 
 knextract:PreWorkflowExecutionEvent
     shaclmate:name "PreWorkflowExecutionEvent" ;
+    shaclmate:tsFeatureExclude shaclmate:_TsFeature_Rdf, shaclmate:_TsFeature_Sparql ;
     a owl:Class, sh:NodeShape ;
     rdfs:subClassOf knextract:BaseEvent ;
     sh:property knextract:PreWorkflowExecutionEvent-payload .
@@ -723,6 +726,7 @@ knextract:PreWorkflowExecutionEvent-payload
 
 knextract:PreWorkflowStepExecutionEvent
     shaclmate:name "PreWorkflowStepExecutionEvent" ;
+    shaclmate:tsFeatureExclude shaclmate:_TsFeature_Rdf, shaclmate:_TsFeature_Sparql ;
     a owl:Class, sh:NodeShape ;
     rdfs:subClassOf knextract:BaseEvent ;
     sh:property knextract:PreWorkflowStepExecutionEvent-payload .
@@ -1524,6 +1528,7 @@ knextract:WorkflowExecution-subProcesses
 
 knextract:WorkflowExecutionEvent
     shaclmate:name "WorkflowExecutionEvent" ;
+    shaclmate:tsFeatureExclude shaclmate:_TsFeature_Rdf, shaclmate:_TsFeature_Sparql ;
     a sh:NodeShape ;
     sh:xone (knextract:PostWorkflowExecutionEvent
         knextract:PostWorkflowStepExecutionEvent

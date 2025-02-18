@@ -658,6 +658,8 @@ _:n3-21 <http://www.w3.org/ns/shacl#node> <http://purl.archive.org/purl/knextrac
 <http://purl.archive.org/purl/knextract/ontology#PostWorkflowExecutionEvent> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#NodeShape> .
 <http://purl.archive.org/purl/knextract/ontology#PostWorkflowExecutionEvent> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://purl.archive.org/purl/knextract/ontology#BaseEvent> .
 <http://purl.archive.org/purl/knextract/ontology#PostWorkflowExecutionEvent> <http://www.w3.org/ns/shacl#property> <http://purl.archive.org/purl/knextract/ontology#PostWorkflowExecutionEvent-payload> .
+<http://purl.archive.org/purl/knextract/ontology#PostWorkflowExecutionEvent> <http://minorg.github.io/shaclmate/ns#tsFeatureExclude> <http://minorg.github.io/shaclmate/ns#_TsFeature_Rdf> .
+<http://purl.archive.org/purl/knextract/ontology#PostWorkflowExecutionEvent> <http://minorg.github.io/shaclmate/ns#tsFeatureExclude> <http://minorg.github.io/shaclmate/ns#_TsFeature_Sparql> .
 <http://purl.archive.org/purl/knextract/ontology#PostWorkflowExecutionEvent-payload> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#PropertyShape> .
 <http://purl.archive.org/purl/knextract/ontology#PostWorkflowExecutionEvent-payload> <http://www.w3.org/ns/shacl#maxCount> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
 <http://purl.archive.org/purl/knextract/ontology#PostWorkflowExecutionEvent-payload> <http://www.w3.org/ns/shacl#minCount> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
@@ -676,6 +678,8 @@ _:n3-21 <http://www.w3.org/ns/shacl#node> <http://purl.archive.org/purl/knextrac
 <http://purl.archive.org/purl/knextract/ontology#PostWorkflowStepExecutionEvent> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#NodeShape> .
 <http://purl.archive.org/purl/knextract/ontology#PostWorkflowStepExecutionEvent> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://purl.archive.org/purl/knextract/ontology#BaseEvent> .
 <http://purl.archive.org/purl/knextract/ontology#PostWorkflowStepExecutionEvent> <http://www.w3.org/ns/shacl#property> <http://purl.archive.org/purl/knextract/ontology#PostWorkflowStepExecutionEvent-payload> .
+<http://purl.archive.org/purl/knextract/ontology#PostWorkflowStepExecutionEvent> <http://minorg.github.io/shaclmate/ns#tsFeatureExclude> <http://minorg.github.io/shaclmate/ns#_TsFeature_Rdf> .
+<http://purl.archive.org/purl/knextract/ontology#PostWorkflowStepExecutionEvent> <http://minorg.github.io/shaclmate/ns#tsFeatureExclude> <http://minorg.github.io/shaclmate/ns#_TsFeature_Sparql> .
 <http://purl.archive.org/purl/knextract/ontology#PostWorkflowStepExecutionEvent-payload> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#PropertyShape> .
 <http://purl.archive.org/purl/knextract/ontology#PostWorkflowStepExecutionEvent-payload> <http://www.w3.org/ns/shacl#maxCount> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
 <http://purl.archive.org/purl/knextract/ontology#PostWorkflowStepExecutionEvent-payload> <http://www.w3.org/ns/shacl#minCount> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
@@ -690,6 +694,8 @@ _:n3-21 <http://www.w3.org/ns/shacl#node> <http://purl.archive.org/purl/knextrac
 <http://purl.archive.org/purl/knextract/ontology#PreWorkflowExecutionEvent> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#NodeShape> .
 <http://purl.archive.org/purl/knextract/ontology#PreWorkflowExecutionEvent> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://purl.archive.org/purl/knextract/ontology#BaseEvent> .
 <http://purl.archive.org/purl/knextract/ontology#PreWorkflowExecutionEvent> <http://www.w3.org/ns/shacl#property> <http://purl.archive.org/purl/knextract/ontology#PreWorkflowExecutionEvent-payload> .
+<http://purl.archive.org/purl/knextract/ontology#PreWorkflowExecutionEvent> <http://minorg.github.io/shaclmate/ns#tsFeatureExclude> <http://minorg.github.io/shaclmate/ns#_TsFeature_Rdf> .
+<http://purl.archive.org/purl/knextract/ontology#PreWorkflowExecutionEvent> <http://minorg.github.io/shaclmate/ns#tsFeatureExclude> <http://minorg.github.io/shaclmate/ns#_TsFeature_Sparql> .
 <http://purl.archive.org/purl/knextract/ontology#PreWorkflowExecutionEvent-payload> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#PropertyShape> .
 <http://purl.archive.org/purl/knextract/ontology#PreWorkflowExecutionEvent-payload> <http://www.w3.org/ns/shacl#maxCount> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
 <http://purl.archive.org/purl/knextract/ontology#PreWorkflowExecutionEvent-payload> <http://www.w3.org/ns/shacl#minCount> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
@@ -707,6 +713,8 @@ _:n3-21 <http://www.w3.org/ns/shacl#node> <http://purl.archive.org/purl/knextrac
 <http://purl.archive.org/purl/knextract/ontology#PreWorkflowStepExecutionEvent> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#NodeShape> .
 <http://purl.archive.org/purl/knextract/ontology#PreWorkflowStepExecutionEvent> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://purl.archive.org/purl/knextract/ontology#BaseEvent> .
 <http://purl.archive.org/purl/knextract/ontology#PreWorkflowStepExecutionEvent> <http://www.w3.org/ns/shacl#property> <http://purl.archive.org/purl/knextract/ontology#PreWorkflowStepExecutionEvent-payload> .
+<http://purl.archive.org/purl/knextract/ontology#PreWorkflowStepExecutionEvent> <http://minorg.github.io/shaclmate/ns#tsFeatureExclude> <http://minorg.github.io/shaclmate/ns#_TsFeature_Rdf> .
+<http://purl.archive.org/purl/knextract/ontology#PreWorkflowStepExecutionEvent> <http://minorg.github.io/shaclmate/ns#tsFeatureExclude> <http://minorg.github.io/shaclmate/ns#_TsFeature_Sparql> .
 <http://purl.archive.org/purl/knextract/ontology#PreWorkflowStepExecutionEvent-payload> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#PropertyShape> .
 <http://purl.archive.org/purl/knextract/ontology#PreWorkflowStepExecutionEvent-payload> <http://www.w3.org/ns/shacl#maxCount> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
 <http://purl.archive.org/purl/knextract/ontology#PreWorkflowStepExecutionEvent-payload> <http://www.w3.org/ns/shacl#minCount> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
@@ -1381,6 +1389,8 @@ _:n3-80 <http://www.w3.org/ns/shacl#node> <http://purl.archive.org/purl/knextrac
 <http://purl.archive.org/purl/knextract/ontology#WorkflowExecutionEvent> <http://minorg.github.io/shaclmate/ns#name> "WorkflowExecutionEvent" .
 <http://purl.archive.org/purl/knextract/ontology#WorkflowExecutionEvent> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#NodeShape> .
 <http://purl.archive.org/purl/knextract/ontology#WorkflowExecutionEvent> <http://www.w3.org/ns/shacl#xone> _:n3-81 .
+<http://purl.archive.org/purl/knextract/ontology#WorkflowExecutionEvent> <http://minorg.github.io/shaclmate/ns#tsFeatureExclude> <http://minorg.github.io/shaclmate/ns#_TsFeature_Rdf> .
+<http://purl.archive.org/purl/knextract/ontology#WorkflowExecutionEvent> <http://minorg.github.io/shaclmate/ns#tsFeatureExclude> <http://minorg.github.io/shaclmate/ns#_TsFeature_Sparql> .
 _:n3-81 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://purl.archive.org/purl/knextract/ontology#PostWorkflowExecutionEvent> .
 _:n3-81 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:n3-82 .
 _:n3-82 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://purl.archive.org/purl/knextract/ontology#PostWorkflowStepExecutionEvent> .
