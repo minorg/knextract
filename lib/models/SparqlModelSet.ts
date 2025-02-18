@@ -18,19 +18,25 @@ export class SparqlModelSet extends SparqlKos implements ModelSet {
   claimProperties = _SparqlModelSet.claimProperties;
   claims = _SparqlModelSet.claims;
   corpus = _SparqlModelSet.corpus;
+  corpusStub = _SparqlModelSet.corpusStub;
   corpusStubs = _SparqlModelSet.corpusStubs;
   document = _SparqlModelSet.document;
+  documentStub = _SparqlModelSet.documentStub;
   documentStubs = _SparqlModelSet.documentStubs;
   documentsCount = _SparqlModelSet.documentsCount;
   languageModelSpecification = _SparqlModelSet.languageModelSpecification;
   languageModelSpecifications = _SparqlModelSet.languageModelSpecifications;
+  languageModelSpecificationStub =
+    _SparqlModelSet.languageModelSpecificationStub;
   languageModelSpecificationStubs =
     _SparqlModelSet.languageModelSpecificationStubs;
   private readonly sparqlGraphStoreClient: SparqlGraphStoreClient;
   private readonly sparqlUpdateClient: SparqlUpdateClient;
   workflow = _SparqlModelSet.workflow;
   workflowExecution = _SparqlModelSet.workflowExecution;
+  workflowExecutionStub = _SparqlModelSet.workflowExecutionStub;
   workflowExecutionStubs = _SparqlModelSet.workflowExecutionStubs;
+  workflowStub = _SparqlModelSet.workflowStub;
   workflowStubs = _SparqlModelSet.workflowStubs;
 
   constructor({
