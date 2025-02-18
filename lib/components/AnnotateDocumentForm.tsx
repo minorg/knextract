@@ -36,10 +36,7 @@ export function AnnotateDocumentForm({
   workflows: workflowsJson,
 }: {
   document: ReturnType<DocumentStub["toJson"]>;
-  onAnnotateDocument: (kwds: {
-    claims: readonly ReturnType<Claim["toJson"]>[];
-    claimsEvaluation: ClaimsEvaluation | null;
-  }) => void;
+  onAnnotateDocument: (claims: readonly ReturnType<Claim["toJson"]>[]) => void;
   workflows: readonly ReturnType<WorkflowStub["toJson"]>[];
 }) {
   const apiClient = useMemo(() => new ApiClient(), []);
@@ -165,7 +162,7 @@ export function AnnotateDocumentForm({
             title={translations("Cumulative annotations")}
           >
             <DocumentAnnotationsDataTable
-              annotations={workflowPostExecutionEvent.cumulativeAnnotations}
+              annotations={workflowPostExecutionEvent. }
               annotationsEvaluation={
                 workflowPostExecutionEvent.cumulativeAnnotationsEvaluation
               }

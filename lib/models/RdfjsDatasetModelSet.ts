@@ -29,10 +29,14 @@ export class RdfjsDatasetModelSet extends RdfjsDatasetKos implements ModelSet {
   claims = _RdfjsDatasetModelSet.claims;
   claimsSync = _RdfjsDatasetModelSet.claimsSync;
   corpus = _RdfjsDatasetModelSet.corpus;
+  corpusStub = _RdfjsDatasetModelSet.corpusStub;
+  corpusStubSync = _RdfjsDatasetModelSet.corpusStubSync;
   corpusStubs = _RdfjsDatasetModelSet.corpusStubs;
   corpusStubsSync = _RdfjsDatasetModelSet.corpusStubsSync;
   corpusSync = _RdfjsDatasetModelSet.corpusSync;
   document = _RdfjsDatasetModelSet.document;
+  documentStub = _RdfjsDatasetModelSet.documentStub;
+  documentStubSync = _RdfjsDatasetModelSet.documentStubSync;
   documentStubs = _RdfjsDatasetModelSet.documentStubs;
   documentStubsSync = _RdfjsDatasetModelSet.documentStubsSync;
   documentSync = _RdfjsDatasetModelSet.documentSync;
@@ -45,6 +49,10 @@ export class RdfjsDatasetModelSet extends RdfjsDatasetKos implements ModelSet {
     _RdfjsDatasetModelSet.languageModelSpecifications;
   languageModelSpecificationsSync =
     _RdfjsDatasetModelSet.languageModelSpecificationsSync;
+  languageModelSpecificationStub =
+    _RdfjsDatasetModelSet.languageModelSpecificationStub;
+  languageModelSpecificationStubSync =
+    _RdfjsDatasetModelSet.languageModelSpecificationStubSync;
   languageModelSpecificationStubs =
     _RdfjsDatasetModelSet.languageModelSpecificationStubs;
   languageModelSpecificationStubsSync =
@@ -52,9 +60,13 @@ export class RdfjsDatasetModelSet extends RdfjsDatasetKos implements ModelSet {
   readonly mutableResourceSet: MutableResourceSet;
   workflow = _RdfjsDatasetModelSet.workflow;
   workflowExecution = _RdfjsDatasetModelSet.workflowExecution;
+  workflowExecutionStub = _RdfjsDatasetModelSet.workflowExecutionStub;
+  workflowExecutionStubSync = _RdfjsDatasetModelSet.workflowExecutionStubSync;
   workflowExecutionStubs = _RdfjsDatasetModelSet.workflowExecutionStubs;
   workflowExecutionStubsSync = _RdfjsDatasetModelSet.workflowExecutionStubsSync;
   workflowExecutionSync = _RdfjsDatasetModelSet.workflowExecutionSync;
+  workflowStub = _RdfjsDatasetModelSet.workflowStub;
+  workflowStubSync = _RdfjsDatasetModelSet.workflowStubSync;
   workflowStubs = _RdfjsDatasetModelSet.workflowStubs;
   workflowStubsSync = _RdfjsDatasetModelSet.workflowStubsSync;
   workflowSync = _RdfjsDatasetModelSet.workflowSync;

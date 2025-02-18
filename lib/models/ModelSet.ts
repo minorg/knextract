@@ -50,6 +50,7 @@ export interface ModelSet extends Kos {
   clear(): Promise<Either<Error, null>>;
 
   corpus(identifier: Identifier): Promise<Either<Error, Corpus>>;
+  corpusStub(identifier: Identifier): Promise<Either<Error, CorpusStub>>;
   corpusStubs(kwds: { query: CorpusQuery }): Promise<
     Either<Error, readonly CorpusStub[]>
   >;
@@ -62,6 +63,7 @@ export interface ModelSet extends Kos {
   deleteModel(model: ModelSet.DeletableModel): Promise<Either<Error, null>>;
 
   document(identifier: Identifier): Promise<Either<Error, Document>>;
+  documentStub(identifier: Identifier): Promise<Either<Error, DocumentStub>>;
   documentStubs(parameters: {
     limit: number | null;
     offset: number;
@@ -77,6 +79,9 @@ export interface ModelSet extends Kos {
   languageModelSpecifications(): Promise<
     Either<Error, readonly LanguageModelSpecification[]>
   >;
+  languageModelSpecificationStub(
+    identifier: Identifier,
+  ): Promise<Either<Error, LanguageModelSpecificationStub>>;
   languageModelSpecificationStubs(): Promise<
     Either<Error, readonly LanguageModelSpecificationStub[]>
   >;
@@ -92,10 +97,14 @@ export interface ModelSet extends Kos {
     identifier: Identifier,
   ): Promise<Either<Error, WorkflowExecution>>;
 
+  workflowExecutionStub(
+    identifier: Identifier,
+  ): Promise<Either<Error, WorkflowExecutionStub>>;
   workflowExecutionStubs(parameters: {
     query: WorkflowExecutionQuery;
   }): Promise<Either<Error, readonly WorkflowExecutionStub[]>>;
 
+  workflowStub(identifier: Identifier): Promise<Either<Error, WorkflowStub>>;
   workflowStubs(parameters: {
     query: WorkflowQuery;
   }): Promise<Either<Error, readonly WorkflowStub[]>>;

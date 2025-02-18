@@ -258,18 +258,32 @@ export async function behavesLikeModelSet({
     ).toStrictEqual(true);
   });
 
-  it("corpus", async ({ expect }) => {
-    for (const model of (
-      await immutableModelSet.corpusStubs({
-        query: { includeDeleted: true, type: "All" },
-      })
-    ).orDefault([])) {
-      expect(
-        (await immutableModelSet.corpus(model.identifier))
-          .toMaybe()
-          .extractNullable()?.identifier,
-      ).toStrictEqual(model.identifier);
-    }
+  Object.entries(syntheticTestData.corpora).forEach(([key, expectedModel]) => {
+    it(`corpus ${key}`, ({ expect }) => {
+      withEmptyMutableModelSet(async (modelSet) => {
+        await modelSet.addModel(expectedModel);
+        expect(
+          (await modelSet.corpus(expectedModel.identifier))
+            .unsafeCoerce()
+            .equals(expectedModel)
+            .extract(),
+        ).toStrictEqual(true);
+      });
+    });
+  });
+
+  Object.entries(syntheticTestData.corpora).forEach(([key, expectedModel]) => {
+    it(`corpusStub ${key}`, ({ expect }) => {
+      withEmptyMutableModelSet(async (modelSet) => {
+        await modelSet.addModel(expectedModel);
+        expect(
+          (await modelSet.corpusStub(expectedModel.identifier))
+            .unsafeCoerce()
+            .equals(stubify(expectedModel))
+            .extract(),
+        ).toStrictEqual(true);
+      });
+    });
   });
 
   for (const includeDeleted of [false, true]) {
@@ -322,49 +336,69 @@ export async function behavesLikeModelSet({
     }
   }
 
-  Object.entries(syntheticTestData.corpora).forEach(([key, corpus]) => {
+  Object.entries(syntheticTestData.corpora).forEach(([key, syntheticModel]) => {
     it(`deleteModel (Corpus) ${key}`, ({ expect }) =>
       testDeleteModel({
         expect,
-        getModelFromModelSet: (modelSet) => modelSet.corpus(corpus.identifier),
-        syntheticModel: corpus,
-      }));
-  });
-
-  Object.entries(syntheticTestData.documents).forEach(([key, document]) => {
-    it(`deleteModel (Document) ${key}`, ({ expect }) =>
-      testDeleteModel({
-        expect,
         getModelFromModelSet: (modelSet) =>
-          modelSet.document(document.identifier),
-        syntheticModel: document,
+          modelSet.corpus(syntheticModel.identifier),
+        syntheticModel,
       }));
   });
 
-  Object.entries(syntheticTestData.workflows).forEach(
-    ([workflowName, workflow]) => {
-      it(`deleteModel (Workflow) ${workflowName}`, ({ expect }) =>
+  Object.entries(syntheticTestData.documents).forEach(
+    ([key, syntheticModel]) => {
+      it(`deleteModel (Document) ${key}`, ({ expect }) =>
         testDeleteModel({
           expect,
           getModelFromModelSet: (modelSet) =>
-            modelSet.workflow(workflow.identifier),
-          syntheticModel: workflow,
+            modelSet.document(syntheticModel.identifier),
+          syntheticModel,
         }));
     },
   );
 
-  Object.entries(syntheticTestData.documents).forEach(([key, document]) => {
-    it(`document ${key}`, async ({ expect }) =>
-      withEmptyMutableModelSet(async (modelSet) => {
-        await modelSet.addModel(document);
-        expect(
-          (await modelSet.document(document.identifier))
-            .unsafeCoerce()
-            .equals(document)
-            .extract(),
-        ).toStrictEqual(true);
-      }));
-  });
+  Object.entries(syntheticTestData.workflows).forEach(
+    ([key, syntheticModel]) => {
+      it(`deleteModel (Workflow) ${key}`, ({ expect }) =>
+        testDeleteModel({
+          expect,
+          getModelFromModelSet: (modelSet) =>
+            modelSet.workflow(syntheticModel.identifier),
+          syntheticModel,
+        }));
+    },
+  );
+
+  Object.entries(syntheticTestData.documents).forEach(
+    ([key, expectedModel]) => {
+      it(`document ${key}`, async ({ expect }) =>
+        withEmptyMutableModelSet(async (modelSet) => {
+          await modelSet.addModel(expectedModel);
+          expect(
+            (await modelSet.document(expectedModel.identifier))
+              .unsafeCoerce()
+              .equals(expectedModel)
+              .extract(),
+          ).toStrictEqual(true);
+        }));
+    },
+  );
+
+  Object.entries(syntheticTestData.documents).forEach(
+    ([key, expectedModel]) => {
+      it(`documentStub ${key}`, async ({ expect }) =>
+        withEmptyMutableModelSet(async (modelSet) => {
+          await modelSet.addModel(expectedModel);
+          expect(
+            (await modelSet.document(expectedModel.identifier))
+              .unsafeCoerce()
+              .equals(expectedModel)
+              .extract(),
+          ).toStrictEqual(true);
+        }));
+    },
+  );
 
   for (const includeDeleted of [false, true]) {
     for (const queryType of ["All", "Identifiers", "MemberOfCorpus"] as const) {
@@ -477,6 +511,22 @@ export async function behavesLikeModelSet({
     ).toStrictEqual(true);
   });
 
+  it("languageModelSpecificationStub", async ({ expect }) => {
+    const expectedModel = stubify(
+      medlinePlusTestData.languageModelSpecification,
+    );
+    const actualModel = (
+      await immutableModelSet.languageModelSpecificationStub(
+        expectedModel.identifier,
+      )
+    )
+      .toMaybe()
+      .extractNullable();
+    expect(actualModel).not.toBeNull();
+    const equalsResult = actualModel!.equals(expectedModel).extract();
+    expect(equalsResult).toStrictEqual(true);
+  });
+
   it("languageModelSpecificationStubs", async ({ expect }) => {
     const actualModels = (
       await immutableModelSet.languageModelSpecificationStubs()
@@ -493,8 +543,8 @@ export async function behavesLikeModelSet({
   });
 
   Object.entries(syntheticTestData.workflows).forEach(
-    ([workflowName, expectedModel]) => {
-      it(`workflow ${workflowName}`, async ({ expect }) =>
+    ([key, expectedModel]) => {
+      it(`workflow ${key}`, async ({ expect }) =>
         withEmptyMutableModelSet(async (modelSet) => {
           expect(await modelSet.isEmpty()).toStrictEqual(true);
           await modelSet.addModel(expectedModel);
@@ -507,6 +557,25 @@ export async function behavesLikeModelSet({
           expect(actualModel!.equals(expectedModel).extract()).toStrictEqual(
             true,
           );
+        }));
+    },
+  );
+
+  Object.entries(syntheticTestData.workflows).forEach(
+    ([key, expectedModel]) => {
+      it(`workflowStub ${key}`, async ({ expect }) =>
+        withEmptyMutableModelSet(async (modelSet) => {
+          expect(await modelSet.isEmpty()).toStrictEqual(true);
+          await modelSet.addModel(expectedModel);
+          const actualModel = (
+            await modelSet.workflowStub(expectedModel.identifier)
+          )
+            .toMaybe()
+            .extractNullable();
+          expect(actualModel).not.toBeNull();
+          expect(
+            actualModel!.equals(stubify(expectedModel)).extract(),
+          ).toStrictEqual(true);
         }));
     },
   );
@@ -564,8 +633,8 @@ export async function behavesLikeModelSet({
   }
 
   Object.entries(syntheticTestData.workflowExecutions).forEach(
-    ([workflowExecutionName, expectedModel]) => {
-      it(`workflowExecution ${workflowExecutionName}`, async ({ expect }) =>
+    ([key, expectedModel]) => {
+      it(`workflowExecution ${key}`, async ({ expect }) =>
         withEmptyMutableModelSet(async (modelSet) => {
           expect(await modelSet.isEmpty()).toStrictEqual(true);
           await modelSet.addModel(expectedModel);
@@ -578,6 +647,25 @@ export async function behavesLikeModelSet({
           expect(actualModel!.equals(expectedModel).extract()).toStrictEqual(
             true,
           );
+        }));
+    },
+  );
+
+  Object.entries(syntheticTestData.workflowExecutions).forEach(
+    ([key, expectedModel]) => {
+      it(`workflowExecutionStub ${key}`, async ({ expect }) =>
+        withEmptyMutableModelSet(async (modelSet) => {
+          expect(await modelSet.isEmpty()).toStrictEqual(true);
+          await modelSet.addModel(expectedModel);
+          const actualModel = (
+            await modelSet.workflowExecutionStub(expectedModel.identifier)
+          )
+            .toMaybe()
+            .extractNullable();
+          expect(actualModel).not.toBeNull();
+          expect(
+            actualModel!.equals(stubify(expectedModel)).extract(),
+          ).toStrictEqual(true);
         }));
     },
   );

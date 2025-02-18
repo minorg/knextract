@@ -1,16 +1,14 @@
 import { project } from "@/app/project";
 import { WorkflowEngine } from "@/lib/WorkflowEngine";
-import { ConceptAnnotatorFactory } from "@/lib/annotators";
 import { logger } from "@/lib/logger";
 import {
-  Document,
+  DocumentStub,
   Identifier,
   Locale,
   ModelSet,
-  Stub,
-  Workflow,
+  WorkflowStub,
+  stubify,
 } from "@/lib/models";
-import { json } from "@/lib/models/impl";
 import { decodeFileName } from "@kos-kit/next-utils";
 import { Either, Left, Right } from "purify-ts";
 import { z } from "zod";
@@ -23,10 +21,11 @@ const requestBodySchema = z.object({
 });
 
 interface RequestParameters {
-  documentStubs: Iterable<Stub<Document>>;
+  documents: readonly DocumentStub[];
+  locale: Locale;
   modelSet: ModelSet;
   skipPreviouslyAnnotatedDocuments: boolean;
-  workflowStub: Stub<Workflow>;
+  workflow: WorkflowStub;
 }
 
 async function readRequestParameters(
@@ -46,32 +45,40 @@ async function readRequestParameters(
   const locale = requestBody.locale as Locale;
   const modelSet = await project.modelSet({ locale });
 
-  let documentStubs: Iterable<Stub<Document>>;
+  let documents: readonly DocumentStub[];
   if (requestBody?.corpusIdentifier) {
     const corpusIdentifier = Identifier.fromString(
       requestBody.corpusIdentifier,
     );
-    const corpus = (await modelSet.corpus(corpusIdentifier).resolve())
-      .toMaybe()
-      .extractNullable();
-    if (corpus === null) {
-      logger.warn("no such corpus: %s", Identifier.toString(corpusIdentifier));
-      return Left(
-        new Response(
-          `no such corpus: ${Identifier.toString(corpusIdentifier)}`,
-          { status: 404 },
-        ),
-      );
-    }
-    documentStubs = await corpus.documents({
-      includeDeleted: false,
+    const documentsEither = await modelSet.documentStubs({
       limit: null,
       offset: 0,
+      query: {
+        includeDeleted: false,
+        corpusIdentifier,
+        type: "MemberOfCorpus",
+      },
     });
+    if (documentsEither.isLeft()) {
+      logger.warn(
+        "error retrieving documents: %s",
+        (documentsEither.extract() as Error).message,
+      );
+      return Left(new Response("error retrieving documents", { status: 500 }));
+    }
+    documents = documentsEither.unsafeCoerce();
   } else if (requestBody?.documentIdentifier) {
-    documentStubs = [
-      modelSet.document(Identifier.fromString(requestBody.documentIdentifier)),
-    ];
+    const documentEither = await modelSet.documentStub(
+      Identifier.fromString(requestBody.documentIdentifier),
+    );
+    if (documentEither.isLeft()) {
+      logger.warn(
+        "error retrieving document: %s",
+        (documentEither.extract() as Error).message,
+      );
+      return Left(new Response("error retrieving document", { status: 500 }));
+    }
+    documents = [documentEither.unsafeCoerce()];
   } else {
     logger.warn("request does not specify a corpus or document identifier");
     return Left(
@@ -79,16 +86,24 @@ async function readRequestParameters(
     );
   }
 
-  const workflowStub = modelSet.workflow(
+  const workflowEither = await modelSet.workflowStub(
     Identifier.fromString(decodeFileName(params.workflowIdentifier)),
   );
+  if (workflowEither.isLeft()) {
+    logger.warn(
+      "error retrieving workflow: %s",
+      (workflowEither.extract() as Error).message,
+    );
+    return Left(new Response("error retrieving workflow", { status: 500 }));
+  }
 
   return Right({
-    documentStubs,
+    documents,
+    locale,
     modelSet,
     skipPreviouslyAnnotatedDocuments:
       !!requestBody.skipPreviouslyAnnotatedDocuments,
-    workflowStub,
+    workflow: workflowEither.unsafeCoerce(),
   });
 }
 
@@ -102,6 +117,7 @@ export async function POST(
   }
   const {
     documentStubs,
+    locale,
     modelSet,
     skipPreviouslyAnnotatedDocuments,
     workflowStub,
@@ -112,9 +128,8 @@ export async function POST(
       const textEncoder = new TextEncoder();
 
       const workflowEngine = new WorkflowEngine({
-        annotatorFactory: new ConceptAnnotatorFactory({
-          languageModelFactory: await project.languageModelFactory(),
-        }),
+        languageModelFactory: await project.languageModelFactory(),
+        modelSet: await project.modelSet({ locale }),
       });
 
       workflowEngine.onAny(async (_eventName, eventData) => {

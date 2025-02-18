@@ -5,7 +5,6 @@ import { DocumentClaimsDataTable } from "@/lib/components/DocumentClaimsDataTabl
 import {
   Claim,
   ClaimsEvaluation,
-  Document,
   DocumentStub,
   WorkflowStub,
 } from "@/lib/models";
