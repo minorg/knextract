@@ -1,7 +1,7 @@
 import { ClientProvidersServer } from "@/lib/components/ClientProvidersServer";
 import { ConceptSelectorViewer } from "@/lib/components/ConceptSelectorViewer";
 import { ConceptsDataTable } from "@/lib/components/ConceptsDataTable";
-import { DocumentAnnotationsDataTable } from "@/lib/components/DocumentAnnotationsDataTable";
+import { DocumentAnnotationsDataTable } from "@/lib/components/DocumentClaimsDataTable";
 import { ProcessViewer } from "@/lib/components/ProcessViewer";
 import { PromptTemplateViewer } from "@/lib/components/PromptTemplateViewer";
 import { QuestionnaireViewer } from "@/lib/components/QuestionnaireViewer";

@@ -1,5 +1,5 @@
 import { ClientProvidersServer } from "@/lib/components/ClientProvidersServer";
-import { DocumentAnnotationsDataTable } from "@/lib/components/DocumentAnnotationsDataTable";
+import { DocumentAnnotationsDataTable } from "@/lib/components/DocumentClaimsDataTable";
 import { DocumentViewer } from "@/lib/components/DocumentViewer";
 import { Link } from "@/lib/components/Link";
 import { ProcessViewer } from "@/lib/components/ProcessViewer";

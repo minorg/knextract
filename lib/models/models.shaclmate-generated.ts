@@ -2429,18 +2429,15 @@ export namespace ProcessOutput {
   }
 }
 export class WorkflowQuestionnaireStepExecutionOutput extends ProcessOutput {
-  readonly answers: readonly Answer[];
   private _identifier: rdfjs.NamedNode | undefined;
   override readonly type = "WorkflowQuestionnaireStepExecutionOutput";
 
   constructor(
     parameters: {
-      readonly answers: readonly Answer[];
       readonly identifier?: rdfjs.NamedNode | string;
     } & ConstructorParameters<typeof ProcessOutput>[0],
   ) {
     super(parameters);
-    this.answers = parameters.answers;
     if (typeof parameters.identifier === "object") {
       this._identifier = parameters.identifier;
     } else if (typeof parameters.identifier === "string") {
@@ -2457,52 +2454,6 @@ export class WorkflowQuestionnaireStepExecutionOutput extends ProcessOutput {
       );
     }
     return this._identifier;
-  }
-
-  override equals(
-    other: WorkflowQuestionnaireStepExecutionOutput,
-  ): EqualsResult {
-    return super
-      .equals(other)
-      .chain(() =>
-        ((left, right) =>
-          arrayEquals(left, right, (left, right) => left.equals(right)))(
-          this.answers,
-          other.answers,
-        ).mapLeft((propertyValuesUnequal) => ({
-          left: this,
-          right: other,
-          propertyName: "answers",
-          propertyValuesUnequal,
-          type: "Property" as const,
-        })),
-      );
-  }
-
-  override hash<
-    HasherT extends {
-      update: (message: string | number[] | ArrayBuffer | Uint8Array) => void;
-    },
-  >(_hasher: HasherT): HasherT {
-    super.hash(_hasher);
-    for (const _element0 of this.answers) {
-      _element0.hash(_hasher);
-    }
-
-    return _hasher;
-  }
-
-  override toJson(): {
-    readonly answers: readonly ReturnType<Answer["toJson"]>[];
-  } & ReturnType<ProcessOutput["toJson"]> {
-    return JSON.parse(
-      JSON.stringify({
-        ...super.toJson(),
-        answers: this.answers.map((_item) => _item.toJson()),
-      } satisfies ReturnType<
-        WorkflowQuestionnaireStepExecutionOutput["toJson"]
-      >),
-    );
   }
 
   override toRdf({
@@ -2530,76 +2481,6 @@ export class WorkflowQuestionnaireStepExecutionOutput extends ProcessOutput {
       );
     }
 
-    _resource.add(
-      dataFactory.namedNode(
-        "http://purl.archive.org/purl/knextract/ontology#answers",
-      ),
-      this.answers.reduce(
-        ({ currentSubListResource, listResource }, item, itemIndex, list) => {
-          if (itemIndex === 0) {
-            currentSubListResource = listResource;
-          } else {
-            const newSubListResource = resourceSet.mutableNamedResource({
-              identifier: dataFactory.namedNode(
-                `${listResource.identifier.value}:${itemIndex}`,
-              ),
-              mutateGraph,
-            });
-            currentSubListResource!.add(
-              dataFactory.namedNode(
-                "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest",
-              ),
-              newSubListResource.identifier,
-            );
-            currentSubListResource = newSubListResource;
-          }
-
-          currentSubListResource.add(
-            dataFactory.namedNode(
-              "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
-            ),
-            dataFactory.namedNode(
-              "http://purl.archive.org/purl/knextract/ontology#AnswerList",
-            ),
-          );
-
-          currentSubListResource.add(
-            dataFactory.namedNode(
-              "http://www.w3.org/1999/02/22-rdf-syntax-ns#first",
-            ),
-            item.toRdf({ mutateGraph: mutateGraph, resourceSet: resourceSet }),
-          );
-
-          if (itemIndex + 1 === list.length) {
-            currentSubListResource.add(
-              dataFactory.namedNode(
-                "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest",
-              ),
-              dataFactory.namedNode(
-                "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil",
-              ),
-            );
-          }
-
-          return { currentSubListResource, listResource };
-        },
-        {
-          currentSubListResource: null,
-          listResource: resourceSet.mutableNamedResource({
-            identifier: dataFactory.namedNode(
-              `urn:shaclmate:list:${this.answers.reduce((_hasher, _item) => {
-                _item.hash(_hasher);
-                return _hasher;
-              }, sha256.create())}`,
-            ),
-            mutateGraph,
-          }),
-        } as {
-          currentSubListResource: rdfjsResource.MutableResource<rdfjs.NamedNode> | null;
-          listResource: rdfjsResource.MutableResource<rdfjs.NamedNode>;
-        },
-      ).listResource.identifier,
-    );
     return _resource;
   }
 
@@ -2613,7 +2494,7 @@ export namespace WorkflowQuestionnaireStepExecutionOutput {
     _json: unknown,
   ): purify.Either<
     zod.ZodError,
-    { answers: readonly Answer[]; identifier: rdfjs.NamedNode } & UnwrapR<
+    { identifier: rdfjs.NamedNode } & UnwrapR<
       ReturnType<typeof ProcessOutput.propertiesFromJson>
     >
   > {
@@ -2630,11 +2511,8 @@ export namespace WorkflowQuestionnaireStepExecutionOutput {
     }
 
     const _super0 = _super0Either.unsafeCoerce();
-    const answers = _jsonObject["answers"].map((_item) =>
-      Answer.fromJson(_item).unsafeCoerce(),
-    );
     const identifier = dataFactory.namedNode(_jsonObject["@id"]);
-    return purify.Either.of({ ..._super0, answers, identifier });
+    return purify.Either.of({ ..._super0, identifier });
   }
 
   export function fromJson(
@@ -2660,7 +2538,7 @@ export namespace WorkflowQuestionnaireStepExecutionOutput {
     resource: rdfjsResource.Resource<rdfjs.NamedNode>;
   }): purify.Either<
     rdfjsResource.Resource.ValueError,
-    { answers: readonly Answer[]; identifier: rdfjs.NamedNode } & UnwrapR<
+    { identifier: rdfjs.NamedNode } & UnwrapR<
       ReturnType<typeof ProcessOutput.propertiesFromRdf>
     >
   > {
@@ -2694,43 +2572,8 @@ export namespace WorkflowQuestionnaireStepExecutionOutput {
       );
     }
 
-    const _answersEither: purify.Either<
-      rdfjsResource.Resource.ValueError,
-      readonly Answer[]
-    > = _resource
-      .values(
-        dataFactory.namedNode(
-          "http://purl.archive.org/purl/knextract/ontology#answers",
-        ),
-        { unique: true },
-      )
-      .head()
-      .chain((value) => value.toList())
-      .map((values) =>
-        values.flatMap((_value) =>
-          _value
-            .toValues()
-            .head()
-            .chain((value) => value.toNamedResource())
-            .chain((_resource) =>
-              Answer.fromRdf({
-                ..._context,
-                ignoreRdfType: true,
-                languageIn: _languageIn,
-                resource: _resource,
-              }),
-            )
-            .toMaybe()
-            .toList(),
-        ),
-      );
-    if (_answersEither.isLeft()) {
-      return _answersEither;
-    }
-
-    const answers = _answersEither.unsafeCoerce();
     const identifier = _resource.identifier;
-    return purify.Either.of({ ..._super0, answers, identifier });
+    return purify.Either.of({ ..._super0, identifier });
   }
 
   export function fromRdf(
@@ -2763,12 +2606,7 @@ export namespace WorkflowQuestionnaireStepExecutionOutput {
   }) {
     const scopePrefix = parameters?.scopePrefix ?? "#";
     return {
-      elements: [
-        ProcessOutput.processOutputJsonUiSchema({ scopePrefix }),
-        Answer.answerJsonUiSchema({
-          scopePrefix: `${scopePrefix}/properties/answers`,
-        }),
-      ],
+      elements: [ProcessOutput.processOutputJsonUiSchema({ scopePrefix })],
       label: "WorkflowQuestionnaireStepExecutionOutput",
       type: "Group",
     };
@@ -2777,7 +2615,6 @@ export namespace WorkflowQuestionnaireStepExecutionOutput {
   export function workflowQuestionnaireStepExecutionOutputJsonZodSchema() {
     return ProcessOutput.processOutputJsonZodSchema().merge(
       zod.object({
-        answers: Answer.answerJsonZodSchema().array(),
         "@id": zod.string().min(1),
         type: zod.literal("WorkflowQuestionnaireStepExecutionOutput"),
       }),
@@ -2855,53 +2692,6 @@ export namespace WorkflowQuestionnaireStepExecutionOutput {
               object: dataFactory.variable!(`${variablePrefix}RdfType`),
             },
           ]),
-      {
-        object: dataFactory.variable!(`${variablePrefix}Answers`),
-        predicate: dataFactory.namedNode(
-          "http://purl.archive.org/purl/knextract/ontology#answers",
-        ),
-        subject,
-      },
-      {
-        subject: dataFactory.variable!(`${variablePrefix}Answers`),
-        predicate: dataFactory.namedNode(
-          "http://www.w3.org/1999/02/22-rdf-syntax-ns#first",
-        ),
-        object: dataFactory.variable!(`${`${variablePrefix}Answers`}Item0`),
-      },
-      ...Answer.sparqlConstructTemplateTriples({
-        ignoreRdfType: true,
-        subject: dataFactory.variable!(`${`${variablePrefix}Answers`}Item0`),
-        variablePrefix: `${`${variablePrefix}Answers`}Item0`,
-      }),
-      {
-        subject: dataFactory.variable!(`${variablePrefix}Answers`),
-        predicate: dataFactory.namedNode(
-          "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest",
-        ),
-        object: dataFactory.variable!(`${`${variablePrefix}Answers`}Rest0`),
-      },
-      {
-        subject: dataFactory.variable!(`${`${variablePrefix}Answers`}RestN`),
-        predicate: dataFactory.namedNode(
-          "http://www.w3.org/1999/02/22-rdf-syntax-ns#first",
-        ),
-        object: dataFactory.variable!(`${`${variablePrefix}Answers`}ItemN`),
-      },
-      ...Answer.sparqlConstructTemplateTriples({
-        ignoreRdfType: true,
-        subject: dataFactory.variable!(`${`${variablePrefix}Answers`}ItemN`),
-        variablePrefix: `${`${variablePrefix}Answers`}ItemN`,
-      }),
-      {
-        subject: dataFactory.variable!(`${`${variablePrefix}Answers`}RestN`),
-        predicate: dataFactory.namedNode(
-          "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest",
-        ),
-        object: dataFactory.variable!(
-          `${`${variablePrefix}Answers`}RestNBasic`,
-        ),
-      },
     ];
   }
 
@@ -2954,111 +2744,6 @@ export namespace WorkflowQuestionnaireStepExecutionOutput {
               type: "bgp" as const,
             },
           ]),
-      {
-        triples: [
-          {
-            object: dataFactory.variable!(`${variablePrefix}Answers`),
-            predicate: dataFactory.namedNode(
-              "http://purl.archive.org/purl/knextract/ontology#answers",
-            ),
-            subject,
-          },
-        ],
-        type: "bgp",
-      },
-      {
-        type: "bgp",
-        triples: [
-          {
-            subject: dataFactory.variable!(`${variablePrefix}Answers`),
-            predicate: dataFactory.namedNode(
-              "http://www.w3.org/1999/02/22-rdf-syntax-ns#first",
-            ),
-            object: dataFactory.variable!(`${`${variablePrefix}Answers`}Item0`),
-          },
-        ],
-      },
-      ...Answer.sparqlWherePatterns({
-        ignoreRdfType: true,
-        subject: dataFactory.variable!(`${`${variablePrefix}Answers`}Item0`),
-        variablePrefix: `${`${variablePrefix}Answers`}Item0`,
-      }),
-      {
-        type: "bgp",
-        triples: [
-          {
-            subject: dataFactory.variable!(`${variablePrefix}Answers`),
-            predicate: dataFactory.namedNode(
-              "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest",
-            ),
-            object: dataFactory.variable!(`${`${variablePrefix}Answers`}Rest0`),
-          },
-        ],
-      },
-      {
-        type: "optional",
-        patterns: [
-          {
-            type: "bgp",
-            triples: [
-              {
-                subject: dataFactory.variable!(`${variablePrefix}Answers`),
-                predicate: {
-                  type: "path",
-                  pathType: "*",
-                  items: [
-                    dataFactory.namedNode(
-                      "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest",
-                    ),
-                  ],
-                },
-                object: dataFactory.variable!(
-                  `${`${variablePrefix}Answers`}RestN`,
-                ),
-              },
-            ],
-          },
-          {
-            type: "bgp",
-            triples: [
-              {
-                subject: dataFactory.variable!(
-                  `${`${variablePrefix}Answers`}RestN`,
-                ),
-                predicate: dataFactory.namedNode(
-                  "http://www.w3.org/1999/02/22-rdf-syntax-ns#first",
-                ),
-                object: dataFactory.variable!(
-                  `${`${variablePrefix}Answers`}ItemN`,
-                ),
-              },
-            ],
-          },
-          ...Answer.sparqlWherePatterns({
-            ignoreRdfType: true,
-            subject: dataFactory.variable!(
-              `${`${variablePrefix}Answers`}ItemN`,
-            ),
-            variablePrefix: `${`${variablePrefix}Answers`}ItemN`,
-          }),
-          {
-            type: "bgp",
-            triples: [
-              {
-                subject: dataFactory.variable!(
-                  `${`${variablePrefix}Answers`}RestN`,
-                ),
-                predicate: dataFactory.namedNode(
-                  "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest",
-                ),
-                object: dataFactory.variable!(
-                  `${`${variablePrefix}Answers`}RestNBasic`,
-                ),
-              },
-            ],
-          },
-        ],
-      },
     ];
   }
 }
@@ -11778,18 +11463,15 @@ export namespace QuestionnaireAdministrationSubProcesses {
   }
 }
 export class QuestionnaireAdministrationOutput extends ProcessOutput {
-  readonly answers: readonly Answer[];
   private _identifier: rdfjs.NamedNode | undefined;
   override readonly type = "QuestionnaireAdministrationOutput";
 
   constructor(
     parameters: {
-      readonly answers: readonly Answer[];
       readonly identifier?: rdfjs.NamedNode | string;
     } & ConstructorParameters<typeof ProcessOutput>[0],
   ) {
     super(parameters);
-    this.answers = parameters.answers;
     if (typeof parameters.identifier === "object") {
       this._identifier = parameters.identifier;
     } else if (typeof parameters.identifier === "string") {
@@ -11806,48 +11488,6 @@ export class QuestionnaireAdministrationOutput extends ProcessOutput {
       );
     }
     return this._identifier;
-  }
-
-  override equals(other: QuestionnaireAdministrationOutput): EqualsResult {
-    return super
-      .equals(other)
-      .chain(() =>
-        ((left, right) =>
-          arrayEquals(left, right, (left, right) => left.equals(right)))(
-          this.answers,
-          other.answers,
-        ).mapLeft((propertyValuesUnequal) => ({
-          left: this,
-          right: other,
-          propertyName: "answers",
-          propertyValuesUnequal,
-          type: "Property" as const,
-        })),
-      );
-  }
-
-  override hash<
-    HasherT extends {
-      update: (message: string | number[] | ArrayBuffer | Uint8Array) => void;
-    },
-  >(_hasher: HasherT): HasherT {
-    super.hash(_hasher);
-    for (const _element0 of this.answers) {
-      _element0.hash(_hasher);
-    }
-
-    return _hasher;
-  }
-
-  override toJson(): {
-    readonly answers: readonly ReturnType<Answer["toJson"]>[];
-  } & ReturnType<ProcessOutput["toJson"]> {
-    return JSON.parse(
-      JSON.stringify({
-        ...super.toJson(),
-        answers: this.answers.map((_item) => _item.toJson()),
-      } satisfies ReturnType<QuestionnaireAdministrationOutput["toJson"]>),
-    );
   }
 
   override toRdf({
@@ -11875,76 +11515,6 @@ export class QuestionnaireAdministrationOutput extends ProcessOutput {
       );
     }
 
-    _resource.add(
-      dataFactory.namedNode(
-        "http://purl.archive.org/purl/knextract/ontology#answers",
-      ),
-      this.answers.reduce(
-        ({ currentSubListResource, listResource }, item, itemIndex, list) => {
-          if (itemIndex === 0) {
-            currentSubListResource = listResource;
-          } else {
-            const newSubListResource = resourceSet.mutableNamedResource({
-              identifier: dataFactory.namedNode(
-                `${listResource.identifier.value}:${itemIndex}`,
-              ),
-              mutateGraph,
-            });
-            currentSubListResource!.add(
-              dataFactory.namedNode(
-                "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest",
-              ),
-              newSubListResource.identifier,
-            );
-            currentSubListResource = newSubListResource;
-          }
-
-          currentSubListResource.add(
-            dataFactory.namedNode(
-              "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
-            ),
-            dataFactory.namedNode(
-              "http://purl.archive.org/purl/knextract/ontology#AnswerList",
-            ),
-          );
-
-          currentSubListResource.add(
-            dataFactory.namedNode(
-              "http://www.w3.org/1999/02/22-rdf-syntax-ns#first",
-            ),
-            item.toRdf({ mutateGraph: mutateGraph, resourceSet: resourceSet }),
-          );
-
-          if (itemIndex + 1 === list.length) {
-            currentSubListResource.add(
-              dataFactory.namedNode(
-                "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest",
-              ),
-              dataFactory.namedNode(
-                "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil",
-              ),
-            );
-          }
-
-          return { currentSubListResource, listResource };
-        },
-        {
-          currentSubListResource: null,
-          listResource: resourceSet.mutableNamedResource({
-            identifier: dataFactory.namedNode(
-              `urn:shaclmate:list:${this.answers.reduce((_hasher, _item) => {
-                _item.hash(_hasher);
-                return _hasher;
-              }, sha256.create())}`,
-            ),
-            mutateGraph,
-          }),
-        } as {
-          currentSubListResource: rdfjsResource.MutableResource<rdfjs.NamedNode> | null;
-          listResource: rdfjsResource.MutableResource<rdfjs.NamedNode>;
-        },
-      ).listResource.identifier,
-    );
     return _resource;
   }
 
@@ -11958,7 +11528,7 @@ export namespace QuestionnaireAdministrationOutput {
     _json: unknown,
   ): purify.Either<
     zod.ZodError,
-    { answers: readonly Answer[]; identifier: rdfjs.NamedNode } & UnwrapR<
+    { identifier: rdfjs.NamedNode } & UnwrapR<
       ReturnType<typeof ProcessOutput.propertiesFromJson>
     >
   > {
@@ -11975,11 +11545,8 @@ export namespace QuestionnaireAdministrationOutput {
     }
 
     const _super0 = _super0Either.unsafeCoerce();
-    const answers = _jsonObject["answers"].map((_item) =>
-      Answer.fromJson(_item).unsafeCoerce(),
-    );
     const identifier = dataFactory.namedNode(_jsonObject["@id"]);
-    return purify.Either.of({ ..._super0, answers, identifier });
+    return purify.Either.of({ ..._super0, identifier });
   }
 
   export function fromJson(
@@ -12003,7 +11570,7 @@ export namespace QuestionnaireAdministrationOutput {
     resource: rdfjsResource.Resource<rdfjs.NamedNode>;
   }): purify.Either<
     rdfjsResource.Resource.ValueError,
-    { answers: readonly Answer[]; identifier: rdfjs.NamedNode } & UnwrapR<
+    { identifier: rdfjs.NamedNode } & UnwrapR<
       ReturnType<typeof ProcessOutput.propertiesFromRdf>
     >
   > {
@@ -12037,43 +11604,8 @@ export namespace QuestionnaireAdministrationOutput {
       );
     }
 
-    const _answersEither: purify.Either<
-      rdfjsResource.Resource.ValueError,
-      readonly Answer[]
-    > = _resource
-      .values(
-        dataFactory.namedNode(
-          "http://purl.archive.org/purl/knextract/ontology#answers",
-        ),
-        { unique: true },
-      )
-      .head()
-      .chain((value) => value.toList())
-      .map((values) =>
-        values.flatMap((_value) =>
-          _value
-            .toValues()
-            .head()
-            .chain((value) => value.toNamedResource())
-            .chain((_resource) =>
-              Answer.fromRdf({
-                ..._context,
-                ignoreRdfType: true,
-                languageIn: _languageIn,
-                resource: _resource,
-              }),
-            )
-            .toMaybe()
-            .toList(),
-        ),
-      );
-    if (_answersEither.isLeft()) {
-      return _answersEither;
-    }
-
-    const answers = _answersEither.unsafeCoerce();
     const identifier = _resource.identifier;
-    return purify.Either.of({ ..._super0, answers, identifier });
+    return purify.Either.of({ ..._super0, identifier });
   }
 
   export function fromRdf(
@@ -12102,12 +11634,7 @@ export namespace QuestionnaireAdministrationOutput {
   }) {
     const scopePrefix = parameters?.scopePrefix ?? "#";
     return {
-      elements: [
-        ProcessOutput.processOutputJsonUiSchema({ scopePrefix }),
-        Answer.answerJsonUiSchema({
-          scopePrefix: `${scopePrefix}/properties/answers`,
-        }),
-      ],
+      elements: [ProcessOutput.processOutputJsonUiSchema({ scopePrefix })],
       label: "QuestionnaireAdministrationOutput",
       type: "Group",
     };
@@ -12116,7 +11643,6 @@ export namespace QuestionnaireAdministrationOutput {
   export function questionnaireAdministrationOutputJsonZodSchema() {
     return ProcessOutput.processOutputJsonZodSchema().merge(
       zod.object({
-        answers: Answer.answerJsonZodSchema().array(),
         "@id": zod.string().min(1),
         type: zod.literal("QuestionnaireAdministrationOutput"),
       }),
@@ -12195,53 +11721,6 @@ export namespace QuestionnaireAdministrationOutput {
               object: dataFactory.variable!(`${variablePrefix}RdfType`),
             },
           ]),
-      {
-        object: dataFactory.variable!(`${variablePrefix}Answers`),
-        predicate: dataFactory.namedNode(
-          "http://purl.archive.org/purl/knextract/ontology#answers",
-        ),
-        subject,
-      },
-      {
-        subject: dataFactory.variable!(`${variablePrefix}Answers`),
-        predicate: dataFactory.namedNode(
-          "http://www.w3.org/1999/02/22-rdf-syntax-ns#first",
-        ),
-        object: dataFactory.variable!(`${`${variablePrefix}Answers`}Item0`),
-      },
-      ...Answer.sparqlConstructTemplateTriples({
-        ignoreRdfType: true,
-        subject: dataFactory.variable!(`${`${variablePrefix}Answers`}Item0`),
-        variablePrefix: `${`${variablePrefix}Answers`}Item0`,
-      }),
-      {
-        subject: dataFactory.variable!(`${variablePrefix}Answers`),
-        predicate: dataFactory.namedNode(
-          "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest",
-        ),
-        object: dataFactory.variable!(`${`${variablePrefix}Answers`}Rest0`),
-      },
-      {
-        subject: dataFactory.variable!(`${`${variablePrefix}Answers`}RestN`),
-        predicate: dataFactory.namedNode(
-          "http://www.w3.org/1999/02/22-rdf-syntax-ns#first",
-        ),
-        object: dataFactory.variable!(`${`${variablePrefix}Answers`}ItemN`),
-      },
-      ...Answer.sparqlConstructTemplateTriples({
-        ignoreRdfType: true,
-        subject: dataFactory.variable!(`${`${variablePrefix}Answers`}ItemN`),
-        variablePrefix: `${`${variablePrefix}Answers`}ItemN`,
-      }),
-      {
-        subject: dataFactory.variable!(`${`${variablePrefix}Answers`}RestN`),
-        predicate: dataFactory.namedNode(
-          "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest",
-        ),
-        object: dataFactory.variable!(
-          `${`${variablePrefix}Answers`}RestNBasic`,
-        ),
-      },
     ];
   }
 
@@ -12294,111 +11773,6 @@ export namespace QuestionnaireAdministrationOutput {
               type: "bgp" as const,
             },
           ]),
-      {
-        triples: [
-          {
-            object: dataFactory.variable!(`${variablePrefix}Answers`),
-            predicate: dataFactory.namedNode(
-              "http://purl.archive.org/purl/knextract/ontology#answers",
-            ),
-            subject,
-          },
-        ],
-        type: "bgp",
-      },
-      {
-        type: "bgp",
-        triples: [
-          {
-            subject: dataFactory.variable!(`${variablePrefix}Answers`),
-            predicate: dataFactory.namedNode(
-              "http://www.w3.org/1999/02/22-rdf-syntax-ns#first",
-            ),
-            object: dataFactory.variable!(`${`${variablePrefix}Answers`}Item0`),
-          },
-        ],
-      },
-      ...Answer.sparqlWherePatterns({
-        ignoreRdfType: true,
-        subject: dataFactory.variable!(`${`${variablePrefix}Answers`}Item0`),
-        variablePrefix: `${`${variablePrefix}Answers`}Item0`,
-      }),
-      {
-        type: "bgp",
-        triples: [
-          {
-            subject: dataFactory.variable!(`${variablePrefix}Answers`),
-            predicate: dataFactory.namedNode(
-              "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest",
-            ),
-            object: dataFactory.variable!(`${`${variablePrefix}Answers`}Rest0`),
-          },
-        ],
-      },
-      {
-        type: "optional",
-        patterns: [
-          {
-            type: "bgp",
-            triples: [
-              {
-                subject: dataFactory.variable!(`${variablePrefix}Answers`),
-                predicate: {
-                  type: "path",
-                  pathType: "*",
-                  items: [
-                    dataFactory.namedNode(
-                      "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest",
-                    ),
-                  ],
-                },
-                object: dataFactory.variable!(
-                  `${`${variablePrefix}Answers`}RestN`,
-                ),
-              },
-            ],
-          },
-          {
-            type: "bgp",
-            triples: [
-              {
-                subject: dataFactory.variable!(
-                  `${`${variablePrefix}Answers`}RestN`,
-                ),
-                predicate: dataFactory.namedNode(
-                  "http://www.w3.org/1999/02/22-rdf-syntax-ns#first",
-                ),
-                object: dataFactory.variable!(
-                  `${`${variablePrefix}Answers`}ItemN`,
-                ),
-              },
-            ],
-          },
-          ...Answer.sparqlWherePatterns({
-            ignoreRdfType: true,
-            subject: dataFactory.variable!(
-              `${`${variablePrefix}Answers`}ItemN`,
-            ),
-            variablePrefix: `${`${variablePrefix}Answers`}ItemN`,
-          }),
-          {
-            type: "bgp",
-            triples: [
-              {
-                subject: dataFactory.variable!(
-                  `${`${variablePrefix}Answers`}RestN`,
-                ),
-                predicate: dataFactory.namedNode(
-                  "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest",
-                ),
-                object: dataFactory.variable!(
-                  `${`${variablePrefix}Answers`}RestNBasic`,
-                ),
-              },
-            ],
-          },
-        ],
-      },
     ];
   }
 }

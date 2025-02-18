@@ -1,7 +1,7 @@
 import { logger } from "@/lib/logger";
 import {
   Claim,
-  ClaimEvaluation,
+  ClaimsEvaluation,
   Identifier,
   InformationRetrievalMetrics,
   Value,
@@ -18,7 +18,7 @@ function claimEquals(left: Claim, right: Claim): boolean {
 
 export function evaluateClaims(
   claims: readonly Claim[],
-): Maybe<ClaimEvaluation> {
+): Maybe<ClaimsEvaluation> {
   const claimIdentifiers = new Set<string>();
   const uniqueGoldClaims: Claim[] = [];
   const uniqueInferredClaims: Claim[] = [];
@@ -64,7 +64,7 @@ export function evaluateClaims(
   }
 
   let falseNegativeCount = 0;
-  const truePositives: ClaimEvaluation["truePositives"] = [];
+  const truePositives: ClaimsEvaluation["truePositives"] = [];
 
   uniqueGoldClaims.forEach((goldClaim) => {
     for (const inferredClaim of uniqueInferredClaims) {

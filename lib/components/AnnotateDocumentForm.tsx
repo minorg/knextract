@@ -1,7 +1,7 @@
 "use client";
 
 import { ApiClient } from "@/lib/ApiClient";
-import { DocumentAnnotationsDataTable } from "@/lib/components/DocumentAnnotationsDataTable";
+import { DocumentAnnotationsDataTable } from "@/lib/components/DocumentClaimsDataTable";
 import { ErrorAlert } from "@/lib/components/ErrorAlert";
 import { Section } from "@/lib/components/Section";
 import { WorkflowExecutionEventsViewer } from "@/lib/components/WorkflowExecutionEventsViewer";
@@ -15,29 +15,49 @@ import {
 } from "@/lib/components/ui/dialog";
 import { LoadingSpinner } from "@/lib/components/ui/loading-spinner";
 import { useHrefs } from "@/lib/hooks";
-import { Identifier, Locale } from "@/lib/models";
-import { json } from "@/lib/models/impl";
+import {
+  Claim,
+  ClaimsEvaluation,
+  DocumentStub,
+  Identifier,
+  Locale,
+  WorkflowExecutionEvent,
+  WorkflowStub,
+  claims,
+} from "@/lib/models";
+import { evaluateClaims } from "@/lib/utilities";
 import { useLocale, useTranslations } from "next-intl";
 import React, { ReactElement, useCallback, useMemo, useState } from "react";
 import { Link } from "./Link";
 
 export function AnnotateDocumentForm({
-  document,
+  document: documentJson,
   onAnnotateDocument,
-  workflows,
+  workflows: workflowsJson,
 }: {
-  document: json.Document;
+  document: ReturnType<DocumentStub["toJson"]>;
   onAnnotateDocument: (kwds: {
-    annotations: readonly json.Annotation[];
-    annotationsEvaluation: json.AnnotationsEvaluation | null;
+    claims: readonly ReturnType<Claim["toJson"]>[];
+    claimsEvaluation: ClaimsEvaluation | null;
   }) => void;
-  workflows: readonly json.Workflow[];
+  workflows: readonly ReturnType<WorkflowStub["toJson"]>[];
 }) {
   const apiClient = useMemo(() => new ApiClient(), []);
+  const document = useMemo(
+    () => DocumentStub.fromJson(documentJson).unsafeCoerce(),
+    [documentJson],
+  );
   const [dialogOpen, setDialogOpen] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const workflows = useMemo(
+    () =>
+      workflowsJson.flatMap((json) =>
+        WorkflowStub.fromJson(json).toMaybe().toList(),
+      ),
+    [workflowsJson],
+  );
   const [workflowExecutionEvents, setWorkflowExecutionEvents] = useState<
-    readonly json.WorkflowExecutionEvent[]
+    readonly WorkflowExecutionEvent[]
   >([]);
 
   const hrefs = useHrefs();
@@ -53,23 +73,21 @@ export function AnnotateDocumentForm({
     (async () => {
       const error = (
         await apiClient.executeWorkflow({
-          document: {
-            identifier: Identifier.fromString(document.identifier),
-          },
+          document,
           locale,
           onWorkflowExecutionEvent: (workflowExecutionEvent) => {
             setWorkflowExecutionEvents((prevWorkflowExecutionEvents) =>
               prevWorkflowExecutionEvents.concat(workflowExecutionEvent),
             );
 
-            switch (workflowExecutionEvent.type) {
-              case "WorkflowPostExecutionEvent":
-                onAnnotateDocument({
-                  annotations: workflowExecutionEvent.cumulativeAnnotations,
-                  annotationsEvaluation:
-                    workflowExecutionEvent.cumulativeAnnotationsEvaluation,
-                });
-                break;
+            if (workflowExecutionEvent.type === "PostWorkflowExecutionEvent") {
+              const workflowExecutionClaims = claims(
+                workflowExecutionEvent.payload,
+              );
+              onAnnotateDocument({
+                claims: workflowExecutionClaims.map((claim) => claim.toJson()),
+                claimsEvaluation: evaluateClaims(workflowExecutionClaims),
+              });
             }
           },
           workflow: {
@@ -91,7 +109,7 @@ export function AnnotateDocumentForm({
 
   const workflowPostExecutionEvent = workflowExecutionEvents.find(
     (workflowExecutionEvent) =>
-      workflowExecutionEvent.type === "WorkflowPostExecutionEvent",
+      workflowExecutionEvent.type === "PostWorkflowExecutionEvent",
   );
 
   let dialogContent: ReactElement | null;
@@ -101,16 +119,19 @@ export function AnnotateDocumentForm({
     let workflowExecutionIdentifier: Identifier | undefined;
     let workflowIdentifier: Identifier | undefined;
     for (const workflowExecutionEvent of workflowExecutionEvents) {
-      if (
-        workflowExecutionEvent.type === "WorkflowPreExecutionEvent" ||
-        workflowExecutionEvent.type === "WorkflowPostExecutionEvent"
-      ) {
-        workflowExecutionIdentifier = Identifier.fromString(
-          workflowExecutionEvent.workflowExecution.identifier,
-        );
-        workflowIdentifier = Identifier.fromString(
-          workflowExecutionEvent.workflowExecution.input.workflow.identifier,
-        );
+      switch (workflowExecutionEvent.type) {
+        case "PostWorkflowExecutionEvent": {
+          workflowExecutionIdentifier =
+            workflowExecutionEvent.payload.identifier;
+          workflowIdentifier = workflowExecutionEvent.payload.input.identifier;
+          break;
+        }
+        case "PreWorkflowExecutionEvent": {
+          workflowExecutionIdentifier =
+            workflowExecutionEvent.payload.identifier;
+          workflowIdentifier = workflowExecutionEvent.payload.identifier;
+          break;
+        }
       }
     }
 

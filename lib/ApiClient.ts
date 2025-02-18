@@ -1,5 +1,4 @@
-import { Identifier, Locale } from "@/lib/models";
-import { json } from "@/lib/models/impl";
+import { Identifier, Locale, WorkflowExecutionEvent } from "@/lib/models";
 import { encodeFileName } from "@kos-kit/next-utils";
 import {
   EventStreamContentType,
@@ -31,7 +30,7 @@ export class ApiClient {
     onClose?: () => void;
     onOpen?: () => Promise<void>;
     onWorkflowExecutionEvent: (
-      workflowExecutionEvent: json.WorkflowExecutionEvent,
+      workflowExecutionEvent: WorkflowExecutionEvent,
     ) => void;
     skipPreviouslyAnnotatedDocuments?: boolean;
     workflow: { identifier: Identifier };
@@ -64,7 +63,9 @@ export class ApiClient {
             // return a specific retry interval here.
           },
           onmessage: (eventSourceMessage) => {
-            onWorkflowExecutionEvent(JSON.parse(eventSourceMessage.data));
+            WorkflowExecutionEvent.fromJson(
+              JSON.parse(eventSourceMessage.data),
+            ).ifRight(onWorkflowExecutionEvent);
           },
           onopen: async (response) => {
             if (

@@ -1,6 +1,6 @@
 "use client";
 
-import { DocumentAnnotationsDataTable } from "@/lib/components/DocumentAnnotationsDataTable";
+import { DocumentAnnotationsDataTable } from "@/lib/components/DocumentClaimsDataTable";
 import { ExceptionAlert } from "@/lib/components/ExceptionAlert";
 import { Section } from "@/lib/components/Section";
 import {
@@ -20,11 +20,13 @@ import {
   TableRow,
 } from "@/lib/components/ui/table";
 import {
+  Identifier,
   PostWorkflowExecutionEvent,
   PostWorkflowStepExecutionEvent,
   PreWorkflowExecutionEvent,
   PreWorkflowStepExecutionEvent,
   WorkflowExecutionEvent,
+  claims,
   displayLabel,
 } from "@/lib/models";
 import { useLocale, useTranslations } from "next-intl";
@@ -62,10 +64,12 @@ function GroupedWorkflowExecutionEventsViewer({
               <span>{translations("Document")}:</span>
               <span>
                 {" "}
-                {displayLabel({
-                  locale,
-                  model: groupedWorkflowExecutionEvents.pre.payload.document,
-                })}
+                {displayLabel(
+                  groupedWorkflowExecutionEvents.pre.payload.document,
+                  {
+                    locale,
+                  },
+                )}
               </span>
             </div>
             {groupedWorkflowExecutionEvents.post ? null : (
@@ -94,15 +98,12 @@ function GroupedWorkflowExecutionEventsViewer({
                 <TableRow>
                   <TableCell>
                     {new Date(
-                      groupedWorkflowExecutionEvents.pre.workflowExecution
-                        .startedAtTime,
+                      groupedWorkflowExecutionEvents.pre.timestamp,
                     ).toLocaleString()}
                   </TableCell>
                   <TableCell>
                     {groupedWorkflowExecutionEvents.post ? (
-                      new Date(
-                        groupedWorkflowExecutionEvents.post!.endedAtTime.unsafeCoerce(),
-                      ).toLocaleString()
+                      groupedWorkflowExecutionEvents.post!.timestamp.toLocaleString()
                     ) : abortedWorkflowExecution ? (
                       <Badge className="px-2 py-1" variant="destructive">
                         {translations("Aborted")}
@@ -129,18 +130,14 @@ function GroupedWorkflowExecutionEventsViewer({
                   </TableHeader>
                   <TableBody>
                     {groupedWorkflowExecutionEvents.steps.map((step) => (
-                      <TableRow key={step.pre.stepExecution.identifier}>
-                        <TableCell>{step.pre.stepExecution.type}</TableCell>
+                      <TableRow key={Identifier.toString(step.pre.identifier)}>
+                        <TableCell>{step.pre.payload.type}</TableCell>
                         <TableCell>
-                          {new Date(
-                            step.pre.stepExecution.startedAtTime,
-                          ).toLocaleString()}
+                          {step.pre.timestamp.toLocaleString()}
                         </TableCell>
                         <TableCell>
                           {step.post ? (
-                            new Date(
-                              step.post.stepExecution.endedAtTime!,
-                            ).toLocaleString()
+                            step.post.timestamp.toLocaleString()
                           ) : abortedWorkflowExecution ? (
                             <Badge className="px-2 py-1" variant="destructive">
                               {translations("Aborted")}
@@ -156,24 +153,22 @@ function GroupedWorkflowExecutionEventsViewer({
               </Section>
             ) : null}
             {groupedWorkflowExecutionEvents.post ? (
-              groupedWorkflowExecutionEvents.post.workflowExecution
-                .exception ? (
+              groupedWorkflowExecutionEvents.post.payload.output.type ===
+              "Exception" ? (
                 <Section className="w-full" title={translations("Exception")}>
                   <ExceptionAlert
                     exception={
-                      groupedWorkflowExecutionEvents.post.workflowExecution
-                        .exception!
+                      groupedWorkflowExecutionEvents.post.payload.output
                     }
                   />
                 </Section>
               ) : (
                 <Section className="w-full" title={translations("Results")}>
-                  <DocumentAnnotationsDataTable
-                    annotations={
-                      groupedWorkflowExecutionEvents.post.workflowExecution
-                        .output!
-                    }
-                    annotationsEvaluation={null}
+                  <DocumentClaimsDataTable
+                    claims={claims(
+                      groupedWorkflowExecutionEvents.post.payload,
+                    ).map((claim) => claim.toJson())}
+                    claimsEvaluation={null}
                     excludeHeader={true}
                   />
                 </Section>
@@ -188,9 +183,7 @@ function GroupedWorkflowExecutionEventsViewer({
 
 export function WorkflowExecutionEventsViewer(json: {
   abortedWorkflowExecution: boolean;
-  workflowExecutionEvents: readonly ReturnType<
-    typeof WorkflowExecutionEvent.toJson
-  >[];
+  workflowExecutionEvents: readonly WorkflowExecutionEvent[];
 }) {
   const groupedWorkflowExecutionEvents = useMemo(() => {
     const groupedWorkflowExecutionEvents: GroupedWorkflowExecutionEvents[] = [];
@@ -204,17 +197,17 @@ export function WorkflowExecutionEventsViewer(json: {
         case "PostWorkflowExecutionEvent":
           groupedWorkflowExecutionEvents.at(-1)!.post = workflowExecutionEvent;
           break;
-        case "WorkflowPostStepExecutionEvent":
+        case "PostWorkflowStepExecutionEvent":
           groupedWorkflowExecutionEvents.at(-1)!.steps.at(-1)!.post =
             workflowExecutionEvent;
           break;
-        case "WorkflowPreExecutionEvent":
+        case "PreWorkflowExecutionEvent":
           groupedWorkflowExecutionEvents.push({
             pre: workflowExecutionEvent,
             steps: [],
           });
           break;
-        case "WorkflowPreStepExecutionEvent":
+        case "PreWorkflowStepExecutionEvent":
           groupedWorkflowExecutionEvents.at(-1)!.steps.push({
             pre: workflowExecutionEvent,
           });
@@ -228,8 +221,10 @@ export function WorkflowExecutionEventsViewer(json: {
     <div className="flex flex-col gap-4 w-full">
       {groupedWorkflowExecutionEvents.map((groupedWorkflowExecutionEvents) => (
         <GroupedWorkflowExecutionEventsViewer
-          abortedWorkflowExecution={abortedWorkflowExecution}
-          key={groupedWorkflowExecutionEvents.pre.workflowExecution.identifier}
+          abortedWorkflowExecution={json.abortedWorkflowExecution}
+          key={Identifier.toString(
+            groupedWorkflowExecutionEvents.pre.identifier,
+          )}
           groupedWorkflowExecutionEvents={groupedWorkflowExecutionEvents}
         />
       ))}

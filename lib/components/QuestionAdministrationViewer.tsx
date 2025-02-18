@@ -1,37 +1,36 @@
 import { ClientProvidersServer } from "@/lib/components/ClientProvidersServer";
 import { ConceptSelectorViewer } from "@/lib/components/ConceptSelectorViewer";
 import { ConceptsDataTable } from "@/lib/components/ConceptsDataTable";
-import { DocumentAnnotationsDataTable } from "@/lib/components/DocumentAnnotationsDataTable";
+import { DocumentAnnotationsDataTable } from "@/lib/components/DocumentClaimsDataTable";
 import { ProcessViewer } from "@/lib/components/ProcessViewer";
 import { PromptTemplateViewer } from "@/lib/components/PromptTemplateViewer";
 import { PromptViewer } from "@/lib/components/PromptViewer";
+import { ValueExtraction } from "@/lib/models";
 import { getTranslations } from "next-intl/server";
 import React from "react";
 
-async function CompletionMessageProcessingViewer({
-  completionMessageProcessing,
+async function ValueExtractionViewer({
+  valueExtraction,
 }: {
-  completionMessageProcessing: LanguageModelConceptAnnotatorExecution.CompletionMessageProcessing;
+  valueExtraction: ValueExtraction;
 }) {
-  const translations = await getTranslations(
-    "CompletionMessageProcessingViewer",
-  );
+  const translations = await getTranslations("ValueExtractionViewer");
   return (
     <ProcessViewer
-      process={completionMessageProcessing}
-      renderInput={async (completionMessage) => [
+      process={valueExtraction}
+      renderInput={async () => [
         {
           title: translations("Completion message"),
           content: (
             <pre style={{ whiteSpace: "pre-wrap" }}>
-              {completionMessage.literalForm}
+              {valueExtraction.input.completionMessage.literalForm}
             </pre>
           ),
         },
       ]}
-      renderOutput={async (annotations) => [
+      renderOutput={async () => [
         {
-          title: translations("Annotations"),
+          title: translations("Claims"),
           content: (
             <ClientProvidersServer>
               <DocumentAnnotationsDataTable

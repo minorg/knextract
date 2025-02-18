@@ -92,13 +92,13 @@
     "Cancel": "Cancel",
     "Delete": "Delete"
   },
-  "DocumentAnnotations": {
+  "DocumentClaims": {
     "F1 score": "F1 score",
     "False negatives": "False negatives",
     "False positives": "False positives",
     "True positives": "True positives"
   },
-  "DocumentAnnotationsDataTable": {
+  "DocumentClaimsDataTable": {
     "Concept": "Concept",
     "Concept scheme": "Concept scheme",
     "Gold": "Gold",
@@ -270,6 +270,7 @@
     "Title": "Title",
     "Upload": "Upload"
   },
+  "ValueExtractionViewer": {},
   "WorkflowEditor": {
     "Concept scheme": "Concept scheme",
     "Label": "Label",

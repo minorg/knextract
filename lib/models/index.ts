@@ -128,7 +128,8 @@ export {
 } from "./models.shaclmate-generated";
 
 // Re-export handwritten classes
-export * from "./ClaimEvaluation";
+export * from "./claims";
+export * from "./ClaimsEvaluation";
 export * from "./InformationRetrievalMetrics";
 export * from "./ClaimQuery";
 export * from "./ClientConfiguration";

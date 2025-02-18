@@ -1,12 +1,11 @@
 import { project } from "@/app/project";
 import { ClientProvidersServer } from "@/lib/components/ClientProvidersServer";
-import { DocumentAnnotations } from "@/lib/components/DocumentAnnotations";
+import { DocumentAnnotations } from "@/lib/components/DocumentClaims";
 import { Link } from "@/lib/components/Link";
 import { Section } from "@/lib/components/Section";
 import { syntaxHiglighterStyle } from "@/lib/components/syntaxHighlighterStyle";
 import { getHrefs } from "@/lib/getHrefs";
 import { Document, Identifier, Locale } from "@/lib/models";
-import { json } from "@/lib/models/impl";
 import { deduplicateAnnotations } from "@/lib/utilities/deduplicateAnnotations";
 import { getLocale, getTranslations } from "next-intl/server";
 import React from "react";

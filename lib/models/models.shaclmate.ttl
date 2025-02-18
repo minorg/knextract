@@ -24,36 +24,6 @@ knextract:Answer-claims
     sh:node knextract:ClaimList ;
     sh:path knextract:claims .
 
-knextract:AnswerList
-    shaclmate:name "AnswerList" ;
-    a owl:Class, sh:NodeShape ;
-    rdfs:subClassOf rdf:List ;
-    sh:nodeKind sh:IRI ;
-    sh:property knextract:AnswerList-first, knextract:AnswerList-rest .
-
-knextract:AnswerList-first
-    a sh:PropertyShape ;
-    sh:maxCount 1 ;
-    sh:minCount 1 ;
-    sh:name "first" ;
-    sh:node knextract:Answer ;
-    sh:path rdf:first .
-
-knextract:AnswerList-rest
-    a sh:PropertyShape ;
-    sh:maxCount 1 ;
-    sh:minCount 1 ;
-    sh:name "rest" ;
-    sh:nodeKind sh:IRI ;
-    sh:path rdf:rest ;
-    sh:xone ([
-            sh:class knextract:AnswerList
-        ]
-        [
-            sh:hasValue ( )
-        ]
-    ) .
-
 knextract:BaseConceptSchemeConceptSelector
     shaclmate:abstract true ;
     shaclmate:export false ;
@@ -1269,16 +1239,7 @@ knextract:QuestionnaireAdministrationInput-questionnaire
 knextract:QuestionnaireAdministrationOutput
     shaclmate:name "QuestionnaireAdministrationOutput" ;
     a owl:Class, sh:NodeShape ;
-    rdfs:subClassOf knextract:ProcessOutput ;
-    sh:property knextract:QuestionnaireAdministrationOutput-answers .
-
-knextract:QuestionnaireAdministrationOutput-answers
-    a sh:PropertyShape ;
-    sh:maxCount 1 ;
-    sh:minCount 1 ;
-    sh:name "answers" ;
-    sh:node knextract:AnswerList ;
-    sh:path knextract:answers .
+    rdfs:subClassOf knextract:ProcessOutput .
 
 knextract:QuestionnaireAdministrationSubProcesses
     shaclmate:name "QuestionnaireAdministrationSubProcesses" ;
@@ -1701,16 +1662,7 @@ knextract:WorkflowQuestionnaireStepExecutionInput-step
 knextract:WorkflowQuestionnaireStepExecutionOutput
     shaclmate:name "WorkflowQuestionnaireStepExecutionOutput" ;
     a owl:Class, sh:NodeShape ;
-    rdfs:subClassOf knextract:ProcessOutput ;
-    sh:property knextract:WorkflowQuestionnaireStepExecutionOutput-answers .
-
-knextract:WorkflowQuestionnaireStepExecutionOutput-answers
-    a sh:PropertyShape ;
-    sh:maxCount 1 ;
-    sh:minCount 1 ;
-    sh:name "answers" ;
-    sh:node knextract:AnswerList ;
-    sh:path knextract:answers .
+    rdfs:subClassOf knextract:ProcessOutput .
 
 knextract:WorkflowQuestionnaireStepExecutionSubProcesses
     shaclmate:name "WorkflowQuestionnaireStepExecutionSubProcesses" ;
