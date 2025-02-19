@@ -1,6 +1,6 @@
 "use client";
 
-import { DocumentAnnotationsDataTable } from "@/lib/components/DocumentClaimsDataTable";
+import { DocumentClaimsDataTable } from "@/lib/components/DocumentClaimsDataTable";
 import { ExceptionAlert } from "@/lib/components/ExceptionAlert";
 import { Section } from "@/lib/components/Section";
 import {
@@ -26,7 +26,6 @@ import {
   PreWorkflowExecutionEvent,
   PreWorkflowStepExecutionEvent,
   WorkflowExecutionEvent,
-  claims,
   displayLabel,
 } from "@/lib/models";
 import { useLocale, useTranslations } from "next-intl";
@@ -153,22 +152,20 @@ function GroupedWorkflowExecutionEventsViewer({
               </Section>
             ) : null}
             {groupedWorkflowExecutionEvents.post ? (
-              groupedWorkflowExecutionEvents.post.payload.output.type ===
-              "Exception" ? (
+              groupedWorkflowExecutionEvents.post.payload.workflowExecution
+                .output.type === "Exception" ? (
                 <Section className="w-full" title={translations("Exception")}>
                   <ExceptionAlert
                     exception={
-                      groupedWorkflowExecutionEvents.post.payload.output
+                      groupedWorkflowExecutionEvents.post.payload
+                        .workflowExecution.output
                     }
                   />
                 </Section>
               ) : (
                 <Section className="w-full" title={translations("Results")}>
                   <DocumentClaimsDataTable
-                    claims={claims(
-                      groupedWorkflowExecutionEvents.post.payload,
-                    ).map((claim) => claim.toJson())}
-                    claimsEvaluation={null}
+                    documentClaims={groupedWorkflowExecutionEvents.post.payload.documentClaims.toJson()}
                     excludeHeader={true}
                   />
                 </Section>

@@ -64,11 +64,7 @@ async function StepExecutionViewer({
   const translations = await getTranslations("StepExecutionViewer");
 
   return (
-    <ProcessViewer<
-      WorkflowStepExecution["input"],
-      void,
-      WorkflowStepExecution["subProcesses"]
-    >
+    <ProcessViewer
       process={stepExecution}
       renderInput={async () => [
         {

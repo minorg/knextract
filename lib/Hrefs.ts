@@ -44,8 +44,8 @@ export class Hrefs {
     return `${this.locale}/workflows`;
   }
 
-  annotation({ identifier }: { identifier: Identifier | string }) {
-    return `${this.locale}/annotations/${encodeFileName(
+  claim({ identifier }: { identifier: Identifier | string }) {
+    return `${this.locale}/claims/${encodeFileName(
       typeof identifier === "string"
         ? identifier
         : Identifier.toString(identifier),

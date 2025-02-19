@@ -4,42 +4,41 @@ import { AnnotateDocumentForm } from "@/lib/components/AnnotateDocumentForm";
 import { DocumentClaimsDataTable } from "@/lib/components/DocumentClaimsDataTable";
 import {
   Claim,
-  ClaimsEvaluation,
+  DocumentClaims,
   DocumentStub,
+  UnevaluatedClaims,
   WorkflowStub,
 } from "@/lib/models";
 import { useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";
 
-export function DocumentClaims(json: {
-  claims: readonly ReturnType<Claim["toJson"]>[];
-  claimsEvaluation: ClaimsEvaluation | null;
+export function DocumentClaimsViewer(json: {
   document: ReturnType<DocumentStub["toJson"]>;
+  documentClaims: ReturnType<DocumentClaims["toJson"]>;
   workflows: ReturnType<WorkflowStub["toJson"]>[];
 }) {
-  const [claimsState, setClaimsState] = useState<{
-    claims: readonly ReturnType<Claim["toJson"]>[];
-    claimsEvaluation: ClaimsEvaluation | null;
-  } | null>(null);
-  const translations = useTranslations("DocumentClaims");
+  const [documentClaims, setDocumentClaims] = useState<DocumentClaims | null>(
+    null,
+  );
+  const translations = useTranslations("DocumentClaimsViewer");
 
   useEffect(() => {
-    setClaimsState({
-      claims: json.claims,
-      claimsEvaluation: json.claimsEvaluation,
-    });
+    setDocumentClaims(
+      DocumentClaims.fromJson(json.documentClaims).orDefault(
+        new UnevaluatedClaims({ claims: [] }),
+      ),
+    );
   }, [json]);
 
-  if (claimsState === null) {
+  if (documentClaims === null) {
     return null;
   }
-
-  const { claims, claimsEvaluation } = claimsState;
 
   const annotateDocumentForm = (
     <AnnotateDocumentForm
       document={json.document}
-      onAnnotateDocument={setClaimsState}
+      documentClaims={documentClaims.toJson()}
+      onAnnotateDocument={setDocumentClaims}
       workflows={json.workflows}
     />
   );

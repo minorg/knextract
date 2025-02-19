@@ -92,18 +92,17 @@
     "Cancel": "Cancel",
     "Delete": "Delete"
   },
-  "DocumentClaims": {
+  "DocumentClaimsDataTable": {
+    "Gold": "Gold",
+    "Inferred": "Inferred",
+    "Predicate": "Predicate",
+    "Type": "Type"
+  },
+  "DocumentClaimsViewer": {
     "F1 score": "F1 score",
     "False negatives": "False negatives",
     "False positives": "False positives",
     "True positives": "True positives"
-  },
-  "DocumentClaimsDataTable": {
-    "Concept": "Concept",
-    "Concept scheme": "Concept scheme",
-    "Gold": "Gold",
-    "Inferred": "Inferred",
-    "Type": "Type"
   },
   "DocumentPage": {
     "DeletionDialog": {

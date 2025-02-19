@@ -53,6 +53,7 @@ export {
   CorpusStub,
   DichotomousQuestion,
   Document,
+  DocumentClaims,
   DocumentDeletion,
   DocumentDeletionInput,
   DocumentStub,
@@ -131,8 +132,7 @@ export {
   WorkflowStub,
 } from "./models.shaclmate-generated";
 
-// Re-export handwritten classes
-export * from "./claims";
+// Re-export handwritten code
 export * from "./ClaimQuery";
 export * from "./ClientConfiguration";
 export * from "./CorpusQuery";

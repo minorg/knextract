@@ -16,16 +16,13 @@ import {
 import { LoadingSpinner } from "@/lib/components/ui/loading-spinner";
 import { useHrefs } from "@/lib/hooks";
 import {
-  Claim,
-  ClaimsEvaluation,
+  DocumentClaims,
   DocumentStub,
   Identifier,
   Locale,
   WorkflowExecutionEvent,
   WorkflowStub,
-  claims,
 } from "@/lib/models";
-import { evaluateClaims } from "@/lib/utilities";
 import { useLocale, useTranslations } from "next-intl";
 import React, { ReactElement, useCallback, useMemo, useState } from "react";
 import { Link } from "./Link";
@@ -36,7 +33,8 @@ export function AnnotateDocumentForm({
   workflows: workflowsJson,
 }: {
   document: ReturnType<DocumentStub["toJson"]>;
-  onAnnotateDocument: (claims: readonly ReturnType<Claim["toJson"]>[]) => void;
+  documentClaims: ReturnType<DocumentClaims["toJson"]> | null;
+  onAnnotateDocument: (documentClaims: DocumentClaims) => void;
   workflows: readonly ReturnType<WorkflowStub["toJson"]>[];
 }) {
   const apiClient = useMemo(() => new ApiClient(), []);
@@ -78,13 +76,7 @@ export function AnnotateDocumentForm({
             );
 
             if (workflowExecutionEvent.type === "PostWorkflowExecutionEvent") {
-              const workflowExecutionClaims = claims(
-                workflowExecutionEvent.payload,
-              );
-              onAnnotateDocument({
-                claims: workflowExecutionClaims.map((claim) => claim.toJson()),
-                claimsEvaluation: evaluateClaims(workflowExecutionClaims),
-              });
+              onAnnotateDocument(workflowExecutionEvent.payload.documentClaims);
             }
           },
           workflow: {
