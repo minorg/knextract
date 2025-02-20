@@ -47,7 +47,7 @@ export interface Knextract {
   // WorkflowSuperStep: NamedNode<"http://purl.archive.org/purl/knextract/ontology#WorkflowSuperStep">;
   // WorkflowSuperStepExecution: NamedNode<"http://purl.archive.org/purl/knextract/ontology#WorkflowSuperStepExecution">;
   // // Properties
-  answers: NamedNode<"http://purl.archive.org/purl/knextract/ontology#answers">;
+  answer: NamedNode<"http://purl.archive.org/purl/knextract/ontology#answer">;
   claims: NamedNode<"http://purl.archive.org/purl/knextract/ontology#claims">;
   // completionMessageProcessing: NamedNode<"http://purl.archive.org/purl/knextract/ontology#completionMessageProcessing">;
   // conceptAnnotatorExecution: NamedNode<"http://purl.archive.org/purl/knextract/ontology#conceptAnnotatorExecution">;
@@ -84,6 +84,7 @@ export interface Knextract {
   // promptMessages: NamedNode<"http://purl.archive.org/purl/knextract/ontology#promptMessages">;
   // promptTemplate: NamedNode<"http://purl.archive.org/purl/knextract/ontology#promptTemplate">;
   questionnaireAdministration: NamedNode<"http://purl.archive.org/purl/knextract/ontology#questionnaireAdministration">;
+  questionnaireAdministrations: NamedNode<"http://purl.archive.org/purl/knextract/ontology#questionnaireAdministrations">;
   // recursive: NamedNode<"http://purl.archive.org/purl/knextract/ontology#recursive">;
   // sparqlSelect: NamedNode<"http://purl.archive.org/purl/knextract/ontology#sparqlSelect">;
   // startedAtTime: NamedNode<"http://purl.archive.org/purl/knextract/ontology#startedAtTime">;

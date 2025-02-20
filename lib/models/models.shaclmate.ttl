@@ -742,9 +742,11 @@ knextract:PostWorkflowExecutionEvent-payload
     sh:path knextract:eventPayload .
 
 knextract:PostWorkflowExecutionEventPayload
+    shaclmate:mintingStrategy shaclmate:_MintingStrategy_UUIDv4 ;
     shaclmate:name "PostWorkflowExecutionEventPayload" ;
     shaclmate:tsFeatureExclude shaclmate:_TsFeature_Rdf, shaclmate:_TsFeature_Sparql ;
-    a sh:NodeShape ;
+    a owl:Class, sh:NodeShape ;
+    rdfs:subClassOf knextract:Entity ;
     sh:property knextract:PostWorkflowExecutionEventPayload-documentClaims, knextract:PostWorkflowExecutionEventPayload-workflowExecution .
 
 knextract:PostWorkflowExecutionEventPayload-documentClaims

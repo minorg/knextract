@@ -1,6 +1,6 @@
 import { project } from "@/app/project";
 import { ClientProvidersServer } from "@/lib/components/ClientProvidersServer";
-import { DocumentAnnotations } from "@/lib/components/DocumentClaims";
+import { DocumentAnnotations } from "@/lib/components/DocumentClaimsViewer";
 import { Link } from "@/lib/components/Link";
 import { Section } from "@/lib/components/Section";
 import { syntaxHiglighterStyle } from "@/lib/components/syntaxHighlighterStyle";

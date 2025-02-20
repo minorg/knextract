@@ -1158,6 +1158,7 @@ abstract class Entity {
     | "NarrowerConceptSelector"
     | "NarrowerTransitiveConceptSelector"
     | "PostWorkflowExecutionEvent"
+    | "PostWorkflowExecutionEventPayload"
     | "PostWorkflowStepExecutionEvent"
     | "PreWorkflowExecutionEvent"
     | "PreWorkflowStepExecutionEvent"
@@ -1268,6 +1269,7 @@ abstract class Entity {
       | "NarrowerConceptSelector"
       | "NarrowerTransitiveConceptSelector"
       | "PostWorkflowExecutionEvent"
+      | "PostWorkflowExecutionEventPayload"
       | "PostWorkflowStepExecutionEvent"
       | "PreWorkflowExecutionEvent"
       | "PreWorkflowStepExecutionEvent"
@@ -1437,6 +1439,7 @@ namespace Entity {
         "NarrowerConceptSelector",
         "NarrowerTransitiveConceptSelector",
         "PostWorkflowExecutionEvent",
+        "PostWorkflowExecutionEventPayload",
         "PostWorkflowStepExecutionEvent",
         "PreWorkflowExecutionEvent",
         "PreWorkflowStepExecutionEvent",
@@ -23486,17 +23489,20 @@ export namespace WorkflowExecution {
     ];
   }
 }
-export class PostWorkflowExecutionEventPayload {
+export class PostWorkflowExecutionEventPayload extends Entity {
   readonly documentClaims: DocumentClaims;
-  private _identifier: (rdfjs.BlankNode | rdfjs.NamedNode) | undefined;
-  readonly type = "PostWorkflowExecutionEventPayload";
+  private _identifier: rdfjs.NamedNode | undefined;
+  override readonly type = "PostWorkflowExecutionEventPayload";
   readonly workflowExecution: WorkflowExecution;
 
-  constructor(parameters: {
-    readonly documentClaims: DocumentClaims;
-    readonly identifier?: (rdfjs.BlankNode | rdfjs.NamedNode) | string;
-    readonly workflowExecution: WorkflowExecution;
-  }) {
+  constructor(
+    parameters: {
+      readonly documentClaims: DocumentClaims;
+      readonly identifier?: rdfjs.NamedNode | string;
+      readonly workflowExecution: WorkflowExecution;
+    } & ConstructorParameters<typeof Entity>[0],
+  ) {
+    super(parameters);
     this.documentClaims = parameters.documentClaims;
     if (typeof parameters.identifier === "object") {
       this._identifier = parameters.identifier;
@@ -23509,43 +23515,29 @@ export class PostWorkflowExecutionEventPayload {
     this.workflowExecution = parameters.workflowExecution;
   }
 
-  get identifier(): rdfjs.BlankNode | rdfjs.NamedNode {
+  override get identifier(): rdfjs.NamedNode {
     if (typeof this._identifier === "undefined") {
-      this._identifier = dataFactory.blankNode();
+      this._identifier = dataFactory.namedNode(
+        `urn:shaclmate:object:${this.type}:${uuid.v4()}`,
+      );
     }
     return this._identifier;
   }
 
-  equals(other: PostWorkflowExecutionEventPayload): EqualsResult {
-    return DocumentClaims.equals(this.documentClaims, other.documentClaims)
-      .mapLeft((propertyValuesUnequal) => ({
-        left: this,
-        right: other,
-        propertyName: "documentClaims",
-        propertyValuesUnequal,
-        type: "Property" as const,
-      }))
+  override equals(other: PostWorkflowExecutionEventPayload): EqualsResult {
+    return super
+      .equals(other)
       .chain(() =>
-        booleanEquals(this.identifier, other.identifier).mapLeft(
-          (propertyValuesUnequal) => ({
-            left: this,
-            right: other,
-            propertyName: "identifier",
-            propertyValuesUnequal,
-            type: "Property" as const,
-          }),
-        ),
-      )
-      .chain(() =>
-        strictEquals(this.type, other.type).mapLeft(
-          (propertyValuesUnequal) => ({
-            left: this,
-            right: other,
-            propertyName: "type",
-            propertyValuesUnequal,
-            type: "Property" as const,
-          }),
-        ),
+        DocumentClaims.equals(
+          this.documentClaims,
+          other.documentClaims,
+        ).mapLeft((propertyValuesUnequal) => ({
+          left: this,
+          right: other,
+          propertyName: "documentClaims",
+          propertyValuesUnequal,
+          type: "Property" as const,
+        })),
       )
       .chain(() =>
         ((left, right) => left.equals(right))(
@@ -23561,38 +23553,33 @@ export class PostWorkflowExecutionEventPayload {
       );
   }
 
-  hash<
+  override hash<
     HasherT extends {
       update: (message: string | number[] | ArrayBuffer | Uint8Array) => void;
     },
   >(_hasher: HasherT): HasherT {
+    super.hash(_hasher);
     this.documentClaims.hash(_hasher);
     this.workflowExecution.hash(_hasher);
     return _hasher;
   }
 
-  toJson(): {
+  override toJson(): {
     readonly documentClaims:
       | ReturnType<EvaluatedClaims["toJson"]>
       | ReturnType<UnevaluatedClaims["toJson"]>;
-    readonly "@id": string;
-    readonly type: "PostWorkflowExecutionEventPayload";
     readonly workflowExecution: ReturnType<WorkflowExecution["toJson"]>;
-  } {
+  } & ReturnType<Entity["toJson"]> {
     return JSON.parse(
       JSON.stringify({
+        ...super.toJson(),
         documentClaims: this.documentClaims.toJson(),
-        "@id":
-          this.identifier.termType === "BlankNode"
-            ? `_:${this.identifier.value}`
-            : this.identifier.value,
-        type: this.type,
         workflowExecution: this.workflowExecution.toJson(),
       } satisfies ReturnType<PostWorkflowExecutionEventPayload["toJson"]>),
     );
   }
 
-  toString(): string {
+  override toString(): string {
     return JSON.stringify(this.toJson());
   }
 }
@@ -23604,26 +23591,36 @@ export namespace PostWorkflowExecutionEventPayload {
     zod.ZodError,
     {
       documentClaims: DocumentClaims;
-      identifier: rdfjs.BlankNode | rdfjs.NamedNode;
+      identifier: rdfjs.NamedNode;
       workflowExecution: WorkflowExecution;
-    }
+    } & UnwrapR<ReturnType<typeof Entity.propertiesFromJson>>
   > {
-    const _jsonSafeParseResult = jsonZodSchema().safeParse(_json);
+    const _jsonSafeParseResult =
+      postWorkflowExecutionEventPayloadJsonZodSchema().safeParse(_json);
     if (!_jsonSafeParseResult.success) {
       return purify.Left(_jsonSafeParseResult.error);
     }
 
     const _jsonObject = _jsonSafeParseResult.data;
+    const _super0Either = Entity.propertiesFromJson(_jsonObject);
+    if (_super0Either.isLeft()) {
+      return _super0Either;
+    }
+
+    const _super0 = _super0Either.unsafeCoerce();
     const documentClaims = DocumentClaims.fromJson(
       _jsonObject["documentClaims"],
     ).unsafeCoerce();
-    const identifier = _jsonObject["@id"].startsWith("_:")
-      ? dataFactory.blankNode(_jsonObject["@id"].substring(2))
-      : dataFactory.namedNode(_jsonObject["@id"]);
+    const identifier = dataFactory.namedNode(_jsonObject["@id"]);
     const workflowExecution = WorkflowExecution.fromJson(
       _jsonObject["workflowExecution"],
     ).unsafeCoerce();
-    return purify.Either.of({ documentClaims, identifier, workflowExecution });
+    return purify.Either.of({
+      ..._super0,
+      documentClaims,
+      identifier,
+      workflowExecution,
+    });
   }
 
   export function fromJson(
@@ -23635,30 +23632,17 @@ export namespace PostWorkflowExecutionEventPayload {
   }
 
   export function jsonSchema() {
-    return zodToJsonSchema(jsonZodSchema());
+    return zodToJsonSchema(postWorkflowExecutionEventPayloadJsonZodSchema());
   }
 
-  export function jsonUiSchema(parameters?: { scopePrefix?: string }) {
+  export function postWorkflowExecutionEventPayloadJsonUiSchema(parameters?: {
+    scopePrefix?: string;
+  }) {
     const scopePrefix = parameters?.scopePrefix ?? "#";
     return {
       elements: [
+        Entity.entityJsonUiSchema({ scopePrefix }),
         { scope: `${scopePrefix}/properties/documentClaims`, type: "Control" },
-        {
-          label: "Identifier",
-          scope: `${scopePrefix}/properties/@id`,
-          type: "Control",
-        },
-        {
-          rule: {
-            condition: {
-              schema: { const: "PostWorkflowExecutionEventPayload" },
-              scope: `${scopePrefix}/properties/type`,
-            },
-            effect: "HIDE",
-          },
-          scope: `${scopePrefix}/properties/type`,
-          type: "Control",
-        },
         WorkflowExecution.workflowExecutionJsonUiSchema({
           scopePrefix: `${scopePrefix}/properties/workflowExecution`,
         }),
@@ -23668,13 +23652,15 @@ export namespace PostWorkflowExecutionEventPayload {
     };
   }
 
-  export function jsonZodSchema() {
-    return zod.object({
-      documentClaims: DocumentClaims.jsonZodSchema(),
-      "@id": zod.string().min(1),
-      type: zod.literal("PostWorkflowExecutionEventPayload"),
-      workflowExecution: WorkflowExecution.workflowExecutionJsonZodSchema(),
-    });
+  export function postWorkflowExecutionEventPayloadJsonZodSchema() {
+    return Entity.entityJsonZodSchema().merge(
+      zod.object({
+        documentClaims: DocumentClaims.jsonZodSchema(),
+        "@id": zod.string().min(1),
+        type: zod.literal("PostWorkflowExecutionEventPayload"),
+        workflowExecution: WorkflowExecution.workflowExecutionJsonZodSchema(),
+      }),
+    );
   }
 }
 export class PostWorkflowExecutionEvent extends BaseEvent {
@@ -23801,9 +23787,9 @@ export namespace PostWorkflowExecutionEvent {
     return {
       elements: [
         BaseEvent.baseEventJsonUiSchema({ scopePrefix }),
-        PostWorkflowExecutionEventPayload.jsonUiSchema({
-          scopePrefix: `${scopePrefix}/properties/payload`,
-        }),
+        PostWorkflowExecutionEventPayload.postWorkflowExecutionEventPayloadJsonUiSchema(
+          { scopePrefix: `${scopePrefix}/properties/payload` },
+        ),
       ],
       label: "PostWorkflowExecutionEvent",
       type: "Group",
@@ -23814,7 +23800,8 @@ export namespace PostWorkflowExecutionEvent {
     return BaseEvent.baseEventJsonZodSchema().merge(
       zod.object({
         "@id": zod.string().min(1),
-        payload: PostWorkflowExecutionEventPayload.jsonZodSchema(),
+        payload:
+          PostWorkflowExecutionEventPayload.postWorkflowExecutionEventPayloadJsonZodSchema(),
         type: zod.literal("PostWorkflowExecutionEvent"),
       }),
     );

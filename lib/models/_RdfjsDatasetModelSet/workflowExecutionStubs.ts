@@ -52,23 +52,29 @@ export function workflowExecutionStubsSync(
         }).ifRight((workflowExecution) => {
           for (const workflowStepExecution of workflowExecution.subProcesses
             .stepExecutions) {
+            if (workflowStepExecution.output.type === "Exception") {
+              continue;
+            }
+
             if (
               workflowStepExecution.type !==
               "WorkflowQuestionnaireStepExecution"
             ) {
               continue;
             }
+
             const questionnaireAdministration =
               workflowStepExecution.subProcesses.questionnaireAdministration.extractNullable();
-            if (
-              questionnaireAdministration === null ||
-              questionnaireAdministration.output.type !==
-                "QuestionnaireAdministrationOutput"
-            ) {
+            if (questionnaireAdministration === null) {
               continue;
             }
-            for (const answer of questionnaireAdministration.output.answers) {
-              for (const claim of answer.claims) {
+            for (const questionAdministration of questionnaireAdministration
+              .subProcesses.questionAdministrations) {
+              if (questionAdministration.output.type === "Exception") {
+                continue;
+              }
+
+              for (const claim of questionAdministration.output.answer.claims) {
                 if (claim.identifier.equals(query.claimIdentifier)) {
                   workflowExecutionStubs.push(stubify(workflowExecution));
                 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { ApiClient } from "@/lib/ApiClient";
-import { DocumentAnnotationsDataTable } from "@/lib/components/DocumentClaimsDataTable";
+import { DocumentClaimsDataTable } from "@/lib/components/DocumentClaimsDataTable";
 import { ErrorAlert } from "@/lib/components/ErrorAlert";
 import { Section } from "@/lib/components/Section";
 import { WorkflowExecutionEventsViewer } from "@/lib/components/WorkflowExecutionEventsViewer";
@@ -22,6 +22,7 @@ import {
   Locale,
   WorkflowExecutionEvent,
   WorkflowStub,
+  displayLabel,
 } from "@/lib/models";
 import { useLocale, useTranslations } from "next-intl";
 import React, { ReactElement, useCallback, useMemo, useState } from "react";
@@ -111,8 +112,9 @@ export function AnnotateDocumentForm({
       switch (workflowExecutionEvent.type) {
         case "PostWorkflowExecutionEvent": {
           workflowExecutionIdentifier =
-            workflowExecutionEvent.payload.identifier;
-          workflowIdentifier = workflowExecutionEvent.payload.input.identifier;
+            workflowExecutionEvent.payload.workflowExecution.identifier;
+          workflowIdentifier =
+            workflowExecutionEvent.payload.workflowExecution.input.identifier;
           break;
         }
         case "PreWorkflowExecutionEvent": {
@@ -153,11 +155,8 @@ export function AnnotateDocumentForm({
             className="w-full"
             title={translations("Cumulative annotations")}
           >
-            <DocumentAnnotationsDataTable
-              annotations={workflowPostExecutionEvent. }
-              annotationsEvaluation={
-                workflowPostExecutionEvent.cumulativeAnnotationsEvaluation
-              }
+            <DocumentClaimsDataTable
+              documentClaims={workflowPostExecutionEvent.payload.documentClaims.toJson()}
               excludeHeader
               key="right"
             />
@@ -194,7 +193,8 @@ export function AnnotateDocumentForm({
           <DialogHeader>
             <DialogTitle>
               <span>
-                {translations("Annotating document")}: {document.displayLabel}
+                {translations("Annotating document")}:{" "}
+                {displayLabel(document, { locale })}
               </span>
             </DialogTitle>
           </DialogHeader>

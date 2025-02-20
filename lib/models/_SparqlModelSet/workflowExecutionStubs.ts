@@ -44,14 +44,22 @@ function sparqlRdfListTriples({
 }
 
 const answerVariable = dataFactory.variable!("answer");
-const answerListVariable = dataFactory.variable!("answerList");
 const claimVariable = dataFactory.variable!("claim");
 const claimListVariable = dataFactory.variable!("claimList");
+const questionAdministrationOutputVariable = dataFactory.variable!(
+  "questionAdministrationOutput",
+);
+const questionAdministrationVariable = dataFactory.variable!(
+  "questionAdministration",
+);
+const questionAdministrationsListVariable = dataFactory.variable!(
+  "questionAdministrationsList",
+);
 const questionnaireAdministrationVariable = dataFactory.variable!(
   "questionnaireAdministration",
 );
-const questionnaireAdministrationOutputVariable = dataFactory.variable!(
-  "questionnaireAdministrationOutput",
+const questionnaireAdministrationSubProcessesVariable = dataFactory.variable!(
+  "questionnaireAdministrationSubProcesses",
 );
 const workflowExecutionVariable = dataFactory.variable!("workflowExecution");
 const workflowExecutionInputVariable = dataFactory.variable!(
@@ -126,22 +134,33 @@ function workflowExecutionQueryToWherePatterns(
               predicate: knextract.questionnaireAdministration,
               object: questionnaireAdministrationVariable,
             },
-            // Questionnaire administration -> output
+            // Questionnaire administration -> sub-processes
             {
               subject: questionnaireAdministrationVariable,
-              predicate: knextract.processOutput,
-              object: questionnaireAdministrationOutputVariable,
+              predicate: knextract.subProcesses,
+              object: questionnaireAdministrationSubProcessesVariable,
             },
-            // Questionnaire administration output -> answer list
             {
-              subject: questionnaireAdministrationOutputVariable,
-              predicate: knextract.answers,
-              object: answerListVariable,
+              subject: questionnaireAdministrationSubProcessesVariable,
+              predicate: knextract.questionnaireAdministrations,
+              object: questionAdministrationsListVariable,
             },
             ...sparqlRdfListTriples({
-              itemVariable: answerVariable,
-              listVariable: answerListVariable,
+              itemVariable: questionAdministrationVariable,
+              listVariable: questionAdministrationsListVariable,
             }),
+            // Question administration -> output
+            {
+              subject: questionAdministrationVariable,
+              predicate: knextract.processOutput,
+              object: questionAdministrationOutputVariable,
+            },
+            // Question administration output -> answer
+            {
+              subject: questionAdministrationOutputVariable,
+              predicate: knextract.answer,
+              object: answerVariable,
+            },
             // Answer -> claims list
             {
               subject: answerVariable,

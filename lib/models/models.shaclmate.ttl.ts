@@ -723,9 +723,12 @@ _:n3-23 <http://www.w3.org/ns/shacl#node> <http://purl.archive.org/purl/knextrac
 <http://purl.archive.org/purl/knextract/ontology#PostWorkflowExecutionEvent-payload> <http://www.w3.org/ns/shacl#node> <http://purl.archive.org/purl/knextract/ontology#PostWorkflowExecutionEventPayload> .
 <http://purl.archive.org/purl/knextract/ontology#PostWorkflowExecutionEvent-payload> <http://www.w3.org/ns/shacl#path> <http://purl.archive.org/purl/knextract/ontology#eventPayload> .
 <http://purl.archive.org/purl/knextract/ontology#PostWorkflowExecutionEventPayload> <http://minorg.github.io/shaclmate/ns#name> "PostWorkflowExecutionEventPayload" .
+<http://purl.archive.org/purl/knextract/ontology#PostWorkflowExecutionEventPayload> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://purl.archive.org/purl/knextract/ontology#PostWorkflowExecutionEventPayload> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#NodeShape> .
+<http://purl.archive.org/purl/knextract/ontology#PostWorkflowExecutionEventPayload> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://purl.archive.org/purl/knextract/ontology#Entity> .
 <http://purl.archive.org/purl/knextract/ontology#PostWorkflowExecutionEventPayload> <http://www.w3.org/ns/shacl#property> <http://purl.archive.org/purl/knextract/ontology#PostWorkflowExecutionEventPayload-documentClaims> .
 <http://purl.archive.org/purl/knextract/ontology#PostWorkflowExecutionEventPayload> <http://www.w3.org/ns/shacl#property> <http://purl.archive.org/purl/knextract/ontology#PostWorkflowExecutionEventPayload-workflowExecution> .
+<http://purl.archive.org/purl/knextract/ontology#PostWorkflowExecutionEventPayload> <http://minorg.github.io/shaclmate/ns#mintingStrategy> <http://minorg.github.io/shaclmate/ns#_MintingStrategy_UUIDv4> .
 <http://purl.archive.org/purl/knextract/ontology#PostWorkflowExecutionEventPayload> <http://minorg.github.io/shaclmate/ns#tsFeatureExclude> <http://minorg.github.io/shaclmate/ns#_TsFeature_Rdf> .
 <http://purl.archive.org/purl/knextract/ontology#PostWorkflowExecutionEventPayload> <http://minorg.github.io/shaclmate/ns#tsFeatureExclude> <http://minorg.github.io/shaclmate/ns#_TsFeature_Sparql> .
 <http://purl.archive.org/purl/knextract/ontology#PostWorkflowExecutionEventPayload-documentClaims> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#PropertyShape> .
