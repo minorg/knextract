@@ -146,9 +146,7 @@ export class QuestionnaireAdministrator {
     return new QuestionnaireAdministration({
       endedAtTime: new Date(),
       input,
-      output: new QuestionnaireAdministrationOutput({
-        answers,
-      }),
+      output: new QuestionnaireAdministrationOutput({}),
       startedAtTime,
       subProcesses: new QuestionnaireAdministrationSubProcesses({
         questionAdministrations,

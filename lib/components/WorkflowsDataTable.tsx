@@ -16,9 +16,6 @@ export function WorkflowsDataTable(json: {
   const hrefs = useHrefs();
   const locale = useLocale();
   const translations = useTranslations("WorkflowsDataTable");
-  const workflows = json.workflows.flatMap((workflowJson) =>
-    WorkflowStub.fromJson(workflowJson).toMaybe().toList(),
-  );
 
   const columns: ColumnDef<WorkflowStub, any>[] = [
     columnHelper.accessor("label", {
@@ -28,7 +25,7 @@ export function WorkflowsDataTable(json: {
             identifier: context.row.original.identifier,
           })}
         >
-          {displayLabel({ locale, model: context.row.original })}
+          {displayLabel(context.row.original, { locale })}
         </Link>
       ),
       header: () => translations("Label"),
@@ -37,14 +34,18 @@ export function WorkflowsDataTable(json: {
 
   const data = useMemo(
     () =>
-      workflows.toSorted((left, right) =>
-        left.label
-          .orDefault(Identifier.toString(left.identifier))
-          .localeCompare(
-            right.label.orDefault(Identifier.toString(left.identifier)),
-          ),
-      ),
-    [workflows],
+      json.workflows
+        .flatMap((workflowJson) =>
+          WorkflowStub.fromJson(workflowJson).toMaybe().toList(),
+        )
+        .toSorted((left, right) =>
+          left.label
+            .orDefault(Identifier.toString(left.identifier))
+            .localeCompare(
+              right.label.orDefault(Identifier.toString(left.identifier)),
+            ),
+        ),
+    [json],
   );
 
   return (

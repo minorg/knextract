@@ -5,7 +5,12 @@ import { DocumentAnnotationsDataTable } from "@/lib/components/DocumentClaimsDat
 import { ProcessViewer } from "@/lib/components/ProcessViewer";
 import { PromptTemplateViewer } from "@/lib/components/PromptTemplateViewer";
 import { PromptViewer } from "@/lib/components/PromptViewer";
-import { ValueExtraction } from "@/lib/models";
+import {
+  LanguageModelInvocation,
+  LanguageModelInvocationInput,
+  LanguageModelInvocationOutput,
+  ValueExtraction,
+} from "@/lib/models";
 import { getTranslations } from "next-intl/server";
 import React from "react";
 
@@ -89,30 +94,29 @@ async function ConceptSelectionViewer({
 async function LanguageModelInvocationViewer({
   languageModelInvocation,
 }: {
-  languageModelInvocation: LanguageModelConceptAnnotatorExecution.LanguageModelInvocation;
+  languageModelInvocation: LanguageModelInvocation;
 }) {
   const translations = await getTranslations("LanguageModelInvocationViewer");
 
   return (
     <ProcessViewer
       process={languageModelInvocation}
-      renderInput={async (prompt) => [
+      renderInput={async (input: LanguageModelInvocationInput) => [
         {
           title: translations("Prompt"),
-          content: <PromptViewer prompt={prompt} />,
+          content: <PromptViewer prompt={input.prompt} />,
         },
       ]}
-      renderOutput={async (completionMessage) => [
+      renderOutput={async (output: LanguageModelInvocationOutput) => [
         {
           title: translations("Completion message"),
           content: (
             <pre style={{ whiteSpace: "pre-wrap" }}>
-              {completionMessage.literalForm}
+              {output.completionMessage.literalForm}
             </pre>
           ),
         },
       ]}
-      renderSubProcesses={async () => []}
     />
   );
 }
@@ -161,7 +165,7 @@ async function PromptConstructionViewer({
   );
 }
 
-export async function QuestionnaireAdministration({
+export async function QuestionnaireAdministrationViewer({
   conceptAnnotatorExecution,
 }: {
   conceptAnnotatorExecution: ConceptAnnotatorExecution;

@@ -13,8 +13,8 @@
     "Annotating document": "Annotating document",
     "Workflow execution": "Workflow execution"
   },
-  "AnnotationPage": {
-    "Annotation": "Annotation",
+  "ClaimPage": {
+    "Claim": "Claim",
     "Concept path": "Concept path",
     "Document": "Document",
     "Gold": "Gold",
@@ -112,7 +112,7 @@
     "Document": "Document"
   },
   "DocumentViewer": {
-    "Annotations": "Annotations",
+    "Claims": "Claims",
     "Document HTML": "Document HTML",
     "Document images": "Document images",
     "Document text": "Document text",
@@ -251,11 +251,6 @@
     "http://www_w3_org/2004/02/skos/core#related": "Related concepts",
     "http://www_w3_org/2004/02/skos/core#relatedMatch": "Related match concepts"
   },
-  "StepExecutionViewer": {
-    "Annotations": "Annotations",
-    "Step": "Step",
-    "Sub-step executions": "Sub-step executions"
-  },
   "TextUploader": {
     "Auto-detect": "Auto-detect",
     "Paste text here": "Paste text here.",
@@ -319,10 +314,16 @@
   "WorkflowSelect": {
     "Select a workflow": "Select a workflow"
   },
+  "WorkflowStepExecutionViewer": {
+    "Step": "Step",
+    "Questionnaire administration": "Questionnaire administration"
+  },
   "WorkflowStepViewer": {
-    "Concept selector": "Concept selector",
-    "Priority": "Priority",
-    "Recursive": "Recursive"
+    "Language model": "Language model",
+    "Questionnaire": "Questionnaire"
+  },
+  "WorkflowStepsViewer": {
+    "Questionnaire step": "Questionnaire step"
   },
   "WorkflowViewer": {
     "Executions": "Executions",

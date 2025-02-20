@@ -1,34 +1,37 @@
-import { ConceptSelectorViewer } from "@/lib/components/ConceptSelectorViewer";
-import { ConceptAnnotatorParametersViewer } from "@/lib/components/LanguageModelSpecificationViewer";
+import { QuestionnaireViewer } from "@/lib/components/QuestionnaireViewer";
 import { Section } from "@/lib/components/Section";
-import { WorkflowStepsViewer } from "@/lib/components/WorkflowStepsViewer";
-import { WorkflowStep } from "@/lib/models";
-import { getTranslations } from "next-intl/server";
+import { WorkflowStep, displayLabel } from "@/lib/models";
+import { getLocale, getTranslations } from "next-intl/server";
 import React, { ReactElement } from "react";
 
 export async function WorkflowStepViewer({
-  includeSubSteps,
   step,
 }: {
   includeSubSteps: boolean;
   step: WorkflowStep;
 }) {
+  const locale = await getLocale();
   const translations = await getTranslations("WorkflowStepViewer");
 
-  const parts: ReactElement[] = [];
+  const sections: ReactElement[] = [];
 
   switch (step.type) {
     case "WorkflowQuestionnaireStep": {
-      parts.push(
-        <ConceptAnnotatorParametersViewer
-          conceptAnnotatorParameters={step.conceptAnnotatorParameters}
-          key={parts.length}
-        />,
-      );
+      step.languageModel.ifJust((languageModel) => {
+        sections.push(
+          <Section key="languageModel" title={translations("Language model")}>
+            {displayLabel(languageModel, { locale })}
+          </Section>,
+        );
+      });
 
-      parts.push(
-        <Section key={parts.length} title={translations("Concept selector")}>
-          <ConceptSelectorViewer conceptSelector={step.conceptSelector} />
+      sections.push(
+        <Section key="questionnaire" title={translations("Questionnaire")}>
+          <QuestionnaireViewer
+            key={sections.length}
+            questionnaire={step.questionnaire}
+          />
+          ,
         </Section>,
       );
 
@@ -36,5 +39,5 @@ export async function WorkflowStepViewer({
     }
   }
 
-  return <div className="flex flex-col gap-4">{parts}</div>;
+  return <div className="flex flex-col gap-4">{sections}</div>;
 }

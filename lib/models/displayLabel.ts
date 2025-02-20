@@ -8,6 +8,8 @@ import {
   Document,
   DocumentStub,
   Identifier,
+  LanguageModelSpecification,
+  LanguageModelSpecificationStub,
   Workflow,
   WorkflowStub,
   kosLabels,
@@ -23,6 +25,8 @@ export function displayLabel(
     | CorpusStub
     | Document
     | DocumentStub
+    | LanguageModelSpecification
+    | LanguageModelSpecificationStub
     | Workflow
     | WorkflowStub,
   // biome-ignore lint/correctness/noEmptyPattern: <explanation>
@@ -45,6 +49,10 @@ export function displayLabel(
       return model.title
         .map((title) => title.literalForm)
         .orDefault(Identifier.toString(model.identifier));
+    case "LanguageModelSpecification":
+      return model.label;
+    case "LanguageModelSpecificationStub":
+      return model.label.orDefault(Identifier.toString(model.identifier));
     case "Workflow":
       return model.label;
     case "WorkflowStub":

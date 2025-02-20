@@ -1,7 +1,6 @@
 "use client";
 
 import { addWorkflow } from "@/lib/actions/addWorkflow";
-import { defaultPromptTemplate } from "@/lib/annotators/defaultPromptTemplate";
 import { ModelSelect } from "@/lib/components/ModelSelect";
 import { PageTitleHeading } from "@/lib/components/PageTitleHeading";
 import { Button } from "@/lib/components/ui/button";
@@ -18,55 +17,74 @@ import { Input } from "@/lib/components/ui/input";
 import { LoadingSpinner } from "@/lib/components/ui/loading-spinner";
 import { Textarea } from "@/lib/components/ui/textarea";
 import {
+  CategoricalQuestion,
   ConceptSchemeConceptSelector,
+  ConceptSchemeStub,
   Identifier,
-  LanguageModelSpecification,
+  Instruction,
+  LanguageModelSpecificationStub,
   Locale,
+  PromptMessage,
   PromptMessageTemplate,
   PromptTemplate,
-  Stub,
+  Questionnaire,
+  Workflow,
+  WorkflowQuestionnaireStep,
 } from "@/lib/models";
-import { json, rdf, synthetic } from "@/lib/models/impl";
-import { rdfEnvironment } from "@/lib/rdfEnvironment";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { dcterms } from "@tpluscode/rdf-ns-builders";
 import { useLocale, useTranslations } from "next-intl";
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-const defaultPromptTemplatePromptInstructionsMessageTemplateIndex =
-  defaultPromptTemplate.messageTemplates.findIndex((messageTemplate) =>
-    messageTemplate.role.equals(knextractCbox._Role_Human),
-  );
-
-const defaultPromptInstructions =
-  defaultPromptTemplate.messageTemplates[
-    defaultPromptTemplatePromptInstructionsMessageTemplateIndex
-  ].literalForm;
+const instructionsDefault = [
+  "I will give you a document in HTML.",
+  "I will also give you a JSON array of JSON objects describing concepts the document could be about.",
+  "You should determine which concepts the document is about, and return those concept numbers as a JSON object with the format { matches: [number, number, number] }",
+  "Please do not return any other text, just the JSON object.",
+].join(" ");
 
 const formSchema = z.object({
   conceptSchemeIdentifier: z.string(),
   label: z.string().min(1),
-  languageModelIdentifier: z.string(),
-  promptInstructions: z.string(),
+  languageModelSpecificationIdentifier: z.string(),
+  instructions: z.string(),
   recursive: z.boolean().default(false).optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-export function WorkflowEditor({
-  conceptSchemes,
-  languageModels,
-}: {
-  conceptSchemes: readonly json.ConceptScheme[];
-  languageModels: readonly json.LanguageModelSpecification[];
+export function WorkflowEditor(json: {
+  conceptSchemes: readonly ReturnType<typeof ConceptSchemeStub.toJson>[];
+  languageModelSpecifications: readonly ReturnType<
+    LanguageModelSpecificationStub["toJson"]
+  >[];
 }) {
+  const conceptSchemes = useMemo(
+    () =>
+      json.conceptSchemes.flatMap((json) =>
+        ConceptSchemeStub.fromJson(json).toMaybe().toList(),
+      ),
+    [json],
+  );
+  const languageModelSpecifications = useMemo(
+    () =>
+      json.languageModelSpecifications.flatMap((json) =>
+        LanguageModelSpecificationStub.fromJson(json).toMaybe().toList(),
+      ),
+    [json],
+  );
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     values: {
-      conceptSchemeIdentifier: conceptSchemes[0].identifier,
+      conceptSchemeIdentifier: Identifier.toString(
+        conceptSchemes[0].identifier,
+      ),
       label: "",
-      languageModelIdentifier: "",
-      promptInstructions: defaultPromptInstructions,
+      languageModelSpecificationIdentifier: "",
+      instructions: instructionsDefault,
       recursive: false,
     },
   });
@@ -81,76 +99,80 @@ export function WorkflowEditor({
         className="flex flex-col gap-8"
         onSubmit={form.handleSubmit(async () => {
           const conceptSelector = new ConceptSchemeConceptSelector({
-            conceptScheme: synthetic.Stub.fromModel(
-              new synthetic.ConceptScheme({
-                identifier: Identifier.fromString(
-                  formValues.conceptSchemeIdentifier,
-                ),
-              }),
-            ),
+            conceptScheme: conceptSchemes.find(
+              (conceptScheme) =>
+                conceptScheme.identifier.value ===
+                formValues.conceptSchemeIdentifier,
+            )!,
           });
 
-          let languageModel: Stub<LanguageModelSpecification> | undefined;
-          if (formValues.languageModelIdentifier) {
-            languageModel =
-              synthetic.Stub.fromIdentifier<LanguageModelSpecification>(
-                Identifier.fromString(formValues.languageModelIdentifier),
-              );
-          }
-
-          let promptTemplate: PromptTemplate | undefined;
-          if (
-            formValues.promptInstructions.length > 0 &&
-            formValues.promptInstructions !== defaultPromptInstructions
-          ) {
-            promptTemplate = new PromptTemplate({
-              messageTemplates: [
-                ...defaultPromptTemplate.messageTemplates.slice(
-                  0,
-                  defaultPromptTemplatePromptInstructionsMessageTemplateIndex,
-                ),
-                new PromptMessageTemplate({
-                  literalForm: formValues.promptInstructions,
-                  role: "http://purl.archive.org/purl/knextract/cbox#_Role_Human",
-                }),
-                ...defaultPromptTemplate.messageTemplates.slice(
-                  defaultPromptTemplatePromptInstructionsMessageTemplateIndex +
-                    1,
-                ),
-              ],
-            });
-          }
-
-          const conceptAnnotatorParameters =
-            new synthetic.LanguageModelConceptAnnotatorParameters({
-              languageModel,
-              promptTemplate,
-            });
-
-          const workflowRdfString =
-            await rdfEnvironment.serializers.serializeToString(
-              (
-                await rdf.mem.ModelSet.fromModels((modelSet) =>
-                  modelSet.addModel(
-                    newWorkflow({
-                      steps: [
-                        newWorkflow.ConceptAnnotatorStep({
-                          conceptSelector,
-                          conceptAnnotatorParameters,
-                          recursive: formValues.recursive ? true : undefined,
-                        }),
-                      ],
-                      label: formValues.label,
-                    }),
-                  ),
-                )
-              ).dataset,
-              { format: "application/n-quads", sorted: true },
+          let languageModelSpecification:
+            | LanguageModelSpecificationStub
+            | undefined;
+          if (formValues.languageModelSpecificationIdentifier) {
+            languageModelSpecification = languageModelSpecifications.find(
+              (languageModelSpecification) =>
+                languageModelSpecification.identifier.value ===
+                formValues.languageModelSpecificationIdentifier,
             );
+          }
+
+          const questionnaire = new Questionnaire({
+            members: [
+              new Instruction({
+                promptMessage: new PromptMessage({
+                  literalForm:
+                    "You are an expert document classifier. You help people classify documents so that they can be easily found.",
+                  role: "http://purl.archive.org/purl/knextract/cbox#_Role_System",
+                }),
+              }),
+              new CategoricalQuestion({
+                conceptSelector,
+                path: dcterms.subject,
+                promptTemplate: new PromptTemplate({
+                  messageTemplates: [
+                    new PromptMessageTemplate({
+                      literalForm:
+                        formValues.instructions.length > 0
+                          ? formValues.instructions
+                          : instructionsDefault,
+                      role: "http://purl.archive.org/purl/knextract/cbox#_Role_Human",
+                    }),
+                    new PromptMessageTemplate({
+                      literalForm: "Okay, please provide the document.",
+                      role: "http://purl.archive.org/purl/knextract/cbox#_Role_AI",
+                    }),
+                    new PromptMessageTemplate({
+                      literalForm: "{{{document.text}}}",
+                      role: "http://purl.archive.org/purl/knextract/cbox#_Role_Human",
+                    }),
+                    new PromptMessageTemplate({
+                      literalForm: "Okay, please provide the concepts list.",
+                      role: "http://purl.archive.org/purl/knextract/cbox#_Role_AI",
+                    }),
+                    new PromptMessageTemplate({
+                      literalForm: "{{{concepts | json}}}",
+                      role: "http://purl.archive.org/purl/knextract/cbox#_Role_Human",
+                    }),
+                  ],
+                }),
+              }),
+            ],
+          });
+
+          const workflow = new Workflow({
+            label: formValues.label,
+            steps: [
+              new WorkflowQuestionnaireStep({
+                languageModel: languageModelSpecification,
+                questionnaire,
+              }),
+            ],
+          });
 
           await addWorkflow.bind(null, {
             locale,
-            workflowRdfString,
+            workflow: workflow.toJson(),
           })(null as any); // FormData is ignored
         })}
       >
@@ -207,17 +229,17 @@ export function WorkflowEditor({
             </FormItem>
           )}
         />
-        {languageModels.length > 0 ? (
+        {languageModelSpecifications.length > 0 ? (
           <FormField
             control={form.control}
             disabled={form.formState.isSubmitting}
-            name="languageModelIdentifier"
+            name="languageModelSpecificationIdentifier"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{translations("Language model")}</FormLabel>
                 <ModelSelect
                   disabled={form.formState.isSubmitting}
-                  models={languageModels}
+                  models={languageModelSpecifications}
                   onValueChange={field.onChange}
                   value={field.value}
                 />
@@ -229,7 +251,7 @@ export function WorkflowEditor({
         <FormField
           control={form.control}
           disabled={form.formState.isSubmitting}
-          name="promptInstructions"
+          name="instructions"
           render={({ field }) => (
             <FormItem>
               <FormLabel>{translations("Prompt instructions")}</FormLabel>

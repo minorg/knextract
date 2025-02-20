@@ -31,7 +31,7 @@ export default async function NewWorkflowPage({
               })
             ).flatResolve()
           ).map(json.ConceptScheme.clone)}
-          languageModels={(
+          languageModelSpecifications={(
             await (await modelSet.languageModelSpecifications()).flatResolve()
           )
             .filter(

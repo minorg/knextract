@@ -1,9 +1,7 @@
-import { ClientProvidersServer } from "@/lib/components/ClientProvidersServer";
-import { DocumentAnnotationsDataTable } from "@/lib/components/DocumentClaimsDataTable";
 import { DocumentViewer } from "@/lib/components/DocumentViewer";
 import { Link } from "@/lib/components/Link";
 import { ProcessViewer } from "@/lib/components/ProcessViewer";
-import { ConceptAnnotatorExecutionViewer } from "@/lib/components/QuestionnaireAdministrationViewer";
+import { QuestionnaireAdministrationViewer } from "@/lib/components/QuestionnaireAdministrationViewer";
 import { Section } from "@/lib/components/Section";
 import { WorkflowStepViewer } from "@/lib/components/WorkflowStepViewer";
 import { getHrefs } from "@/lib/getHrefs";
@@ -19,7 +17,7 @@ import {
 import { getTranslations } from "next-intl/server";
 import React from "react";
 
-async function StepExecutionsViewer({
+async function WorkflowStepExecutionsViewer({
   stepExecutions,
   steps,
 }: {
@@ -46,7 +44,10 @@ async function StepExecutionsViewer({
             key={Identifier.toString(stepExecution.identifier)}
             title={Identifier.toString(stepExecution.identifier)}
           >
-            <StepExecutionViewer step={step} stepExecution={stepExecution} />
+            <WorkflowStepExecutionViewer
+              step={step}
+              stepExecution={stepExecution}
+            />
           </Section>
         );
       })}
@@ -54,14 +55,14 @@ async function StepExecutionsViewer({
   );
 }
 
-async function StepExecutionViewer({
+async function WorkflowStepExecutionViewer({
   step,
   stepExecution,
 }: {
   step: WorkflowStep;
   stepExecution: WorkflowStepExecution;
 }) {
-  const translations = await getTranslations("StepExecutionViewer");
+  const translations = await getTranslations("WorkflowStepExecutionViewer");
 
   return (
     <ProcessViewer
@@ -78,52 +79,25 @@ async function StepExecutionViewer({
           ),
         },
       ]}
-      renderOutput={async (annotations) => [
-        {
-          title: translations("Annotations"),
-          content: (
-            <ClientProvidersServer>
-              <DocumentAnnotationsDataTable
-                annotations={
-                  await Promise.all(annotations.map(json.Annotation.clone))
-                }
-                annotationsEvaluation={null}
-                key="annotations"
-              />
-            </ClientProvidersServer>
-          ),
-        },
-      ]}
+      renderOutput={async () => []}
       renderSubProcesses={async () => {
         const subProcessSections: {
           content: React.ReactElement;
           title: string;
         }[] = [];
-        if (stepExecution.type === "WorkflowConceptAnnotatorStepExecution") {
-          stepExecution.subProcesses.conceptAnnotatorExecution.ifJust(
-            (conceptAnnotatorExecution) => {
+        if (stepExecution.type === "WorkflowQuestionnaireStepExecution") {
+          stepExecution.subProcesses.questionnaireAdministration.ifJust(
+            (questionnaireAdministration) => {
               subProcessSections.push({
-                title: conceptAnnotatorExecution.type,
+                title: translations("Questionnaire administration"),
                 content: (
-                  <ConceptAnnotatorExecutionViewer
-                    conceptAnnotatorExecution={conceptAnnotatorExecution}
+                  <QuestionnaireAdministrationViewer
+                    questionnaireAdministration={questionnaireAdministration}
                   />
                 ),
               });
             },
           );
-        }
-        const subStepExecutions = stepExecution.subProcesses.subStepExecutions;
-        if (subStepExecutions.length > 0) {
-          subProcessSections.push({
-            title: translations("Sub-step executions"),
-            content: (
-              <StepExecutionsViewer
-                stepExecutions={subStepExecutions}
-                steps={step.subSteps}
-              />
-            ),
-          });
         }
         return subProcessSections;
       }}
@@ -181,12 +155,12 @@ export async function WorkflowExecutionViewer({
           ];
         }}
         renderOutput={async () => []}
-        renderSubProcesses={async (subProcesses) => [
+        renderSubProcesses={async () => [
           {
             title: translations("Steps"),
             content: (
-              <StepExecutionsViewer
-                stepExecutions={subProcesses}
+              <WorkflowStepExecutionsViewer
+                stepExecutions={workflowExecution.subProcesses.stepExecutions}
                 steps={workflow.steps}
               />
             ),
