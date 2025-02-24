@@ -1,101 +1,123 @@
-import { evaluateClaims } from "@/lib/models";
+import {
+  CategoricalValue,
+  Claim,
+  ConceptStub,
+  evaluateClaims,
+} from "@/lib/models";
 import { dataFactory } from "@/lib/rdfEnvironment";
-import { dcterms } from "@/lib/vocabularies";
+import { dcterms } from "@tpluscode/rdf-ns-builders";
 import { describe, it } from "vitest";
 
 describe("evaluateClaims", () => {
+  const categoricalObjects = new Array(3).map(
+    (_, index) =>
+      new CategoricalValue({
+        value: ConceptStub.create({
+          identifier: dataFactory.namedNode(
+            `http://example.com/object${index}`,
+          ),
+        }),
+      }),
+  );
   const subject = dataFactory.namedNode("http://example.com/subject");
   const predicate = dcterms.subject;
 
-  it("no annotations", async ({ expect }) => {
+  it("no claims", async ({ expect }) => {
     const result = evaluateClaims([]);
     expect(result.isNothing()).toStrictEqual(true);
   });
 
-  it("one gold annotation", async ({ expect }) => {
+  it("one gold categorical claim", async ({ expect }) => {
     const result = evaluateClaims([
-      new Claim.create({
-        object: new synthetic.Concept(),
-        subject: synthetic.Stub.fromModel(document),
+      new Claim({
+        subject,
+        predicate,
+        object: categoricalObjects[0],
         gold: true,
       }),
     ]).unsafeCoerce();
-    expect(result.falseNegativeCount).toStrictEqual(1);
-    expect(result.falsePositiveCount).toStrictEqual(0);
-    expect(result.truePositiveCount).toStrictEqual(0);
+    expect(result.falseNegativeClaims).toHaveLength(1);
+    expect(result.falsePositiveClaims).toHaveLength(0);
+    expect(result.truePositiveClaims).toHaveLength(0);
   });
 
-  it("one inferred annotation", async ({ expect }) => {
+  it("one inferred categorical claim", async ({ expect }) => {
     const result = evaluateClaims([
-      ConceptClaim.create({
-        object: new synthetic.Concept(),
-        subject: synthetic.Stub.fromModel(document),
+      new Claim({
+        subject,
+        predicate,
+        object: categoricalObjects[0],
         gold: false,
       }),
     ]);
     expect(result.isNothing()).toStrictEqual(true);
   });
 
-  it("one matching gold and inferred annotation pair", async ({ expect }) => {
-    const concept = new synthetic.Concept();
+  it("one matching gold and inferred claim pair", async ({ expect }) => {
     const result = evaluateClaims([
-      ConceptClaim.create({
-        object: concept,
-        subject: synthetic.Stub.fromModel(document),
+      new Claim({
+        subject,
+        predicate,
+        object: categoricalObjects[0],
         gold: false,
       }),
-      ConceptClaim.create({
-        object: concept,
-        subject: synthetic.Stub.fromModel(document),
+      new Claim({
+        subject,
+        predicate,
+        object: categoricalObjects[0],
         gold: true,
       }),
     ]).unsafeCoerce();
-    expect(result.falseNegativeCount).toStrictEqual(0);
-    expect(result.falsePositiveCount).toStrictEqual(0);
-    expect(result.truePositiveCount).toStrictEqual(1);
+    expect(result.falseNegativeClaims).toHaveLength(0);
+    expect(result.falsePositiveClaims).toHaveLength(0);
+    expect(result.truePositiveClaims).toHaveLength(1);
   });
 
-  it("one non-matching gold and inferred annotation pair", async ({
+  it("one non-matching gold and inferred categorical claim pair", async ({
     expect,
   }) => {
     const result = evaluateClaims([
-      ConceptClaim.create({
-        object: new synthetic.Concept(),
-        subject: synthetic.Stub.fromModel(document),
+      new Claim({
+        subject,
+        predicate,
+        object: categoricalObjects[0],
         gold: false,
       }),
-      ConceptClaim.create({
-        object: new synthetic.Concept(),
-        subject: synthetic.Stub.fromModel(document),
+      new Claim({
+        subject,
+        predicate,
+        object: categoricalObjects[1],
         gold: true,
       }),
     ]).unsafeCoerce();
-    expect(result.falseNegativeCount).toStrictEqual(1);
-    expect(result.falsePositiveCount).toStrictEqual(1);
-    expect(result.truePositiveCount).toStrictEqual(0);
+    expect(result.falseNegativeClaims).toHaveLength(1);
+    expect(result.falsePositiveClaims).toHaveLength(1);
+    expect(result.truePositiveClaims).toHaveLength(0);
   });
 
   it("1 unmatched gold 1 matched gold-inferred pair", async ({ expect }) => {
-    const concept = new synthetic.Concept();
     const result = evaluateClaims([
-      ConceptClaim.create({
-        object: concept,
-        subject: synthetic.Stub.fromModel(document),
+      new Claim({
+        subject,
+        predicate,
+        object: categoricalObjects[0],
         gold: false,
       }),
-      ConceptClaim.create({
-        object: concept,
-        subject: synthetic.Stub.fromModel(document),
+      new Claim({
+        subject,
+        predicate,
+        object: categoricalObjects[0],
         gold: true,
       }),
-      ConceptClaim.create({
-        object: new synthetic.Concept(),
-        subject: synthetic.Stub.fromModel(document),
+      new Claim({
+        subject,
+        predicate,
+        object: categoricalObjects[1],
         gold: true,
       }),
     ]).unsafeCoerce();
-    expect(result.falseNegativeCount).toStrictEqual(1);
-    expect(result.falsePositiveCount).toStrictEqual(0);
-    expect(result.truePositiveCount).toStrictEqual(1);
+    expect(result.falseNegativeClaims).toHaveLength(1);
+    expect(result.falsePositiveClaims).toHaveLength(0);
+    expect(result.truePositiveClaims).toHaveLength(1);
   });
 });
