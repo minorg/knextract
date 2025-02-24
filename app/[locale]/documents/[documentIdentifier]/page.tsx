@@ -17,11 +17,7 @@ import {
 import { routing } from "@/lib/routing";
 import { decodeFileName, encodeFileName } from "@kos-kit/next-utils";
 import { Metadata } from "next";
-import {
-  getLocale,
-  getTranslations,
-  unstable_setRequestLocale,
-} from "next-intl/server";
+import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import React from "react";
 

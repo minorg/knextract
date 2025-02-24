@@ -10,7 +10,7 @@ import { getHrefs } from "@/lib/getHrefs";
 import {
   ConceptSelector,
   Identifier,
-  SemanticRelationProperty,
+  KosSemanticRelationProperty,
   displayLabel,
 } from "@/lib/models";
 import { getLocale, getTranslations } from "next-intl/server";
@@ -72,10 +72,10 @@ export async function ConceptSelectorViewer({
         <>
           {conceptSelector.type === "NarrowerConceptSelector"
             ? semanticRelationPropertyTranslations(
-                SemanticRelationProperty.NARROWER.identifier.value as any,
+                KosSemanticRelationProperty.NARROWER.identifier.value as any,
               )
             : semanticRelationPropertyTranslations(
-                SemanticRelationProperty.NARROWER_TRANSITIVE.identifier
+                KosSemanticRelationProperty.NARROWER_TRANSITIVE.identifier
                   .value as any,
               )}
           {": "}

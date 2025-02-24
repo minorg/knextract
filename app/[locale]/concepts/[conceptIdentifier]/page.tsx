@@ -3,14 +3,21 @@ import { Hrefs } from "@/lib/Hrefs";
 import { PageMetadata } from "@/lib/PageMetadata";
 import { ClientProvidersServer } from "@/lib/components/ClientProvidersServer";
 import { ConceptsDataTable } from "@/lib/components/ConceptsDataTable";
-import { KosResourceSections } from "@/lib/components/KosLabelSections";
+import { KosResourceLabelSections } from "@/lib/components/KosResourceLabelSections";
 import { Layout } from "@/lib/components/Layout";
 import { Link } from "@/lib/components/Link";
 import { PageTitleHeading } from "@/lib/components/PageTitleHeading";
 import { Section } from "@/lib/components/Section";
 import { getHrefs } from "@/lib/getHrefs";
-import { Identifier, Locale, Note, SemanticRelation } from "@/lib/models";
-import { json } from "@/lib/models/impl";
+import {
+  ConceptSchemeStub,
+  ConceptStub,
+  Identifier,
+  Locale,
+  conceptSemanticRelations,
+  displayLabel,
+  kosResourceNotes,
+} from "@/lib/models";
 import { routing } from "@/lib/routing";
 import { xsd } from "@/lib/vocabularies";
 import { decodeFileName, encodeFileName } from "@kos-kit/next-utils";
@@ -26,22 +33,24 @@ interface ConceptPageParams {
 function ConceptSchemesTable({
   conceptSchemes,
   hrefs,
+  locale,
 }: {
-  conceptSchemes: readonly json.ConceptScheme[];
+  conceptSchemes: readonly ConceptSchemeStub[];
   hrefs: Hrefs;
+  locale: Locale;
 }) {
   return (
     <table className="w-full">
       <tbody>
         {conceptSchemes.map((conceptScheme) => (
-          <tr key={conceptScheme.identifier}>
+          <tr key={Identifier.toString(conceptScheme.identifier)}>
             <td>
               <Link
                 href={hrefs.conceptScheme({
                   identifier: conceptScheme.identifier,
                 })}
               >
-                {conceptScheme.displayLabel}
+                {displayLabel(conceptScheme, { locale })}
               </Link>
             </td>
           </tr>
@@ -58,12 +67,12 @@ export default async function ConceptPage({
 }) {
   unstable_setRequestLocale(locale);
 
+  const modelSet = await project.modelSet({ locale });
+
   const concept = (
-    await (
-      await project.modelSet({ locale })
+    await modelSet.concept(
+      Identifier.fromString(decodeFileName(conceptIdentifier)),
     )
-      .concept(Identifier.fromString(decodeFileName(conceptIdentifier)))
-      .resolve()
   )
     .toMaybe()
     .extractNullable();
@@ -74,76 +83,81 @@ export default async function ConceptPage({
   const hrefs = await getHrefs();
   const translations = await getTranslations("ConceptPage");
 
-  const topConceptOf = (await (await concept.topConceptOf()).resolve()).map(
-    (conceptScheme) =>
-      conceptScheme
-        .map(json.ConceptScheme.clone)
-        .mapLeft(json.ConceptScheme.missing)
-        .extract(),
-  );
-  const inSchemes = (await (await concept.inSchemes()).resolve())
-    .map((conceptScheme) =>
-      conceptScheme
-        .map(json.ConceptScheme.clone)
-        .mapLeft(json.ConceptScheme.missing)
-        .extract(),
-    )
+  const topConceptOf = (
+    await modelSet.conceptSchemeStubs({
+      limit: null,
+      offset: 0,
+      query: { conceptIdentifier: concept.identifier, type: "HasTopConcept" },
+    })
+  ).orDefault([]);
+
+  const inSchemes = (
+    await modelSet.conceptSchemeStubs({
+      limit: null,
+      offset: 0,
+      query: { conceptIdentifier: concept.identifier, type: "HasConcept" },
+    })
+  )
+    .orDefault([])
     .filter(
       (inScheme) =>
-        !topConceptOf.some(
-          (topConceptOf) => topConceptOf.identifier === inScheme.identifier,
+        !topConceptOf.some((topConceptOf) =>
+          topConceptOf.identifier.equals(inScheme.identifier),
         ),
     );
 
-  const notations = concept.notations;
+  const notations = concept.notation;
 
-  const noteTypeTranslations = await getTranslations("NoteTypes");
-  const semanticRelationTypeTranslations = await getTranslations(
-    "SemanticRelationTypes",
+  const notePropertyTranslations = await getTranslations("NoteProperties");
+  const semanticRelationPropertyTranslations = await getTranslations(
+    "SemanticRelationProperties",
   );
 
   return (
     <Layout>
       <PageTitleHeading>
-        {translations("Concept")}: {concept.displayLabel}
+        {translations("Concept")}: {displayLabel(concept, { locale })}
       </PageTitleHeading>
-      <KosResourceSections model={concept} />
+      <KosResourceLabelSections kosResource={concept} />
       {topConceptOf.length > 0 ? (
         <Section title={translations("Top of concept schemes")}>
-          <ConceptSchemesTable conceptSchemes={topConceptOf} hrefs={hrefs} />
+          <ConceptSchemesTable
+            conceptSchemes={topConceptOf}
+            locale={locale}
+            hrefs={hrefs}
+          />
         </Section>
       ) : null}
       {inSchemes.length > 0 ? (
         <Section title={translations("In schemes")}>
-          <ConceptSchemesTable conceptSchemes={inSchemes} hrefs={hrefs} />
+          <ConceptSchemesTable
+            conceptSchemes={inSchemes}
+            locale={locale}
+            hrefs={hrefs}
+          />
         </Section>
       ) : null}
-      {
-        await Promise.all(
-          Note.Types.map((noteType) => {
-            const notes = concept.notes({ types: [noteType] });
-            if (notes.length === 0) {
-              return null;
-            }
-            return (
-              <Section
-                key={noteType.skosProperty.value}
-                title={noteTypeTranslations(noteType.skosProperty.value as any)}
-              >
-                <table className="w-full">
-                  <tbody>
-                    {notes.map((note, noteI) => (
-                      <tr key={noteI}>
-                        <td>{note.literalForm.value}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </Section>
-            );
-          }),
-        )
-      }
+      {kosResourceNotes(concept).map(([noteProperty, notes]) => {
+        if (notes.length === 0) {
+          return null;
+        }
+        return (
+          <Section
+            key={Identifier.toString(noteProperty.identifier)}
+            title={notePropertyTranslations(noteProperty.translationKey as any)}
+          >
+            <table className="w-full">
+              <tbody>
+                {notes.map((note, noteI) => (
+                  <tr key={noteI}>
+                    <td>{note.value}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Section>
+        );
+      })}
       {notations.length > 0 ? (
         <Section title={translations("Notations")}>
           <ul className="list-disc list-inside">
@@ -158,49 +172,33 @@ export default async function ConceptPage({
           </ul>
         </Section>
       ) : null}
-      {
-        await Promise.all(
-          SemanticRelation.Types.map(async (semanticRelationType) => {
-            const semanticRelations = await concept.semanticRelations(
-              semanticRelationType,
-              {
-                includeInverse: true,
-              },
-            );
-            if (semanticRelations.length === 0) {
-              return null;
-            }
-            return (
-              <Section
-                key={semanticRelationType.property.value}
-                title={semanticRelationTypeTranslations(
-                  semanticRelationType.property.value as any,
-                )}
-              >
-                <ClientProvidersServer>
-                  <ConceptsDataTable
-                    concepts={
-                      await Promise.all(
-                        semanticRelations[Symbol.iterator]().map(
-                          async (concept) =>
-                            (await concept.resolve())
-                              .map(json.Concept.clone)
-                              .mapLeft(json.Concept.missing)
-                              .extract(),
-                        ),
-                      )
-                    }
-                    pagination={{
-                      pageIndex: 0,
-                      pageSize: 10,
-                    }}
-                  />
-                </ClientProvidersServer>
-              </Section>
-            );
-          }),
-        )
-      }
+      {conceptSemanticRelations(concept).map(
+        ([semanticRelationProperty, semanticallyRelatedConcepts]) => {
+          if (semanticallyRelatedConcepts.length === 0) {
+            return null;
+          }
+          return (
+            <Section
+              key={Identifier.toString(semanticRelationProperty.identifier)}
+              title={semanticRelationPropertyTranslations(
+                semanticRelationProperty.translationKey as any,
+              )}
+            >
+              <ClientProvidersServer>
+                <ConceptsDataTable
+                  concepts={semanticallyRelatedConcepts.map((concept) =>
+                    ConceptStub.toJson(concept),
+                  )}
+                  pagination={{
+                    pageIndex: 0,
+                    pageSize: 10,
+                  }}
+                />
+              </ClientProvidersServer>
+            </Section>
+          );
+        },
+      )}
     </Layout>
   );
 }
@@ -219,9 +217,7 @@ export async function generateMetadata({
   return (
     await (
       await project.modelSet({ locale })
-    )
-      .concept(Identifier.fromString(decodeFileName(conceptIdentifier)))
-      .resolve()
+    ).conceptStub(Identifier.fromString(decodeFileName(conceptIdentifier)))
   )
     .map((concept) => pageMetadata.concept(concept))
     .orDefault({} satisfies Metadata);
@@ -235,10 +231,15 @@ export async function generateStaticParams(): Promise<ConceptPageParams[]> {
   const staticParams: ConceptPageParams[] = [];
 
   for (const locale of routing.locales) {
-    for (const concept of await (await project.modelSet({ locale })).concepts({
-      limit: null,
-      offset: 0,
-    })) {
+    for (const concept of (
+      await (
+        await project.modelSet({ locale })
+      ).conceptStubs({
+        limit: null,
+        offset: 0,
+        query: { type: "All" },
+      })
+    ).unsafeCoerce()) {
       staticParams.push({
         conceptIdentifier: encodeFileName(
           Identifier.toString(concept.identifier),

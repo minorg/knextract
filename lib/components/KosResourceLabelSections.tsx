@@ -3,7 +3,7 @@ import {
   KosLabel,
   KosLabelProperty,
   KosResource,
-  kosLabels,
+  kosResourceLabels,
 } from "@/lib/models";
 import { getTranslations } from "next-intl/server";
 import React from "react";
@@ -25,11 +25,11 @@ function KosLabelSection({
   );
 }
 
-export async function KosLabelSections({
+export async function KosResourceLabelSections({
   kosResource,
 }: { kosResource: KosResource }) {
   const sections: React.ReactElement[] = [];
-  const labels_ = kosLabels(kosResource);
+  const labels_ = kosResourceLabels(kosResource);
   const labelPropertyTranslations = await getTranslations("KosLabelProperties");
 
   if (labels_.alternative.length > 0) {

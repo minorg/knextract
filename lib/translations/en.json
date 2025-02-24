@@ -167,7 +167,7 @@
     "File": "File",
     "Text": "Text"
   },
-  "NoteTypes": {
+  "NoteProperties": {
     "http://www_w3_org/2004/02/skos/core#changeNote": "Change note",
     "http://www_w3_org/2004/02/skos/core#definition": "Definition",
     "http://www_w3_org/2004/02/skos/core#editorialNote": "Editorial note",

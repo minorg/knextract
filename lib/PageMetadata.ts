@@ -5,7 +5,7 @@ import {
   CorpusStub,
   DocumentStub,
   Locale,
-  WorkflowExecution,
+  WorkflowExecutionStub,
   WorkflowStub,
   displayLabel,
 } from "@/lib/models";
@@ -163,7 +163,7 @@ export class PageMetadata {
     workflow,
   }: {
     workflow: WorkflowStub;
-    workflowExecution: WorkflowExecution;
+    workflowExecution: WorkflowExecutionStub;
   }): Metadata {
     return {
       title: titlePartsToString([

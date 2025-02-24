@@ -2,7 +2,12 @@ import { CorpusClaimsExporter } from "@/lib/exporters/CorpusClaimsExporter";
 import { EntityAttributeValueExporter } from "@/lib/exporters/EntityAttributeValueExporter";
 import { SingleTableExporter } from "@/lib/exporters/SingleTableExporter";
 import { logger } from "@/lib/logger";
-import { DocumentStub, Identifier, ModelSet, kosLabels } from "@/lib/models";
+import {
+  DocumentStub,
+  Identifier,
+  ModelSet,
+  kosResourceLabels,
+} from "@/lib/models";
 import { rdfVocabulary, rdfs } from "@/lib/vocabularies";
 import { Maybe } from "purify-ts";
 
@@ -124,7 +129,7 @@ export namespace Adapters {
           let value: string;
           switch (claim.object.type) {
             case "CategoricalValue": {
-              value = kosLabels(claim.object.value).display;
+              value = kosResourceLabels(claim.object.value).display;
               break;
             }
             default:

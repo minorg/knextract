@@ -2,11 +2,11 @@ import { project } from "@/app/project";
 import { PageMetadata } from "@/lib/PageMetadata";
 import { ClientProvidersServer } from "@/lib/components/ClientProvidersServer";
 import { ConceptSchemeConceptsDataTable } from "@/lib/components/ConceptSchemeConceptsDataTable";
-import { KosResourceSections } from "@/lib/components/KosLabelSections";
+import { KosResourceLabelSections } from "@/lib/components/KosResourceLabelSections";
 import { Layout } from "@/lib/components/Layout";
 import { PageTitleHeading } from "@/lib/components/PageTitleHeading";
 import { Section } from "@/lib/components/Section";
-import { Identifier, Locale } from "@/lib/models";
+import { Identifier, Locale, displayLabel } from "@/lib/models";
 import { routing } from "@/lib/routing";
 import { decodeFileName, encodeFileName } from "@kos-kit/next-utils";
 import { Metadata } from "next";
@@ -28,35 +28,46 @@ export default async function ConceptSchemePage({
   const conceptSchemeIdentifier = Identifier.fromString(
     decodeFileName(conceptSchemeIdentifierProp),
   );
-  const conceptScheme = (
-    await (
-      await project.modelSet({ locale })
-    )
-      .conceptScheme(conceptSchemeIdentifier)
-      .resolve()
-  )
+  const modelSet = await project.modelSet({ locale });
+  const conceptScheme = (await modelSet.conceptScheme(conceptSchemeIdentifier))
     .toMaybe()
     .extractNullable();
   if (!conceptScheme) {
     notFound();
   }
 
-  const topConcepts = await conceptScheme.topConcepts();
+  const conceptsCount = (
+    await modelSet.conceptsCount({
+      conceptSchemeIdentifier: conceptScheme.identifier,
+      type: "TopConceptOf",
+    })
+  ).orDefault(0);
+  const topConcepts = (
+    await modelSet.conceptStubs({
+      limit: null,
+      offset: 0,
+      query: {
+        conceptSchemeIdentifier: conceptScheme.identifier,
+        type: "TopConceptOf",
+      },
+    })
+  ).orDefault([]);
 
   const translations = await getTranslations("ConceptSchemePage");
 
   return (
     <Layout>
       <PageTitleHeading>
-        {translations("Concept scheme")}: {conceptScheme.displayLabel}
+        {translations("Concept scheme")}:{" "}
+        {displayLabel(conceptScheme, { locale })}
       </PageTitleHeading>
-      <KosResourceSections model={conceptScheme} />
+      <KosResourceLabelSections kosResource={conceptScheme} />
       {topConcepts.length > 0 ? (
         <Section title={translations("Top concepts")}>
           <div className="flex flex-col gap-2">
             <ClientProvidersServer>
               <ConceptSchemeConceptsDataTable
-                conceptsCount={await conceptScheme.conceptsCount()}
+                conceptsCount={conceptsCount}
                 conceptSchemeIdentifier={Identifier.toString(
                   conceptSchemeIdentifier,
                 )}
@@ -83,11 +94,9 @@ export async function generateMetadata({
   return (
     await (
       await project.modelSet({ locale })
+    ).conceptSchemeStub(
+      Identifier.fromString(decodeFileName(conceptSchemeIdentifier)),
     )
-      .conceptScheme(
-        Identifier.fromString(decodeFileName(conceptSchemeIdentifier)),
-      )
-      .resolve()
   )
     .map((conceptScheme) => pageMetadata.conceptScheme(conceptScheme))
     .orDefault({});
@@ -103,9 +112,11 @@ export async function generateStaticParams(): Promise<
   const staticParams: ConceptSchemePageParams[] = [];
 
   for (const locale of routing.locales) {
-    for await (const conceptScheme of await (
-      await project.modelSet({ locale })
-    ).conceptSchemes({ limit: null, offset: 0 })) {
+    for (const conceptScheme of (
+      await (
+        await project.modelSet({ locale })
+      ).conceptSchemeStubs({ limit: null, offset: 0, query: { type: "All" } })
+    ).unsafeCoerce()) {
       staticParams.push({
         conceptSchemeIdentifier: encodeFileName(
           Identifier.toString(conceptScheme.identifier),

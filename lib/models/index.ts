@@ -25,9 +25,13 @@ export {
   ConceptSchemeStub,
   LabelProperty as KosLabelProperty,
   NoteProperty as KosNoteProperty,
-  SemanticRelationProperty,
-  labels as kosLabels,
+  noteProperties as kosNoteProperties,
+  SemanticRelationProperty as KosSemanticRelationProperty,
+  semanticRelationProperties as kosSemanticRelationProperties,
+  labels as kosResourceLabels,
   LabelStub as KosLabelStub,
+  notes as kosResourceNotes,
+  semanticRelations as conceptSemanticRelations,
 } from "@kos-kit/models";
 export type {
   ConceptQuery,

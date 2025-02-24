@@ -5,7 +5,7 @@ import { ClientProvidersServer } from "@/lib/components/ClientProvidersServer";
 import { Layout } from "@/lib/components/Layout";
 import { MultiUploader } from "@/lib/components/MultiUploader";
 import { PageTitleHeading } from "@/lib/components/PageTitleHeading";
-import { Identifier, Locale } from "@/lib/models";
+import { Identifier, Locale, displayLabel } from "@/lib/models";
 import { routing } from "@/lib/routing";
 import { decodeFileName, encodeFileName } from "@kos-kit/next-utils";
 import mime from "mime";
@@ -50,11 +50,7 @@ export default async function UploadDocumentPage({
     decodeFileName(corpusIdentifierProp),
   );
   const corpus = (
-    await (
-      await project.modelSet({ locale })
-    )
-      .corpus(corpusIdentifier)
-      .resolve()
+    await (await project.modelSet({ locale })).corpus(corpusIdentifier)
   )
     .toMaybe()
     .extractNullable();
@@ -67,7 +63,7 @@ export default async function UploadDocumentPage({
   return (
     <Layout>
       <PageTitleHeading>
-        {corpus.displayLabel}: {translations("Upload document")}
+        {displayLabel(corpus, { locale })}: {translations("Upload document")}
       </PageTitleHeading>
       <ClientProvidersServer>
         <MultiUploader
@@ -97,9 +93,7 @@ export async function generateMetadata({
   return (
     await (
       await project.modelSet({ locale })
-    )
-      .corpus(Identifier.fromString(decodeFileName(corpusIdentifier)))
-      .resolve()
+    ).corpusStub(Identifier.fromString(decodeFileName(corpusIdentifier)))
   )
     .map((corpus) => pageMetadata.corpusUploadDocument(corpus))
     .orDefault({});
@@ -115,9 +109,13 @@ export async function generateStaticParams(): Promise<
   const staticParams: UploadDocumentPageParams[] = [];
 
   for (const locale of routing.locales) {
-    for (const corpus of await (await project.modelSet({ locale })).corpora({
-      query: { includeDeleted: true, type: "All" },
-    })) {
+    for (const corpus of (
+      await (
+        await project.modelSet({ locale })
+      ).corpusStubs({
+        query: { includeDeleted: true, type: "All" },
+      })
+    ).unsafeCoerce()) {
       staticParams.push({
         corpusIdentifier: encodeFileName(
           Identifier.toString(corpus.identifier),

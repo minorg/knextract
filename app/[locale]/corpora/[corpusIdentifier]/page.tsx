@@ -9,8 +9,7 @@ import { Layout } from "@/lib/components/Layout";
 import { Link } from "@/lib/components/Link";
 import { PageTitleHeading } from "@/lib/components/PageTitleHeading";
 import { getHrefs } from "@/lib/getHrefs";
-import { Identifier, Locale } from "@/lib/models";
-import { json } from "@/lib/models/impl";
+import { Identifier, Locale, displayLabel, stubify } from "@/lib/models";
 import { routing } from "@/lib/routing";
 import { decodeFileName, encodeFileName } from "@kos-kit/next-utils";
 import { Upload } from "lucide-react";
@@ -35,7 +34,7 @@ export default async function CorpusPage({
   const corpusIdentifier = Identifier.fromString(
     decodeFileName(corpusIdentifierProp),
   );
-  const corpus = (await modelSet.corpus(corpusIdentifier).resolve())
+  const corpus = (await modelSet.corpus(corpusIdentifier))
     .toMaybe()
     .extractNullable();
   if (!corpus) {
@@ -48,30 +47,19 @@ export default async function CorpusPage({
     <Layout>
       <div className="flex flex-row justify-between">
         <PageTitleHeading>
-          {translations("Corpus")}: {corpus.displayLabel}
+          {translations("Corpus")}: {displayLabel(corpus, { locale })}
         </PageTitleHeading>
         <div className="flex flex-row items-center gap-2">
           <ClientProvidersServer>
             <AnnotateCorpusForm
-              corpus={json.Corpus.clone(corpus)}
+              corpus={stubify(corpus).toJson()}
               workflows={(
-                await Promise.all(
-                  (
-                    await modelSet.workflows({
-                      query: { includeDeleted: true, type: "All" },
-                    })
-                  )
-                    [Symbol.iterator]()
-                    .map(async (workflow) =>
-                      (
-                        await workflow.resolve()
-                      )
-                        .map(json.Workflow.clone)
-                        .toMaybe()
-                        .toList(),
-                    ),
-                )
-              ).flat()}
+                await modelSet.workflowStubs({
+                  query: { includeDeleted: false, type: "All" },
+                })
+              )
+                .orDefault([])
+                .map((workflow) => workflow.toJson())}
             />
           </ClientProvidersServer>
           {corpus.mutable ? (
@@ -97,9 +85,13 @@ export default async function CorpusPage({
       <ClientProvidersServer>
         <CorpusDocumentsDataTable
           corpusIdentifier={Identifier.toString(corpusIdentifier)}
-          documentsCount={
-            await corpus.documentsCount({ includeDeleted: false })
-          }
+          documentsCount={(
+            await modelSet.documentsCount({
+              corpusIdentifier: corpusIdentifier,
+              includeDeleted: false,
+              type: "MemberOfCorpus",
+            })
+          ).orDefault(0)}
         />
       </ClientProvidersServer>
     </Layout>
@@ -120,9 +112,7 @@ export async function generateMetadata({
   return (
     await (
       await project.modelSet({ locale })
-    )
-      .corpus(Identifier.fromString(decodeFileName(corpusIdentifier)))
-      .resolve()
+    ).corpusStub(Identifier.fromString(decodeFileName(corpusIdentifier)))
   )
     .map((corpus) => pageMetadata.corpus(corpus))
     .orDefault({});
@@ -136,9 +126,13 @@ export async function generateStaticParams(): Promise<CorpusPageParams[]> {
   const staticParams: CorpusPageParams[] = [];
 
   for (const locale of routing.locales) {
-    for (const corpus of await (await project.modelSet({ locale })).corpora({
-      query: { includeDeleted: true, type: "All" },
-    })) {
+    for (const corpus of (
+      await (
+        await project.modelSet({ locale })
+      ).corpusStubs({
+        query: { includeDeleted: true, type: "All" },
+      })
+    ).unsafeCoerce()) {
       staticParams.push({
         corpusIdentifier: encodeFileName(
           Identifier.toString(corpus.identifier),

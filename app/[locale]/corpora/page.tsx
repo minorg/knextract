@@ -8,7 +8,6 @@ import { PageTitleHeading } from "@/lib/components/PageTitleHeading";
 import { Button } from "@/lib/components/ui/button";
 import { getHrefs } from "@/lib/getHrefs";
 import { Locale } from "@/lib/models";
-import { json } from "@/lib/models/impl";
 import { routing } from "@/lib/routing";
 import { Metadata } from "next";
 import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
@@ -24,11 +23,13 @@ export default async function CorporaPage({
 }) {
   unstable_setRequestLocale(locale);
 
-  const corpora = await (
+  const corpora = (
     await (
       await project.modelSet({ locale })
-    ).corpora({ query: { includeDeleted: false, type: "All" } })
-  ).flatResolve();
+    ).corpusStubs({
+      query: { includeDeleted: false, type: "All" },
+    })
+  ).orDefault([]);
 
   const translations = await getTranslations("CorporaPage");
 
@@ -43,7 +44,7 @@ export default async function CorporaPage({
         </Button>
       </div>
       <ClientProvidersServer>
-        <CorporaDataTable corpora={corpora.map(json.Corpus.clone)} />
+        <CorporaDataTable corpora={corpora.map((corpus) => corpus.toJson())} />
       </ClientProvidersServer>
     </Layout>
   );

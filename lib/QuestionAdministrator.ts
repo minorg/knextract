@@ -25,7 +25,7 @@ import {
   ValueExtraction,
   ValueExtractionInput,
   ValueExtractionOutput,
-  kosLabels,
+  kosResourceLabels,
   selectConcepts,
   stubify,
 } from "@/lib/models";
@@ -254,7 +254,7 @@ export class QuestionAdministrator {
               selectedConcept.definition[0].value.trim();
           }
 
-          kosLabels(selectedConcept).preferred.ifJust((prefLabel) => {
+          kosResourceLabels(selectedConcept).preferred.ifJust((prefLabel) => {
             for (const literalForm of prefLabel.literalForm) {
               conceptJsonObject["label"] = literalForm.value.trim();
               break;

@@ -8,7 +8,6 @@ import { WorkflowsDataTable } from "@/lib/components/WorkflowsDataTable";
 import { Button } from "@/lib/components/ui/button";
 import { getHrefs } from "@/lib/getHrefs";
 import { Locale } from "@/lib/models";
-import { json } from "@/lib/models/impl";
 import { routing } from "@/lib/routing";
 import { Metadata } from "next";
 import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
@@ -24,13 +23,13 @@ export default async function WorkflowsPage({
 }) {
   unstable_setRequestLocale(locale);
 
-  const workflows = await (
+  const workflows = (
     await (
       await project.modelSet({ locale })
-    ).workflows({
+    ).workflowStubs({
       query: { includeDeleted: false, type: "All" },
     })
-  ).flatResolve();
+  ).orDefault([]);
 
   const translations = await getTranslations("WorkflowsPage");
 
@@ -45,7 +44,9 @@ export default async function WorkflowsPage({
         </Button>
       </div>
       <ClientProvidersServer>
-        <WorkflowsDataTable workflows={workflows.map(json.Workflow.clone)} />
+        <WorkflowsDataTable
+          workflows={workflows.map((workflow) => workflow.toJson())}
+        />
       </ClientProvidersServer>
     </Layout>
   );

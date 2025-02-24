@@ -2,8 +2,8 @@ import {
   ConceptSelector,
   ConceptStub,
   Identifier,
+  KosSemanticRelationProperty,
   ModelSet,
-  SemanticRelationProperty,
 } from "@/lib/models";
 import TermSet from "@rdfjs/term-set";
 import { Either, EitherAsync } from "purify-ts";
@@ -24,8 +24,8 @@ async function* narrowerTransitiveConcepts({
       query: {
         inverseSemanticRelationProperties: true,
         semanticRelationProperties: [
-          SemanticRelationProperty.NARROWER,
-          SemanticRelationProperty.NARROWER_TRANSITIVE,
+          KosSemanticRelationProperty.NARROWER,
+          KosSemanticRelationProperty.NARROWER_TRANSITIVE,
         ],
         subjectConceptIdentifier: focusConceptStub.identifier,
         type: "ObjectsOfSemanticRelations",
@@ -87,7 +87,9 @@ export async function selectConcepts({
             offset: 0,
             query: {
               inverseSemanticRelationProperties: true,
-              semanticRelationProperties: [SemanticRelationProperty.NARROWER],
+              semanticRelationProperties: [
+                KosSemanticRelationProperty.NARROWER,
+              ],
               subjectConceptIdentifier: conceptSelector.focusConcept.identifier,
               type: "ObjectsOfSemanticRelations",
             },

@@ -5,7 +5,7 @@ import { Link } from "@/lib/components/Link";
 import { PageTitleHeading } from "@/lib/components/PageTitleHeading";
 import { WorkflowExecutionViewer } from "@/lib/components/WorkflowExecutionViewer";
 import { getHrefs } from "@/lib/getHrefs";
-import { Identifier, Locale } from "@/lib/models";
+import { Identifier, Locale, displayLabel } from "@/lib/models";
 import { routing } from "@/lib/routing";
 import { encodeFileName } from "@kos-kit/next-utils";
 import { decodeFileName } from "@kos-kit/next-utils/decodeFileName";
@@ -30,9 +30,9 @@ export default async function WorkflowExecutionPage({
   const modelSet = await project.modelSet({ locale });
 
   const workflow = (
-    await modelSet
-      .workflow(Identifier.fromString(decodeFileName(workflowIdentifier)))
-      .resolve()
+    await modelSet.workflow(
+      Identifier.fromString(decodeFileName(workflowIdentifier)),
+    )
   )
     .toMaybe()
     .extractNullable();
@@ -41,11 +41,9 @@ export default async function WorkflowExecutionPage({
   }
 
   const workflowExecution = (
-    await modelSet
-      .workflowExecution(
-        Identifier.fromString(decodeFileName(workflowExecutionIdentifier)),
-      )
-      .resolve()
+    await modelSet.workflowExecution(
+      Identifier.fromString(decodeFileName(workflowExecutionIdentifier)),
+    )
   )
     .toMaybe()
     .extractNullable();
@@ -61,11 +59,14 @@ export default async function WorkflowExecutionPage({
       <div className="flex flex-col">
         <PageTitleHeading>
           {translations("Workflow")}:{" "}
-          <Link href={hrefs.workflow(workflow)}>{workflow.displayLabel}</Link>
+          <Link href={hrefs.workflow(workflow)}>
+            {displayLabel(workflow, { locale })}
+          </Link>
         </PageTitleHeading>
         <h2 className="text-lg">{translations("Execution")}</h2>
       </div>
       <WorkflowExecutionViewer
+        modelSet={modelSet}
         workflow={workflow}
         workflowExecution={workflowExecution}
       />
@@ -87,9 +88,9 @@ export async function generateMetadata({
   const modelSet = await project.modelSet({ locale });
 
   const workflow = (
-    await modelSet
-      .workflow(Identifier.fromString(decodeFileName(workflowIdentifier)))
-      .resolve()
+    await modelSet.workflowStub(
+      Identifier.fromString(decodeFileName(workflowIdentifier)),
+    )
   )
     .toMaybe()
     .extractNullable();
@@ -98,11 +99,9 @@ export async function generateMetadata({
   }
 
   const workflowExecution = (
-    await modelSet
-      .workflowExecution(
-        Identifier.fromString(decodeFileName(workflowExecutionIdentifier)),
-      )
-      .resolve()
+    await modelSet.workflowExecutionStub(
+      Identifier.fromString(decodeFileName(workflowExecutionIdentifier)),
+    )
   )
     .toMaybe()
     .extractNullable();
@@ -126,14 +125,18 @@ export async function generateStaticParams(): Promise<
   const staticParams: WorkflowExecutionPageParams[] = [];
 
   for (const locale of routing.locales) {
-    for (const workflow of await (
-      await (
-        await project.modelSet({ locale })
-      ).workflows({
+    const modelSet = await project.modelSet({ locale });
+
+    for (const workflow of (
+      await modelSet.workflowStubs({
         query: { includeDeleted: true, type: "All" },
       })
-    ).flatResolve()) {
-      for (const execution of await workflow.executions()) {
+    ).unsafeCoerce()) {
+      for (const execution of (
+        await modelSet.workflowExecutionStubs({
+          query: { workflowIdentifier: workflow.identifier, type: "Workflow" },
+        })
+      ).unsafeCoerce()) {
         staticParams.push({
           locale,
           workflowExecutionIdentifier: encodeFileName(

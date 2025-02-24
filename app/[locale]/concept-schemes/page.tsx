@@ -4,8 +4,7 @@ import { ClientProvidersServer } from "@/lib/components/ClientProvidersServer";
 import { ConceptSchemesDataTable } from "@/lib/components/ConceptSchemesDataTable";
 import { Layout } from "@/lib/components/Layout";
 import { PageTitleHeading } from "@/lib/components/PageTitleHeading";
-import { Locale } from "@/lib/models";
-import { json } from "@/lib/models/impl";
+import { ConceptSchemeStub, Locale } from "@/lib/models";
 import { routing } from "@/lib/routing";
 import { Metadata } from "next";
 import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
@@ -21,14 +20,13 @@ export default async function ConceptSchemesPage({
 }) {
   unstable_setRequestLocale(locale);
 
-  const conceptSchemes = await (
-    await (
-      await project.modelSet({ locale })
-    ).conceptSchemes({
+  const conceptSchemes = (
+    await await (await project.modelSet({ locale })).conceptSchemeStubs({
       limit: null,
       offset: 0,
+      query: { type: "All" },
     })
-  ).flatResolve();
+  ).orDefault([]);
 
   const translations = await getTranslations("ConceptSchemesPage");
 
@@ -37,7 +35,7 @@ export default async function ConceptSchemesPage({
       <PageTitleHeading>{translations("Concept schemes")}</PageTitleHeading>
       <ClientProvidersServer>
         <ConceptSchemesDataTable
-          conceptSchemes={conceptSchemes.map(json.ConceptScheme.clone)}
+          conceptSchemes={conceptSchemes.map(ConceptSchemeStub.toJson)}
         />
       </ClientProvidersServer>
     </Layout>

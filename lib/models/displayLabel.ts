@@ -12,7 +12,7 @@ import {
   LanguageModelSpecificationStub,
   Workflow,
   WorkflowStub,
-  kosLabels,
+  kosResourceLabels,
 } from "@/lib/models";
 
 export function displayLabel(
@@ -39,7 +39,7 @@ export function displayLabel(
     case "ConceptScheme":
     case "ConceptSchemeStub":
     case "ConceptStub":
-      return kosLabels(model).display;
+      return kosResourceLabels(model).display;
     case "Corpus":
       return model.label;
     case "CorpusStub":
