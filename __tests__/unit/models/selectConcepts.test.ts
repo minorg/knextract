@@ -70,7 +70,7 @@ describe("selectConcepts", () => {
         const actualConceptIdentifiers = (
           await selectConcepts({ conceptSelector, modelSet })
         )
-          .orDefault([])
+          .unsafeCoerce()
           .map((_) => _.identifier);
 
         expect(actualConceptIdentifiers).toHaveLength(expectedConceptsCount);

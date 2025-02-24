@@ -24,7 +24,7 @@ async function* queryDocuments({
       offset: offset,
       query,
     })
-  ).orDefault([])) {
+  ).unsafeCoerce()) {
     yield document;
   }
 }

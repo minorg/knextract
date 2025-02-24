@@ -3,8 +3,7 @@ import { PageMetadata } from "@/lib/PageMetadata";
 import { ClientProvidersServer } from "@/lib/components/ClientProvidersServer";
 import { Layout } from "@/lib/components/Layout";
 import { WorkflowEditor } from "@/lib/components/WorkflowEditor";
-import { Locale } from "@/lib/models";
-import { json } from "@/lib/models/impl";
+import { ConceptSchemeStub, Locale } from "@/lib/models";
 import { routing } from "@/lib/routing";
 import { Metadata } from "next";
 
@@ -24,21 +23,21 @@ export default async function NewWorkflowPage({
       <ClientProvidersServer>
         <WorkflowEditor
           conceptSchemes={(
-            await (
-              await modelSet.conceptSchemes({
-                limit: null,
-                offset: 0,
-              })
-            ).flatResolve()
-          ).map(json.ConceptScheme.clone)}
-          languageModelSpecifications={(
-            await (await modelSet.languageModelSpecifications()).flatResolve()
+            await modelSet.conceptSchemeStubs({
+              limit: null,
+              offset: 0,
+              query: { type: "All" },
+            })
           )
-            .filter(
-              (machineLearningModel) =>
-                machineLearningModel.type === "LanguageModel",
-            )
-            .map(json.LanguageModelSpecification.clone)}
+            .unsafeCoerce()
+            .map((conceptScheme) => ConceptSchemeStub.toJson(conceptScheme))}
+          languageModelSpecifications={(
+            await modelSet.languageModelSpecificationStubs()
+          )
+            .unsafeCoerce()
+            .map((languageModelSpecification) =>
+              languageModelSpecification.toJson(),
+            )}
         />
       </ClientProvidersServer>
     </Layout>

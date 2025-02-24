@@ -49,30 +49,6 @@ export function DocumentClaimsDataTable(json: {
       }),
       columnHelper.accessor("identifier", {
         cell: (context) => {
-          // let icon: React.ReactElement;
-          // if (annotationsEvaluation) {
-          //   if (
-          //     annotationsEvaluation.truePositives.some((truePositive) => {
-          //       if (context.row.original.gold) {
-          //         return (
-          //           truePositive.goldAnnotationIdentifier ===
-          //           context.row.original.identifier
-          //         );
-          //       }
-          //       return (
-          //         truePositive.inferredAnnotationIdentifier ===
-          //         context.row.original.identifier
-          //       );
-          //     })
-          //   ) {
-          //     icon = <CircleCheck className="stroke-green-500 h-4 w-4" />;
-          //   } else {
-          //     icon = <CircleSlash className="stroke-red-500 h-4 w-4" />;
-          //   }
-          // } else {
-          //   icon = <Info className="h-4 w-4" />;
-          // }
-
           return (
             <Link
               data-testid={`claim-link-${context.row.original.identifier}`}

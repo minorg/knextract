@@ -148,12 +148,6 @@
       "OneFile": "You cannot upload more than one file."
     }
   },
-  "getConceptSchemeConcepts": {
-    "Missing concept": "Missing concept"
-  },
-  "getCorpusDocuments": {
-    "Missing document": "Missing document"
-  },
   "KosLabelProperties": {
     "http://www_w3_org/2004/02/skos/core#altLabel": "Alternative labels",
     "http://www_w3_org/2004/02/skos/core#hiddenLabel": "Hidden labels",

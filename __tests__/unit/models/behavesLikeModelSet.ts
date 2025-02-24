@@ -193,7 +193,7 @@ export async function behavesLikeModelSet({
         await modelSet.claims({
           query: { type: "All" },
         })
-      ).orDefault([]);
+      ).unsafeCoerce();
       expect(
         actualModels.find((actualModel) =>
           actualModel.identifier.equals(expectedModel.identifier),
@@ -211,7 +211,7 @@ export async function behavesLikeModelSet({
           type: "Document",
         },
       })
-    ).orDefault([]);
+    ).unsafeCoerce();
     expect(expectedModels).not.toHaveLength(0);
 
     const actualModels = (
@@ -222,7 +222,7 @@ export async function behavesLikeModelSet({
           type: "Document",
         },
       })
-    ).orDefault([]);
+    ).unsafeCoerce();
 
     expect(
       arrayEquals(expectedModels, actualModels, (left, right) =>
@@ -239,7 +239,7 @@ export async function behavesLikeModelSet({
           type: "Document",
         },
       })
-    ).orDefault([]);
+    ).unsafeCoerce();
     expect(expectedModels).not.toHaveLength(0);
 
     const actualModels = (
@@ -249,7 +249,7 @@ export async function behavesLikeModelSet({
           type: "Document",
         },
       })
-    ).orDefault([]);
+    ).unsafeCoerce();
 
     expect(
       arrayEquals(expectedModels, actualModels, (left, right) =>
@@ -326,7 +326,7 @@ export async function behavesLikeModelSet({
             await modelSet.corpusStubs({
               query,
             })
-          ).orDefault([]);
+          ).unsafeCoerce();
           expect(
             arrayEquals(expectedModels, actualCorpusStubs, (left, right) =>
               left.equals(right),
@@ -467,7 +467,7 @@ export async function behavesLikeModelSet({
               offset: 0,
               query,
             })
-          ).orDefault([]);
+          ).unsafeCoerce();
           expect(
             arrayEquals(
               expectedModels.map((model) => stubify(model)),
@@ -501,7 +501,7 @@ export async function behavesLikeModelSet({
   it("languageModelSpecifications", async ({ expect }) => {
     const actualModels = (
       await immutableModelSet.languageModelSpecifications()
-    ).orDefault([]);
+    ).unsafeCoerce();
     expect(actualModels).not.toHaveLength(0);
     const expectedModel = medlinePlusTestData.languageModelSpecification;
     expect(
@@ -530,7 +530,7 @@ export async function behavesLikeModelSet({
   it("languageModelSpecificationStubs", async ({ expect }) => {
     const actualModels = (
       await immutableModelSet.languageModelSpecificationStubs()
-    ).orDefault([]);
+    ).unsafeCoerce();
     expect(actualModels).not.toHaveLength(0);
     const expectedModel = stubify(
       medlinePlusTestData.languageModelSpecification,
@@ -620,7 +620,7 @@ export async function behavesLikeModelSet({
               await modelSet.workflowStubs({
                 query,
               })
-            ).orDefault([]);
+            ).unsafeCoerce();
             const equalsResult = arrayEquals(
               expectedModels.map((model) => stubify(model)),
               actualModelStubs,
@@ -770,7 +770,7 @@ export async function behavesLikeModelSet({
 
           const actualWorkflowExecutionStubs = (
             await modelSet.workflowExecutionStubs({ query })
-          ).orDefault([]);
+          ).unsafeCoerce();
           expect(
             arrayEquals(
               expectedModels.map((model) => stubify(model)),

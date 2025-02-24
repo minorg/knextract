@@ -6,7 +6,7 @@ import { DeletionDialog } from "@/lib/components/DeletionDialog";
 import { Layout } from "@/lib/components/Layout";
 import { PageTitleHeading } from "@/lib/components/PageTitleHeading";
 import { WorkflowViewer } from "@/lib/components/WorkflowViewer";
-import { Identifier, Locale } from "@/lib/models";
+import { Identifier, Locale, displayLabel } from "@/lib/models";
 import { routing } from "@/lib/routing";
 import { encodeFileName } from "@kos-kit/next-utils";
 import { decodeFileName } from "@kos-kit/next-utils/decodeFileName";
@@ -29,9 +29,9 @@ export default async function WorkflowPage({
   const modelSet = await project.modelSet({ locale });
 
   const workflow = (
-    await modelSet
-      .workflow(Identifier.fromString(decodeFileName(workflowIdentifier)))
-      .resolve()
+    await modelSet.workflow(
+      Identifier.fromString(decodeFileName(workflowIdentifier)),
+    )
   )
     .toMaybe()
     .extractNullable();
@@ -45,7 +45,7 @@ export default async function WorkflowPage({
     <Layout>
       <div className="flex flex-row justify-between">
         <PageTitleHeading>
-          {translations("Workflow")}: {workflow.displayLabel}
+          {translations("Workflow")}: {displayLabel(workflow, { locale })}
         </PageTitleHeading>
         <div className="flex flex-row">
           <ClientProvidersServer>
@@ -58,7 +58,7 @@ export default async function WorkflowPage({
           </ClientProvidersServer>
         </div>
       </div>
-      <WorkflowViewer workflow={workflow} />
+      <WorkflowViewer modelSet={modelSet} workflow={workflow} />
     </Layout>
   );
 }
@@ -77,9 +77,7 @@ export async function generateMetadata({
   return (
     await (
       await project.modelSet({ locale })
-    )
-      .workflow(Identifier.fromString(decodeFileName(workflowIdentifier)))
-      .resolve()
+    ).workflowStub(Identifier.fromString(decodeFileName(workflowIdentifier)))
   )
     .map((workflow) => pageMetadata.workflow(workflow))
     .orDefault({});
@@ -93,11 +91,13 @@ export async function generateStaticParams(): Promise<WorkflowPageParams[]> {
   const staticParams: WorkflowPageParams[] = [];
 
   for (const locale of routing.locales) {
-    for (const workflow of await (await project.modelSet({ locale })).workflows(
-      {
+    for (const workflow of (
+      await (
+        await project.modelSet({ locale })
+      ).workflowStubs({
         query: { includeDeleted: true, type: "All" },
-      },
-    )) {
+      })
+    ).unsafeCoerce()) {
       staticParams.push({
         locale,
         workflowIdentifier: encodeFileName(

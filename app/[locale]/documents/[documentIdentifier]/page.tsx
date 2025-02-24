@@ -137,7 +137,7 @@ export async function generateStaticParams(): Promise<DocumentPageParams[]> {
         offset: 0,
         query: { includeDeleted: true, type: "All" },
       })
-    ).orDefault([])) {
+    ).unsafeCoerce()) {
       staticParams.push({
         documentIdentifier: encodeFileName(
           Identifier.toString(document.identifier),
