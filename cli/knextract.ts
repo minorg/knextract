@@ -22,14 +22,14 @@ class WorkflowEngineTracer {
   }
 
   trace(workflowEngine: WorkflowEngine) {
-    workflowEngine.on("postStepExecution", async (stepExecution) => {
+    workflowEngine.on("postStepExecution", async (event) => {
       await this.writeTraceFile({
-        fileStem: `${stepExecution.input.step.type}-${encodeFileName(stepExecution.input.step.identifier.value)}`,
+        fileStem: `${event.payload.input.step.type}-${encodeFileName(event.payload.input.step.identifier.value)}`,
       });
     });
 
-    workflowEngine.on("postExecution", async (workflowExecution) => {
-      this.traceModelSet.addModel(workflowExecution);
+    workflowEngine.on("postExecution", async (event) => {
+      this.traceModelSet.addModel(event.payload.workflowExecution);
       await this.writeTraceFile({
         fileStem: "post-workflow-execution",
       });
@@ -39,26 +39,26 @@ class WorkflowEngineTracer {
       this.workflowIdentifier = "";
     });
 
-    workflowEngine.on("preExecution", async (workflowExecutionInput) => {
+    workflowEngine.on("preExecution", async (event) => {
       this.documentIdentifier = Identifier.toString(
-        workflowExecutionInput.document.identifier,
+        event.payload.document.identifier,
       );
       this.workflowIdentifier = Identifier.toString(
-        workflowExecutionInput.workflow.identifier,
+        event.payload.workflow.identifier,
       );
-      this.traceModelSet.addModel(workflowExecutionInput);
+      this.traceModelSet.addModel(event.payload);
 
       await this.writeTraceFile({
         fileStem: "pre-workflow-execution",
       });
     });
 
-    workflowEngine.on("preStepExecution", async (stepExecutionInput) => {
+    workflowEngine.on("preStepExecution", async (event) => {
       // Step executions will refer to the document, so it needs to be in the model set
-      await this.traceModelSet.addModel(stepExecutionInput);
+      await this.traceModelSet.addModel(event.payload);
 
       await this.writeTraceFile({
-        fileStem: `${stepExecutionInput.step.type}-${encodeFileName(stepExecutionInput.step.identifier.value)}`,
+        fileStem: `${event.payload.step.type}-${encodeFileName(event.payload.step.identifier.value)}`,
       });
     });
   }
@@ -160,29 +160,31 @@ const cmd = command({
       locale: "en",
     });
 
-    const documentStubs = selectDocuments({
-      corpusIdentifier: corpusIri ? dataFactory.namedNode(corpusIri) : null,
-      identifiers: documentIris,
-      limit: documentsLimit > 0 ? documentsLimit : null,
-      modelSet,
-      offset: documentsOffset,
-    });
+    const { documents } = (
+      await selectDocuments({
+        corpusIdentifier: corpusIri ? dataFactory.namedNode(corpusIri) : null,
+        identifiers: documentIris,
+        limit: documentsLimit > 0 ? documentsLimit : null,
+        modelSet,
+        offset: documentsOffset,
+      })
+    ).unsafeCoerce();
 
-    let workflowStubs: readonly WorkflowStub[];
+    let workflows: readonly WorkflowStub[];
     if (workflowIris.length > 0) {
-      workflowStubs = workflowIris.map(
+      workflows = workflowIris.map(
         (workflowIri) => new WorkflowStub({ identifier: workflowIri }),
       );
     } else {
-      workflowStubs = (
+      workflows = (
         await modelSet.workflowStubs({
           query: { includeDeleted: false, type: "All" },
         })
       ).orDefault([]);
     }
 
-    for (const workflowStub of workflowStubs) {
-      for await (const documentStub of documentStubs) {
+    for (const workflow of workflows) {
+      for await (const document of documents) {
         const workflowEngine = new WorkflowEngine({
           languageModelFactory,
           modelSet,
@@ -195,8 +197,8 @@ const cmd = command({
 
         await modelSet.addModel(
           await workflowEngine.execute({
-            documentStub,
-            workflowStub,
+            document,
+            workflow,
           }),
         );
       }

@@ -1,12 +1,35 @@
 import {
-  Document,
   DocumentQuery,
   DocumentStub,
   Identifier,
   ModelSet,
 } from "@/lib/models";
+import { Either, EitherAsync } from "purify-ts";
 
-export async function* selectDocuments({
+async function* queryDocuments({
+  limit,
+  offset,
+  modelSet,
+  query,
+}: {
+  limit: number | null;
+  offset: number;
+  modelSet: ModelSet;
+  query: DocumentQuery;
+}): AsyncIterable<DocumentStub> {
+  // TODO: paginate if the limit is too high
+  for (const document of (
+    await modelSet.documentStubs({
+      limit: limit,
+      offset: offset,
+      query,
+    })
+  ).orDefault([])) {
+    yield document;
+  }
+}
+
+export async function selectDocuments({
   identifiers,
   corpusIdentifier,
   limit,
@@ -18,34 +41,39 @@ export async function* selectDocuments({
   limit: number | null;
   modelSet: ModelSet;
   offset: number;
-}): AsyncIterable<DocumentStub> {
-  let documentsQuery: DocumentQuery;
+}): Promise<
+  Either<
+    Error,
+    { documents: AsyncIterable<DocumentStub>; documentsCount: number }
+  >
+> {
+  let query: DocumentQuery;
   if (identifiers.length > 0) {
-    documentsQuery = {
+    query = {
       documentIdentifiers: identifiers,
       type: "Identifiers",
     };
   } else if (corpusIdentifier) {
-    documentsQuery = {
+    query = {
       includeDeleted: false,
       corpusIdentifier: corpusIdentifier,
       type: "MemberOfCorpus",
     };
   } else {
-    documentsQuery = {
+    query = {
       includeDeleted: false,
       type: "All",
     };
   }
 
-  // TODO: paginate if the limit is too high
-  for (const document of (
-    await modelSet.documentStubs({
-      limit: limit,
-      offset: offset,
-      query: documentsQuery,
-    })
-  ).orDefault([])) {
-    yield document;
-  }
+  return EitherAsync(async ({ liftEither }) => {
+    const documentsCount = await liftEither(
+      await modelSet.documentsCount(query),
+    );
+
+    return {
+      documents: queryDocuments({ limit, offset, modelSet, query }),
+      documentsCount,
+    };
+  });
 }

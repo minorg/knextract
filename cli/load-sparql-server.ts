@@ -1,6 +1,6 @@
 import { Project } from "@/lib/Project";
-import { ontologyDataset } from "@/lib/data/ontology/ontologyDataset";
-import * as rdfSparql from "@/lib/models/impl/rdf/sparql";
+import { SparqlModelSet } from "@/lib/models/SparqlModelSet";
+import ontologyDataset from "@/lib/models/models.shaclmate.ttl";
 import { logShaclValidationReport } from "@/lib/utilities/logShaclValidationReport";
 import { command, flag, run } from "cmd-ts";
 import SHACLValidator from "rdf-validate-shacl";
@@ -16,15 +16,13 @@ const cmd = command({
   },
   handler: async ({ clean }) => {
     const project = Project.fromEnvironment();
-    const [rdfSparqlModelSet] = await Promise.all([
-      project.modelSet({ locale: "en" }),
-    ]);
-    if (!(rdfSparqlModelSet instanceof rdfSparql.ModelSet)) {
+    const [modelSet] = await Promise.all([project.modelSet({ locale: "en" })]);
+    if (!(modelSet instanceof SparqlModelSet)) {
       throw new Error("SPARQL is not configured");
     }
 
     if (clean) {
-      await rdfSparqlModelSet.clear();
+      await modelSet.clear();
     }
 
     for await (const dataset of project.datasets()) {
@@ -33,7 +31,7 @@ const cmd = command({
         validationReport: new SHACLValidator(ontologyDataset).validate(dataset),
       });
 
-      await rdfSparqlModelSet.load(dataset);
+      await modelSet.load(dataset);
     }
   },
 });

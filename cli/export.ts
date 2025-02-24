@@ -79,35 +79,39 @@ const cmd = subcommands({
           locale: "en",
         });
 
-        const documents = await selectDocuments({
-          corpusIdentifier: corpusIri ? dataFactory.namedNode(corpusIri) : null,
-          identifiers: documentIris,
-          limit: documentsLimit > 0 ? documentsLimit : null,
-          modelSet,
-          offset: documentsOffset,
-        });
+        const { documents, documentsCount } = (
+          await selectDocuments({
+            corpusIdentifier: corpusIri
+              ? dataFactory.namedNode(corpusIri)
+              : null,
+            identifiers: documentIris,
+            limit: documentsLimit > 0 ? documentsLimit : null,
+            modelSet,
+            offset: documentsOffset,
+          })
+        ).unsafeCoerce();
 
-        let corpusAnnotationsExporter: CorpusClaimsExporter;
+        let corpusClaimsExporter: CorpusClaimsExporter;
         switch (format) {
           case "csv":
-            corpusAnnotationsExporter =
-              new Adapters.CorpusAnnotationsExporterToSingleTableExporter(
+            corpusClaimsExporter =
+              new Adapters.CorpusClaimsExporterToSingleTableExporter(
                 new CsvSingleTableExporter({
                   csvFilePath: outputFilePath,
                 }),
               );
             break;
           case "sqlite3-eav":
-            corpusAnnotationsExporter =
-              new Adapters.CorpusAnnotationsExporterToEntityAttributeValueExporter(
+            corpusClaimsExporter =
+              new Adapters.CorpusClaimsExporterToEntityAttributeValueExporter(
                 new Sqlite3EntityAttributeValueExporter({
                   sqlite3FilePath: outputFilePath,
                 }),
               );
             break;
           case "sqlite3-single-table":
-            corpusAnnotationsExporter =
-              new Adapters.CorpusAnnotationsExporterToSingleTableExporter(
+            corpusClaimsExporter =
+              new Adapters.CorpusClaimsExporterToSingleTableExporter(
                 new Sqlite3SingleTableExporter({
                   sqlite3FilePath: outputFilePath,
                 }),
@@ -121,19 +125,14 @@ const cmd = subcommands({
           format:
             "Documents [{bar}] {percentage}% | ETA: {eta_formatted} | {value}/{total}",
         });
-        progressBar.start(documents.length, 0);
-        corpusAnnotationsExporter.on("postDocumentExportEvent", () =>
+        progressBar.start(documentsCount, 0);
+        corpusClaimsExporter.on("postDocumentExportEvent", () =>
           progressBar.increment(),
         );
 
-        await corpusAnnotationsExporter.export({
-          conceptSchemes: await (
-            await modelSet.conceptSchemes({
-              limit: null,
-              offset: 0,
-            })
-          ).flatResolve(),
-          documents: documents.flatResolveEach(),
+        await corpusClaimsExporter.export({
+          documents,
+          modelSet,
         });
 
         progressBar.stop();
