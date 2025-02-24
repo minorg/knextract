@@ -57,7 +57,7 @@ import {
 import { RdfjsDatasetModelSet } from "@/lib/models/RdfjsDatasetModelSet";
 import { dataFactory } from "@/lib/rdfEnvironment";
 import { formatPromptTemplate } from "@/lib/utilities/server";
-import { dcterms } from "@tpluscode/rdf-ns-builders";
+import { dcterms } from "@/lib/vocabularies";
 import { Maybe } from "purify-ts";
 
 export interface SyntheticTestData {
@@ -292,17 +292,7 @@ export namespace SyntheticTestData {
           languageModel: languageModelSpecificationStub,
           questionnaire,
         }),
-        output:
-          exception ??
-          new QuestionnaireAdministrationOutput({
-            answers: questionAdministrations.flatMap(
-              (questionAdministration) =>
-                questionAdministration.output.type ===
-                "QuestionAdministrationOutput"
-                  ? questionAdministration.output.answer
-                  : [],
-            ),
-          }),
+        output: exception ?? new QuestionnaireAdministrationOutput({}),
         subProcesses: new QuestionnaireAdministrationSubProcesses({
           questionAdministrations,
         }),
@@ -333,9 +323,7 @@ export namespace SyntheticTestData {
             output:
               questionnaireAdministration.output.type === "Exception"
                 ? questionnaireAdministration.output
-                : new WorkflowQuestionnaireStepExecutionOutput({
-                    answers: questionnaireAdministration.output.answers,
-                  }),
+                : new WorkflowQuestionnaireStepExecutionOutput({}),
             subProcesses: new WorkflowQuestionnaireStepExecutionSubProcesses({
               questionnaireAdministration,
             }),
@@ -399,7 +387,7 @@ export namespace SyntheticTestData {
       claimProperties: [
         new ClaimProperty({
           identifier: dcterms.subject,
-          label: "subject",
+          labels: [dataFactory.literal("subject")],
         }),
       ],
       claims,

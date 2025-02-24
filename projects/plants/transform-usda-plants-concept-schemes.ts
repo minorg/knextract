@@ -1,9 +1,9 @@
 import { printModelSet } from "@/cli/printModelSet";
 import { RdfjsDatasetModelSet } from "@/lib/models/RdfjsDatasetModelSet";
 import { dataFactory } from "@/lib/rdfEnvironment";
-import { rdfVocabulary, skos } from "@/lib/vocabularies";
 import { UsdaPlantsDatabase } from "@/projects/plants/UsdaPlantsDatabase";
 import { NamedNode } from "@rdfjs/types";
+import { rdf, skos } from "@tpluscode/rdf-ns-builders";
 import { command, run } from "cmd-ts";
 
 const cmd = command({
@@ -56,7 +56,7 @@ const cmd = command({
                 identifier: characteristic.name.iri,
                 mutateGraph: dataFactory.defaultGraph(),
               })
-              .add(rdfVocabulary.type, skos.ConceptScheme)
+              .add(rdf.type, skos.ConceptScheme)
               .add(
                 skos.definition,
                 dataFactory.literal(characteristic.definition.text),
@@ -92,7 +92,7 @@ const cmd = command({
                 identifier: characteristic.value.term,
                 mutateGraph: dataFactory.defaultGraph(),
               })
-              .add(rdfVocabulary.type, skos.Concept)
+              .add(rdf.type, skos.Concept)
               .add(
                 skos.prefLabel,
                 dataFactory.literal(characteristic.value.text),

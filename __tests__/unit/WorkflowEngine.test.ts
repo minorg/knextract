@@ -11,7 +11,7 @@ import {
   stubify,
 } from "@/lib/models";
 import { dataFactory } from "@/lib/rdfEnvironment";
-import { dcterms } from "@tpluscode/rdf-ns-builders";
+import { dcterms } from "@/lib/vocabularies";
 import { describe, expect, it } from "vitest";
 
 describe("WorkflowEngine", () => {

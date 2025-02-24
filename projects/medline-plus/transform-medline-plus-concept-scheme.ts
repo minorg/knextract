@@ -2,7 +2,7 @@ import { printModelSet } from "@/cli/printModelSet";
 import { Concept } from "@/lib/models";
 import { RdfjsDatasetModelSet } from "@/lib/models/RdfjsDatasetModelSet";
 import { dataFactory } from "@/lib/rdfEnvironment";
-import { rdfVocabulary, skos } from "@/lib/vocabularies";
+import { rdf, skos } from "@tpluscode/rdf-ns-builders";
 import AdmZip from "adm-zip";
 import { command, positional, run } from "cmd-ts";
 import { XMLParser } from "fast-xml-parser";
@@ -39,7 +39,7 @@ async function* transform(
       ),
       mutateGraph: dataFactory.defaultGraph(),
     })
-    .add(rdfVocabulary.type, skos.ConceptScheme)
+    .add(rdf.type, skos.ConceptScheme)
     .add(
       skos.prefLabel,
       dataFactory.literal("MedlinePlus Health Topic Groups"),
@@ -61,7 +61,7 @@ async function* transform(
             identifier: dataFactory.namedNode(group["@_url"]),
             mutateGraph: dataFactory.defaultGraph(),
           })
-          .add(rdfVocabulary.type, skos.Concept)
+          .add(rdf.type, skos.Concept)
           .add(skos.prefLabel, dataFactory.literal(group["#text"])).identifier;
         groupsModelSet.mutableResourceSet
           .mutableNamedResource({

@@ -8,7 +8,7 @@ import {
   ModelSet,
   kosResourceLabels,
 } from "@/lib/models";
-import { rdfVocabulary, rdfs } from "@/lib/vocabularies";
+import { rdf, rdfs } from "@tpluscode/rdf-ns-builders";
 import { Maybe } from "purify-ts";
 
 /**
@@ -172,7 +172,7 @@ export namespace Adapters {
         columnDefinitions: [
           {
             definition: Maybe.empty(),
-            identifier: rdfVocabulary.subject,
+            identifier: rdf.subject,
             label: "iri",
             type: "string",
           },

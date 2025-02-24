@@ -1,4 +1,3 @@
-import { xsd } from "@/lib/vocabularies";
 import {
   DataFactory,
   Quad_Graph,
@@ -7,6 +6,7 @@ import {
   Quad_Subject,
   Term,
 } from "@rdfjs/types";
+import { xsd } from "@tpluscode/rdf-ns-builders";
 
 export namespace Terms {
   export function deepCopy({

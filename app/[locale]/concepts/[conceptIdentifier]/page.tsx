@@ -19,8 +19,8 @@ import {
   kosResourceNotes,
 } from "@/lib/models";
 import { routing } from "@/lib/routing";
-import { xsd } from "@/lib/vocabularies";
 import { decodeFileName, encodeFileName } from "@kos-kit/next-utils";
+import { xsd } from "@tpluscode/rdf-ns-builders";
 import { Metadata } from "next";
 import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
