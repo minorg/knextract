@@ -8,13 +8,11 @@ import {
 } from "@/lib/components/ui/table";
 import { getHrefs } from "@/lib/getHrefs";
 import {
-  ConceptScheme,
   ConceptSelector,
   Identifier,
   SemanticRelationProperty,
   displayLabel,
 } from "@/lib/models";
-import { json } from "@/lib/models/impl";
 import { getLocale, getTranslations } from "next-intl/server";
 import React from "react";
 

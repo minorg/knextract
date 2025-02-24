@@ -19,13 +19,15 @@ import "iterator-helpers-polyfill";
 export {
   Concept,
   ConceptScheme,
-  Label,
+  KosResource,
+  Label as KosLabel,
   ConceptStub,
   ConceptSchemeStub,
-  NoteProperty,
+  LabelProperty as KosLabelProperty,
+  NoteProperty as KosNoteProperty,
   SemanticRelationProperty,
   labels as kosLabels,
-  LabelStub,
+  LabelStub as KosLabelStub,
 } from "@kos-kit/models";
 export type {
   ConceptQuery,

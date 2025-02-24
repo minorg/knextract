@@ -1,3 +1,5 @@
+"use client";
+
 import { FormControl } from "@/lib/components/ui/form";
 import {
   Select,
@@ -6,17 +8,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/lib/components/ui/select";
-import { json } from "@/lib/models/impl";
+import { Identifier, displayLabel } from "@/lib/models";
 import { SelectProps } from "@radix-ui/react-select";
+import { useLocale } from "next-intl";
 
 export function ModelSelect({
   models,
   placeholder,
   ...selectProps
 }: {
-  models: readonly json.DisplayableModel[];
+  models: readonly Parameters<typeof displayLabel>[0][];
   placeholder?: string;
 } & Pick<SelectProps, "disabled" | "onValueChange" | "value">) {
+  const locale = useLocale();
+
   return (
     <Select {...selectProps}>
       <FormControl>
@@ -26,8 +31,11 @@ export function ModelSelect({
       </FormControl>
       <SelectContent>
         {models.map((model) => (
-          <SelectItem key={model.identifier} value={model.identifier}>
-            {model.displayLabel}
+          <SelectItem
+            key={Identifier.toString(model.identifier)}
+            value={Identifier.toString(model.identifier)}
+          >
+            {displayLabel(model, { locale })}
           </SelectItem>
         ))}
       </SelectContent>

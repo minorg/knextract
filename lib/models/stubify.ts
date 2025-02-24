@@ -7,7 +7,7 @@ import {
   CorpusStub,
   Document,
   DocumentStub,
-  LabelStub,
+  KosLabelStub,
   LanguageModelSpecification,
   LanguageModelSpecificationStub,
   Workflow,
@@ -52,13 +52,17 @@ export function stubify(
       return ConceptStub.create({
         identifier: model.identifier,
         prefLabel: model.prefLabel,
-        prefLabelXl: model.prefLabelXl.map((label) => LabelStub.create(label)),
+        prefLabelXl: model.prefLabelXl.map((label) =>
+          KosLabelStub.create(label),
+        ),
       });
     case "ConceptScheme":
       return ConceptSchemeStub.create({
         identifier: model.identifier,
         prefLabel: model.prefLabel,
-        prefLabelXl: model.prefLabelXl.map((label) => LabelStub.create(label)),
+        prefLabelXl: model.prefLabelXl.map((label) =>
+          KosLabelStub.create(label),
+        ),
       });
     case "Corpus":
       return new CorpusStub({

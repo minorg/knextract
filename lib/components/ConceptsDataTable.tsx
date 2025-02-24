@@ -1,7 +1,7 @@
 "use client";
 
 import { useHrefs } from "@/lib/hooks";
-import { Concept, ConceptStub, displayLabel, kosLabels } from "@/lib/models";
+import { ConceptStub, displayLabel } from "@/lib/models";
 import {
   ColumnDef,
   OnChangeFn,

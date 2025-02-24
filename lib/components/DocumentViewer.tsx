@@ -1,41 +1,44 @@
-import { project } from "@/app/project";
 import { ClientProvidersServer } from "@/lib/components/ClientProvidersServer";
-import { DocumentAnnotations } from "@/lib/components/DocumentClaimsViewer";
+import { DocumentClaimsViewer } from "@/lib/components/DocumentClaimsViewer";
 import { Link } from "@/lib/components/Link";
 import { Section } from "@/lib/components/Section";
 import { syntaxHiglighterStyle } from "@/lib/components/syntaxHighlighterStyle";
 import { getHrefs } from "@/lib/getHrefs";
-import { Document, Identifier, Locale } from "@/lib/models";
-import { deduplicateAnnotations } from "@/lib/utilities/deduplicateAnnotations";
+import {
+  Document,
+  DocumentClaims,
+  Identifier,
+  Locale,
+  WorkflowStub,
+  displayLabel,
+  stubify,
+} from "@/lib/models";
 import { getLocale, getTranslations } from "next-intl/server";
 import React from "react";
 import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/default-highlight";
 
 export async function DocumentViewer({
   document,
-  includeAnnotations,
+  documentClaims,
+  workflows,
 }: {
   document: Document;
-  includeAnnotations: boolean;
+  documentClaims: DocumentClaims | null;
+  workflows: readonly WorkflowStub[];
 }) {
-  const annotations = includeAnnotations
-    ? await Promise.all(
-        deduplicateAnnotations(
-          await (await document.annotations()).flatResolve(),
-        ).map(json.Annotation.clone),
-      )
-    : [];
   const hrefs = await getHrefs();
-  const html = document.html.extractNullable();
+  const html = document.textualEntities.find(
+    (textualEntity) =>
+      textualEntity.encodingType.value ===
+      "http://purl.archive.org/purl/knextract/cbox#_EncodingType_TextHtml",
+  )?.literalForm;
   const images = document.images;
-  const modelSet = await project.modelSet({
-    locale: (await getLocale()) as Locale,
-  });
-  const text = document.text.extractNullable();
-  const memberOfCorpus: json.Corpus = (await document.memberOfCorpus.resolve())
-    .map(json.Corpus.clone)
-    .mapLeft(json.Corpus.missing)
-    .extract();
+  const locale = (await getLocale()) as Locale;
+  const text = document.textualEntities.find(
+    (textualEntity) =>
+      textualEntity.encodingType.value ===
+      "http://purl.archive.org/purl/knextract/cbox#_EncodingType_TextPlain",
+  )?.literalForm;
   const translations = await getTranslations("DocumentViewer");
 
   return (
@@ -76,40 +79,22 @@ export async function DocumentViewer({
           </div>
         </Section>
       ) : null}
-      <Section title={translations("Annotations")}>
-        <ClientProvidersServer>
-          <DocumentAnnotations
-            annotations={annotations}
-            annotationsEvaluation={(await document.evaluateAnnotations())
-              .map(json.AnnotationsEvaluation.clone)
-              .extractNullable()}
-            document={json.Document.clone(document)}
-            workflows={(
-              await Promise.all(
-                (
-                  await modelSet.workflows({
-                    query: { includeDeleted: false, type: "All" },
-                  })
-                )
-                  [Symbol.iterator]()
-                  .map(async (workflow) =>
-                    (
-                      await workflow.resolve()
-                    )
-                      .map(json.Workflow.clone)
-                      .toMaybe()
-                      .toList(),
-                  ),
-              )
-            ).flat()}
-          />
-        </ClientProvidersServer>
-      </Section>
+      {documentClaims !== null ? (
+        <Section title={translations("Claims")}>
+          <ClientProvidersServer>
+            <DocumentClaimsViewer
+              document={stubify(document).toJson()}
+              documentClaims={documentClaims?.toJson()}
+              workflows={workflows.map((workflow) => workflow.toJson())}
+            />
+          </ClientProvidersServer>
+        </Section>
+      ) : null}
       <Section title={translations("Member of corpus")}>
         <ul className="list-disc list-inside">
-          <li key={memberOfCorpus.identifier}>
-            <Link href={hrefs.corpus(memberOfCorpus)}>
-              {memberOfCorpus.displayLabel}
+          <li key={Identifier.toString(document.memberOfCorpus.identifier)}>
+            <Link href={hrefs.corpus(document.memberOfCorpus)}>
+              {displayLabel(document.memberOfCorpus, { locale })}
             </Link>
           </li>
         </ul>

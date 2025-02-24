@@ -5,7 +5,7 @@ import { DataTable } from "@/lib/components/DataTable";
 import { Link } from "@/lib/components/Link";
 import { LoadingSpinner } from "@/lib/components/ui/loading-spinner";
 import { useHrefs } from "@/lib/hooks";
-import { ConceptStub, Locale, displayLabel, kosLabels } from "@/lib/models";
+import { ConceptStub, Locale, displayLabel } from "@/lib/models";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { useLocale, useTranslations } from "next-intl";

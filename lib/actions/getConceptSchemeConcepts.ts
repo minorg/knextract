@@ -2,7 +2,7 @@
 
 import { project } from "@/app/project";
 import { logger } from "@/lib/logger";
-import { Concept, ConceptStub, Identifier, Locale } from "@/lib/models";
+import { ConceptStub, Identifier, Locale } from "@/lib/models";
 
 export async function getConceptSchemeConcepts({
   conceptSchemeIdentifier,

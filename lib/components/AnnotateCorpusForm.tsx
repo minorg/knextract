@@ -14,21 +14,28 @@ import {
   DialogTitle,
 } from "@/lib/components/ui/dialog";
 import { LoadingSpinner } from "@/lib/components/ui/loading-spinner";
-import { Identifier, Locale } from "@/lib/models";
-import { json } from "@/lib/models/impl";
+import {
+  CorpusStub,
+  Identifier,
+  Locale,
+  WorkflowExecutionEvent,
+  WorkflowStub,
+  displayLabel,
+} from "@/lib/models";
 import { useLocale, useTranslations } from "next-intl";
 import React, { ReactElement, useCallback, useMemo, useState } from "react";
 
-export function AnnotateCorpusForm({
-  corpus,
-  workflows,
-}: {
-  corpus: json.Corpus;
-  workflows: readonly json.Workflow[];
+export function AnnotateCorpusForm(json: {
+  corpus: ReturnType<CorpusStub["toJson"]>;
+  workflows: readonly ReturnType<WorkflowStub["toJson"]>[];
 }) {
   const [abortedWorkflowExecution, setAbortedWorkflowExecution] =
     useState(false);
   const apiClient = useMemo(() => new ApiClient(), []);
+  const corpus = useMemo(
+    () => CorpusStub.fromJson(json.corpus).unsafeCoerce(),
+    [json],
+  );
   const [dialogOpen, setDialogOpen] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const locale = useLocale() as Locale;
@@ -40,7 +47,7 @@ export function AnnotateCorpusForm({
     setSkipPreviouslyAnnotatedDocuments,
   ] = useState<boolean>(false);
   const [workflowExecutionEvents, setWorkflowExecutionEvents] = useState<
-    readonly json.WorkflowExecutionEvent[]
+    readonly WorkflowExecutionEvent[]
   >([]);
 
   const annotateCorpus = useCallback(() => {
@@ -50,9 +57,7 @@ export function AnnotateCorpusForm({
     (async () => {
       const error = (
         await apiClient.executeWorkflow({
-          corpus: {
-            identifier: Identifier.fromString(corpus.identifier),
-          },
+          corpus,
           locale,
           onWorkflowExecutionEvent: (workflowExecutionEvent) => {
             setWorkflowExecutionEvents((prevWorkflowExecutionEvents) =>
@@ -131,7 +136,7 @@ export function AnnotateCorpusForm({
           <WorkflowSelect
             onSelect={setSelectedWorkflowIdentifier}
             selectedWorkflowIdentifier={selectedWorkflowIdentifier}
-            workflows={workflows}
+            workflows={json.workflows}
           />
           {selectedWorkflowIdentifier ? (
             <Button onClick={annotateCorpus}>{translations("Annotate")}</Button>
@@ -163,7 +168,8 @@ export function AnnotateCorpusForm({
         >
           <DialogHeader>
             <DialogTitle>
-              {translations("Annotating corpus")}: {corpus.displayLabel}
+              {translations("Annotating corpus")}:{" "}
+              {displayLabel(corpus, { locale })}
             </DialogTitle>
           </DialogHeader>
           <div className="flex flex-col gap-4 items-center justify-center w-full">

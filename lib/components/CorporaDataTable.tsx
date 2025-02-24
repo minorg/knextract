@@ -1,7 +1,7 @@
 "use client";
 
 import { useHrefs } from "@/lib/hooks";
-import { Corpus, CorpusStub, displayLabel } from "@/lib/models";
+import { CorpusStub, displayLabel } from "@/lib/models";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo } from "react";

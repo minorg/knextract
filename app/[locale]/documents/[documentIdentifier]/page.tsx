@@ -7,11 +7,21 @@ import { DocumentViewer } from "@/lib/components/DocumentViewer";
 import { Layout } from "@/lib/components/Layout";
 import { Link } from "@/lib/components/Link";
 import { PageTitleHeading } from "@/lib/components/PageTitleHeading";
-import { Identifier, Locale } from "@/lib/models";
+import {
+  Identifier,
+  Locale,
+  UnevaluatedClaims,
+  displayLabel,
+  evaluateClaims,
+} from "@/lib/models";
 import { routing } from "@/lib/routing";
 import { decodeFileName, encodeFileName } from "@kos-kit/next-utils";
 import { Metadata } from "next";
-import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
+import {
+  getLocale,
+  getTranslations,
+  unstable_setRequestLocale,
+} from "next-intl/server";
 import { notFound } from "next/navigation";
 import React from "react";
 
@@ -30,22 +40,30 @@ export default async function DocumentPage({
   const modelSet = await project.modelSet({ locale });
 
   const document = (
-    await modelSet
-      .document(Identifier.fromString(decodeFileName(documentIdentifier)))
-      .resolve()
+    await modelSet.document(
+      Identifier.fromString(decodeFileName(documentIdentifier)),
+    )
   )
     .toMaybe()
     .extractNullable();
   if (!document) {
     notFound();
   }
+  const documentClaims = (
+    await modelSet.claims({
+      query: {
+        documentIdentifier: document.identifier,
+        type: "Document",
+      },
+    })
+  ).orDefault([]);
   const translations = await getTranslations("DocumentPage");
   const url = document.url.extractNullable();
 
   let heading = (
     <>
       {" "}
-      {translations("Document")}: <i>{document.displayLabel}</i>
+      {translations("Document")}: <i>{displayLabel(document, { locale })}</i>
     </>
   );
   if (url !== null) {
@@ -67,7 +85,18 @@ export default async function DocumentPage({
           </ClientProvidersServer>
         ) : null}
       </div>
-      <DocumentViewer document={document} includeAnnotations={true} />
+      <DocumentViewer
+        document={document}
+        documentClaims={
+          evaluateClaims(documentClaims).extract() ??
+          new UnevaluatedClaims({ claims: documentClaims })
+        }
+        workflows={(
+          await modelSet.workflowStubs({
+            query: { includeDeleted: false, type: "All" },
+          })
+        ).orDefault([])}
+      />
     </Layout>
   );
 }
@@ -86,9 +115,7 @@ export async function generateMetadata({
   return (
     await (
       await project.modelSet({ locale })
-    )
-      .document(Identifier.fromString(decodeFileName(documentIdentifier)))
-      .resolve()
+    ).documentStub(Identifier.fromString(decodeFileName(documentIdentifier)))
   )
     .map((document) => pageMetadata.document(document))
     .orDefault({});
@@ -102,13 +129,15 @@ export async function generateStaticParams(): Promise<DocumentPageParams[]> {
   const staticParams: DocumentPageParams[] = [];
 
   for (const locale of routing.locales) {
-    for (const document of await (await project.modelSet({ locale })).documents(
-      {
+    for (const document of (
+      await (
+        await project.modelSet({ locale })
+      ).documentStubs({
         limit: null,
         offset: 0,
         query: { includeDeleted: true, type: "All" },
-      },
-    )) {
+      })
+    ).orDefault([])) {
       staticParams.push({
         documentIdentifier: encodeFileName(
           Identifier.toString(document.identifier),

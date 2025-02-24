@@ -178,7 +178,7 @@ export function AnnotateDocumentForm({
         <WorkflowSelect
           onSelect={setSelectedWorkflowIdentifier}
           selectedWorkflowIdentifier={selectedWorkflowIdentifier}
-          workflows={workflows}
+          workflows={workflows.map((workflow) => workflow.toJson())}
         />
         {selectedWorkflowIdentifier ? (
           <Button onClick={annotateDocument}>{translations("Annotate")}</Button>

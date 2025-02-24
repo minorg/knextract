@@ -1,7 +1,7 @@
 "use client";
 
 import { useHrefs } from "@/lib/hooks";
-import { ConceptSchemeStub, displayLabel, kosLabels } from "@/lib/models";
+import { ConceptSchemeStub, displayLabel } from "@/lib/models";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { useLocale, useTranslations } from "next-intl";
 import { DataTable } from "./DataTable";

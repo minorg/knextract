@@ -2,7 +2,7 @@ import { project } from "@/app/project";
 import { PageMetadata } from "@/lib/PageMetadata";
 import { ClientProvidersServer } from "@/lib/components/ClientProvidersServer";
 import { ConceptSchemeConceptsDataTable } from "@/lib/components/ConceptSchemeConceptsDataTable";
-import { KosResourceSections } from "@/lib/components/KosResourceSections";
+import { KosResourceSections } from "@/lib/components/KosLabelSections";
 import { Layout } from "@/lib/components/Layout";
 import { PageTitleHeading } from "@/lib/components/PageTitleHeading";
 import { Section } from "@/lib/components/Section";

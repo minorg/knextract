@@ -146,7 +146,12 @@ export async function WorkflowExecutionViewer({
               content: documentEither.isRight() ? (
                 <DocumentViewer
                   document={documentEither.unsafeCoerce()}
-                  includeAnnotations={false}
+                  documentClaims={null}
+                  workflows={(
+                    await modelSet.workflowStubs({
+                      query: { includeDeleted: false, type: "All" },
+                    })
+                  ).orDefault([])}
                 />
               ) : (
                 documentLink

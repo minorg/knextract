@@ -1,95 +1,39 @@
 import { ClientProvidersServer } from "@/lib/components/ClientProvidersServer";
-import { ConceptSelectorViewer } from "@/lib/components/ConceptSelectorViewer";
 import { ConceptsDataTable } from "@/lib/components/ConceptsDataTable";
-import { DocumentAnnotationsDataTable } from "@/lib/components/DocumentClaimsDataTable";
+import { DocumentClaimsDataTable } from "@/lib/components/DocumentClaimsDataTable";
 import { ProcessViewer } from "@/lib/components/ProcessViewer";
-import { PromptTemplateViewer } from "@/lib/components/PromptTemplateViewer";
 import { PromptViewer } from "@/lib/components/PromptViewer";
+import { QuestionViewer } from "@/lib/components/QuestionViewer";
 import {
+  Table,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/lib/components/ui/table";
+import {
+  ConceptStub,
+  Identifier,
   LanguageModelInvocation,
   LanguageModelInvocationInput,
   LanguageModelInvocationOutput,
+  Locale,
+  PromptConstruction,
+  PromptConstructionInput,
+  PromptConstructionOutput,
+  QuestionAdministration,
+  QuestionAdministrationInput,
+  QuestionAdministrationOutput,
+  QuestionAdministrationSubProcesses,
+  UnevaluatedClaims,
+  Value,
   ValueExtraction,
+  ValueExtractionInput,
+  ValueExtractionOutput,
+  displayLabel,
 } from "@/lib/models";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import React from "react";
-
-async function ValueExtractionViewer({
-  valueExtraction,
-}: {
-  valueExtraction: ValueExtraction;
-}) {
-  const translations = await getTranslations("ValueExtractionViewer");
-  return (
-    <ProcessViewer
-      process={valueExtraction}
-      renderInput={async () => [
-        {
-          title: translations("Completion message"),
-          content: (
-            <pre style={{ whiteSpace: "pre-wrap" }}>
-              {valueExtraction.input.completionMessage.literalForm}
-            </pre>
-          ),
-        },
-      ]}
-      renderOutput={async () => [
-        {
-          title: translations("Claims"),
-          content: (
-            <ClientProvidersServer>
-              <DocumentAnnotationsDataTable
-                annotations={
-                  await Promise.all(annotations.map(json.Annotation.clone))
-                }
-                annotationsEvaluation={null}
-              />
-            </ClientProvidersServer>
-          ),
-        },
-      ]}
-      renderSubProcesses={async () => []}
-    />
-  );
-}
-
-async function ConceptSelectionViewer({
-  conceptSelection,
-}: {
-  conceptSelection: LanguageModelConceptAnnotatorExecution.ConceptSelection;
-}) {
-  const translations = await getTranslations("ConceptSelectionViewer");
-
-  return (
-    <ProcessViewer
-      process={conceptSelection}
-      renderInput={async (conceptSelector) => [
-        {
-          title: translations("Concept selector"),
-          content: <ConceptSelectorViewer conceptSelector={conceptSelector} />,
-        },
-      ]}
-      renderOutput={async (concepts) => [
-        {
-          title: translations("Concepts"),
-          content: (
-            <ClientProvidersServer>
-              <ConceptsDataTable
-                concepts={
-                  await Promise.all(
-                    (await concepts.flatResolve()).map(json.Concept.clone),
-                  )
-                }
-                pagination={{ pageIndex: 0, pageSize: 10 }}
-              />
-            </ClientProvidersServer>
-          ),
-        },
-      ]}
-      renderSubProcesses={async () => []}
-    />
-  );
-}
 
 async function LanguageModelInvocationViewer({
   languageModelInvocation,
@@ -124,163 +68,185 @@ async function LanguageModelInvocationViewer({
 async function PromptConstructionViewer({
   promptConstruction,
 }: {
-  promptConstruction: LanguageModelConceptAnnotatorExecution.PromptConstruction;
+  promptConstruction: PromptConstruction;
 }) {
+  const locale = await getLocale();
   const translations = await getTranslations("PromptConstructionViewer");
 
   return (
     <ProcessViewer
       process={promptConstruction}
-      renderInput={async ({ conceptList, promptTemplate }) => [
-        {
-          title: translations("Concepts"),
-          content: (
-            <ClientProvidersServer>
-              <ConceptsDataTable
-                concepts={
-                  await Promise.all(
-                    (await conceptList.flatResolve()).map(json.Concept.clone),
-                  )
-                }
-                pagination={{ pageIndex: 0, pageSize: 10 }}
-              />
-            </ClientProvidersServer>
-          ),
-        },
-        ...promptTemplate
-          .map((promptTemplate) => ({
-            title: translations("Prompt template"),
-            content: <PromptTemplateViewer promptTemplate={promptTemplate} />,
+      renderInput={async (input: PromptConstructionInput) => [
+        ...input.concepts
+          .map((concepts) => ({
+            title: translations("Concepts"),
+            content: (
+              <ClientProvidersServer>
+                <ConceptsDataTable
+                  concepts={concepts.map(ConceptStub.toJson)}
+                  pagination={{ pageIndex: 0, pageSize: 10 }}
+                />
+              </ClientProvidersServer>
+            ),
           }))
           .toList(),
-      ]}
-      renderOutput={async (prompt) => [
         {
-          title: translations("Prompt"),
-          content: <PromptViewer prompt={prompt} />,
+          title: translations("Document"),
+          content: <>{displayLabel(input.document, { locale })}</>,
+        },
+        {
+          title: translations("Question"),
+          content: <QuestionViewer question={input.question} />,
         },
       ]}
-      renderSubProcesses={async () => []}
+      renderOutput={async (output: PromptConstructionOutput) => [
+        {
+          title: translations("Prompt"),
+          content: <PromptViewer prompt={output.prompt} />,
+        },
+      ]}
     />
   );
 }
 
-export async function QuestionnaireAdministrationViewer({
-  conceptAnnotatorExecution,
+async function ValueExtractionViewer({
+  valueExtraction,
 }: {
-  conceptAnnotatorExecution: ConceptAnnotatorExecution;
+  valueExtraction: ValueExtraction;
 }) {
-  const translations = await getTranslations("ConceptAnnotatorExecutionViewer");
-
+  const translations = await getTranslations("ValueExtractionViewer");
   return (
-    <ProcessViewer<
-      ConceptAnnotatorExecution["input"],
-      readonly Annotation[],
-      ConceptAnnotatorExecution["subProcesses"]
-    >
-      process={conceptAnnotatorExecution}
-      renderInput={async ({ conceptSelector, parameters }) => [
+    <ProcessViewer
+      process={valueExtraction}
+      renderInput={async (input: ValueExtractionInput) => [
         {
-          title: translations("Concept selector"),
-          content: <ConceptSelectorViewer conceptSelector={conceptSelector} />,
-        },
-        {
-          title: translations("Concept annotator parameters"),
+          title: translations("Completion message"),
           content: (
-            <ConceptAnnotatorParametersViewer
-              conceptAnnotatorParameters={parameters}
-            />
+            <pre style={{ whiteSpace: "pre-wrap" }}>
+              {input.completionMessage.literalForm}
+            </pre>
           ),
         },
       ]}
-      renderOutput={async (annotations) => [
+      renderOutput={async (output: ValueExtractionOutput) => [
         {
-          title: translations("Annotations"),
+          title: translations("Values"),
+          content: <ValuesTable values={output.values} />,
+        },
+      ]}
+    />
+  );
+}
+
+function valueToString(value: Value, { locale }: { locale: Locale }): string {
+  switch (value.type) {
+    case "BooleanValue":
+    case "RealValue":
+    case "TextValue":
+      return value.value.toString();
+    case "CategoricalValue":
+      return displayLabel(value.value, { locale });
+  }
+}
+
+async function ValuesTable({ values }: { values: readonly Value[] }) {
+  const locale = (await getLocale()) as Locale;
+  const translations = await getTranslations("ValuesTable");
+  const valueTypeTranslations = await getTranslations("ValueTypes");
+
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>{translations("Type")}</TableHead>
+          <TableHead>{translations("Value")}</TableHead>
+        </TableRow>
+      </TableHeader>
+      {values.map((value) => (
+        <TableRow key={Identifier.toString(value.identifier)}>
+          <TableCell>{valueTypeTranslations(value.type)}</TableCell>
+          <TableCell>{valueToString(value, { locale })}</TableCell>
+        </TableRow>
+      ))}
+    </Table>
+  );
+}
+
+export async function QuestionAdministrationViewer({
+  questionAdministration,
+}: {
+  questionAdministration: QuestionAdministration;
+}) {
+  const locale = await getLocale();
+  const translations = await getTranslations("QuestionAdministrationViewer");
+
+  return (
+    <ProcessViewer
+      process={questionAdministration}
+      renderInput={async (input: QuestionAdministrationInput) => [
+        {
+          title: translations("Document"),
+          content: <>{displayLabel(input.document, { locale })}</>,
+        },
+        {
+          title: translations("Language model"),
+          content: <>{displayLabel(input.languageModel, { locale })}</>,
+        },
+        {
+          title: translations("Question"),
+          content: <QuestionViewer question={input.question} />,
+        },
+      ]}
+      renderOutput={async (output: QuestionAdministrationOutput) => [
+        {
+          title: translations("Answer"),
           content: (
             <ClientProvidersServer>
-              <DocumentAnnotationsDataTable
-                annotations={
-                  await Promise.all(annotations.map(json.Annotation.clone))
-                }
-                annotationsEvaluation={null}
+              <DocumentClaimsDataTable
+                documentClaims={new UnevaluatedClaims({
+                  claims: output.answer.claims,
+                }).toJson()}
               />
             </ClientProvidersServer>
           ),
         },
       ]}
-      renderSubProcesses={async () => {
-        switch (conceptAnnotatorExecution.type) {
-          case "EveryConceptAnnotatorExecution":
-            return [];
-          case "RecursiveConceptAnnotatorExecution": {
-            return conceptAnnotatorExecution.subProcesses.map(
-              (conceptAnnotatorExecution, conceptAnnotatorExecutionI) => ({
-                title: `${translations("Concept annotator execution")} ${conceptAnnotatorExecutionI}`,
+      renderSubProcesses={async (
+        subProcesses: QuestionAdministrationSubProcesses,
+      ) =>
+        subProcesses.promptConstruction
+          .map((promptConstruction) => ({
+            content: (
+              <PromptConstructionViewer
+                promptConstruction={promptConstruction}
+              />
+            ),
+            title: translations("Prompt construction"),
+          }))
+          .toList()
+          .concat(
+            subProcesses.languageModelInvocation
+              .map((languageModelInvocation) => ({
                 content: (
-                  <ConceptAnnotatorExecutionViewer
-                    conceptAnnotatorExecution={conceptAnnotatorExecution}
+                  <LanguageModelInvocationViewer
+                    languageModelInvocation={languageModelInvocation}
                   />
                 ),
-              }),
-            );
-          }
-          case "LanguageModelConceptAnnotatorExecution": {
-            const subProcesses = conceptAnnotatorExecution.subProcesses;
-            const subProcessSections: {
-              content: React.ReactElement;
-              title: string;
-            }[] = [];
-
-            subProcesses.conceptSelection.ifJust((conceptSelection) => {
-              subProcessSections.push({
-                title: translations("Concept selection"),
+                title: translations("Language model invocation"),
+              }))
+              .toList(),
+          )
+          .concat(
+            subProcesses.valueExtraction
+              .map((valueExtraction) => ({
                 content: (
-                  <ConceptSelectionViewer conceptSelection={conceptSelection} />
+                  <ValueExtractionViewer valueExtraction={valueExtraction} />
                 ),
-              });
-            });
-
-            subProcesses.promptConstruction.ifJust((promptConstruction) => {
-              subProcessSections.push({
-                title: translations("Prompt construction"),
-                content: (
-                  <PromptConstructionViewer
-                    promptConstruction={promptConstruction}
-                  />
-                ),
-              });
-            });
-
-            subProcesses.languageModelInvocation.ifJust(
-              (languageModelInvocation) => {
-                subProcessSections.push({
-                  title: translations("Language model invocation"),
-                  content: (
-                    <LanguageModelInvocationViewer
-                      languageModelInvocation={languageModelInvocation}
-                    />
-                  ),
-                });
-              },
-            );
-
-            subProcesses.completionMessageProcessing.ifJust(
-              (completionMessageProcessing) => {
-                subProcessSections.push({
-                  title: translations("Completion message processing"),
-                  content: (
-                    <CompletionMessageProcessingViewer
-                      completionMessageProcessing={completionMessageProcessing}
-                    />
-                  ),
-                });
-              },
-            );
-
-            return subProcessSections;
-          }
-        }
-      }}
+                title: translations("Value extraction"),
+              }))
+              .toList(),
+          )
+      }
     />
   );
 }

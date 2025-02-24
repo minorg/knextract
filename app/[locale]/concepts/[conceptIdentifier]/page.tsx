@@ -3,7 +3,7 @@ import { Hrefs } from "@/lib/Hrefs";
 import { PageMetadata } from "@/lib/PageMetadata";
 import { ClientProvidersServer } from "@/lib/components/ClientProvidersServer";
 import { ConceptsDataTable } from "@/lib/components/ConceptsDataTable";
-import { KosResourceSections } from "@/lib/components/KosResourceSections";
+import { KosResourceSections } from "@/lib/components/KosLabelSections";
 import { Layout } from "@/lib/components/Layout";
 import { Link } from "@/lib/components/Link";
 import { PageTitleHeading } from "@/lib/components/PageTitleHeading";
