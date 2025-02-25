@@ -77,9 +77,9 @@ export async function behavesLikeModelSet({
   }) =>
     withEmptyMutableModelSet(async (modelSet) => {
       expect(syntheticModel.deleted).toStrictEqual(false);
-      expect(await modelSet.isEmpty()).toStrictEqual(true);
+      expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
       await modelSet.addModel(syntheticModel);
-      expect(await modelSet.isEmpty()).toStrictEqual(false);
+      expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(false);
       const preDeletionModel = (
         await getModelFromModelSet(modelSet)
       ).unsafeCoerce();
@@ -161,7 +161,7 @@ export async function behavesLikeModelSet({
   it("claim", async ({ expect }) => {
     const expectedModel = syntheticTestData.claims[0];
     await withEmptyMutableModelSet(async (modelSet) => {
-      expect(await modelSet.isEmpty()).toStrictEqual(true);
+      expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
       await modelSet.addModel(expectedModel);
       const actualModel = (await modelSet.claim(expectedModel.identifier))
         .toMaybe()
@@ -174,7 +174,7 @@ export async function behavesLikeModelSet({
   it("claimProperties", async ({ expect }) => {
     const expectedModel = syntheticTestData.claimProperties[0];
     await withEmptyMutableModelSet(async (modelSet) => {
-      expect(await modelSet.isEmpty()).toStrictEqual(true);
+      expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
       await modelSet.addModel(expectedModel);
       const actualModels = (await modelSet.claimProperties()).unsafeCoerce();
       expect(actualModels).toHaveLength(1);
@@ -187,7 +187,7 @@ export async function behavesLikeModelSet({
   it("claims (all)", async ({ expect }) => {
     const expectedModel = syntheticTestData.claims[0];
     await withEmptyMutableModelSet(async (modelSet) => {
-      expect(await modelSet.isEmpty()).toStrictEqual(true);
+      expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
       await modelSet.addModel(expectedModel);
       const actualModels = (
         await modelSet.claims({
@@ -546,7 +546,7 @@ export async function behavesLikeModelSet({
     ([key, expectedModel]) => {
       it(`workflow ${key}`, async ({ expect }) =>
         withEmptyMutableModelSet(async (modelSet) => {
-          expect(await modelSet.isEmpty()).toStrictEqual(true);
+          expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
           await modelSet.addModel(expectedModel);
           const actualModel = (
             await modelSet.workflow(expectedModel.identifier)
@@ -565,7 +565,7 @@ export async function behavesLikeModelSet({
     ([key, expectedModel]) => {
       it(`workflowStub ${key}`, async ({ expect }) =>
         withEmptyMutableModelSet(async (modelSet) => {
-          expect(await modelSet.isEmpty()).toStrictEqual(true);
+          expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
           await modelSet.addModel(expectedModel);
           const actualModel = (
             await modelSet.workflowStub(expectedModel.identifier)
@@ -636,7 +636,7 @@ export async function behavesLikeModelSet({
     ([key, expectedModel]) => {
       it(`workflowExecution ${key}`, async ({ expect }) =>
         withEmptyMutableModelSet(async (modelSet) => {
-          expect(await modelSet.isEmpty()).toStrictEqual(true);
+          expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
           await modelSet.addModel(expectedModel);
           const actualModel = (
             await modelSet.workflowExecution(expectedModel.identifier)
@@ -655,7 +655,7 @@ export async function behavesLikeModelSet({
     ([key, expectedModel]) => {
       it(`workflowExecutionStub ${key}`, async ({ expect }) =>
         withEmptyMutableModelSet(async (modelSet) => {
-          expect(await modelSet.isEmpty()).toStrictEqual(true);
+          expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
           await modelSet.addModel(expectedModel);
           const actualModel = (
             await modelSet.workflowExecutionStub(expectedModel.identifier)
@@ -672,7 +672,7 @@ export async function behavesLikeModelSet({
 
   it.skipIf(sparql)("workflowExecution one of many", async ({ expect }) =>
     withEmptyMutableModelSet(async (modelSet) => {
-      expect(await modelSet.isEmpty()).toStrictEqual(true);
+      expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
       for (const model of Object.values(syntheticTestData.workflowExecutions)) {
         await modelSet.addModel(model);
       }
@@ -697,7 +697,7 @@ export async function behavesLikeModelSet({
       `workflowExecutionStubs queryType=${queryType}`,
       async ({ expect }) =>
         withEmptyMutableModelSet(async (modelSet) => {
-          expect(await modelSet.isEmpty()).toStrictEqual(true);
+          expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
 
           let expectedModels: readonly WorkflowExecution[];
           let query: WorkflowExecutionQuery;
