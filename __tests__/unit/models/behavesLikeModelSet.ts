@@ -19,6 +19,7 @@ import {
   stubify,
 } from "@/lib/models";
 import { RdfjsDatasetModelSet } from "@/lib/models/RdfjsDatasetModelSet";
+import { workflow } from "@/lib/models/_RdfjsDatasetModelSet";
 import { rdfEnvironment } from "@/lib/rdfEnvironment";
 import { Either } from "purify-ts";
 import { ExpectStatic, it } from "vitest";
@@ -758,7 +759,7 @@ export async function behavesLikeModelSet({
                         questionAdministration.output as QuestionAdministrationOutput
                       ).answer.claims,
                   );
-              expect(expectedClaims).toHaveLength(1);
+              expect(expectedClaims).toHaveLength(4);
               const expectedClaim = expectedClaims[0];
               query = {
                 claimIdentifier: expectedClaim.identifier,
@@ -768,19 +769,27 @@ export async function behavesLikeModelSet({
             }
             case "Workflow": {
               // Add all workflows and executions just to make sure we get the right one.
+              const allWorkflows = Object.values(
+                syntheticTestData.workflows,
+              ).slice(0, 2);
               const allWorkflowExecutions = Object.values(
                 syntheticTestData.workflowExecutions,
               ).slice(0, 2);
-              for (const workflowExecution of allWorkflowExecutions) {
-                const workflow = (
-                  await modelSet.workflow(
-                    workflowExecution.input.workflow.identifier,
-                  )
-                ).unsafeCoerce();
+              for (
+                let workflowI = 0;
+                workflowI < allWorkflows.length;
+                workflowI++
+              ) {
+                const workflow = allWorkflows[workflowI];
                 await modelSet.addModel(workflow);
+                const workflowExecution = allWorkflowExecutions[workflowI];
+                expect(
+                  workflowExecution.input.workflow.identifier.equals(
+                    workflow.identifier,
+                  ),
+                ).toStrictEqual(true);
                 await modelSet.addModel(workflowExecution);
               }
-
               const expectedWorkflowExecution = allWorkflowExecutions[0];
               expectedModels = [expectedWorkflowExecution];
               const expectedWorkflow = (
