@@ -4,6 +4,7 @@ import { DocumentClaimsDataTable } from "@/lib/components/DocumentClaimsDataTabl
 import { ProcessViewer } from "@/lib/components/ProcessViewer";
 import { PromptViewer } from "@/lib/components/PromptViewer";
 import { QuestionViewer } from "@/lib/components/QuestionViewer";
+import { ValueViewer } from "@/lib/components/ValueViewer";
 import {
   Table,
   TableCell,
@@ -11,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/lib/components/ui/table";
+import { getHrefs } from "@/lib/getHrefs";
 import {
   ConceptStub,
   Identifier,
@@ -138,18 +140,8 @@ async function ValueExtractionViewer({
   );
 }
 
-function valueToString(value: Value, { locale }: { locale: Locale }): string {
-  switch (value.type) {
-    case "BooleanValue":
-    case "RealValue":
-    case "TextValue":
-      return value.value.toString();
-    case "CategoricalValue":
-      return displayLabel(value.value, { locale });
-  }
-}
-
 async function ValuesTable({ values }: { values: readonly Value[] }) {
+  const hrefs = await getHrefs();
   const locale = (await getLocale()) as Locale;
   const translations = await getTranslations("ValuesTable");
   const valueTypeTranslations = await getTranslations("ValueTypes");
@@ -165,7 +157,9 @@ async function ValuesTable({ values }: { values: readonly Value[] }) {
       {values.map((value) => (
         <TableRow key={Identifier.toString(value.identifier)}>
           <TableCell>{valueTypeTranslations(value.type)}</TableCell>
-          <TableCell>{valueToString(value, { locale })}</TableCell>
+          <TableCell>
+            <ValueViewer hrefs={hrefs} locale={locale} value={value} />
+          </TableCell>
         </TableRow>
       ))}
     </Table>

@@ -4,6 +4,7 @@ import { Layout } from "@/lib/components/Layout";
 import { Link } from "@/lib/components/Link";
 import { PageTitleHeading } from "@/lib/components/PageTitleHeading";
 import { Section } from "@/lib/components/Section";
+import { ValueViewer } from "@/lib/components/ValueViewer";
 import { getHrefs } from "@/lib/getHrefs";
 import {
   Identifier,
@@ -78,6 +79,9 @@ export default async function ClaimPage({
       ) : null}
       <Section title={translations("Predicate")}>
         {Identifier.toString(claim.predicate)}
+      </Section>
+      <Section title={translations("Object")}>
+        <ValueViewer hrefs={hrefs} locale={locale} value={claim.object} />
       </Section>
       <Section title={translations("Type")}>
         {claim.gold ? translations("Gold") : translations("Inferred")}

@@ -142,7 +142,7 @@ export {
 export * from "./ClaimQuery";
 export * from "./ClientConfiguration";
 export * from "./CorpusQuery";
-export * from "./displayLabel";
+export * from "../components/displayLabel";
 export * from "./DocumentQuery";
 export * from "./evaluateClaims";
 export * from "./Identifier";
