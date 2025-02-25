@@ -11,7 +11,7 @@ import {
   stubify,
 } from "@/lib/models";
 import { dataFactory } from "@/lib/rdfEnvironment";
-import { dcterms } from "@/lib/vocabularies";
+import { dcterms } from "@tpluscode/rdf-ns-builders";
 import { describe, expect, it } from "vitest";
 
 describe("WorkflowEngine", () => {
@@ -70,8 +70,8 @@ describe("WorkflowEngine", () => {
     const workflowExecution = await createWorkflowEngine({
       languageModelFactory,
     }).execute({
-      documentStub: stubify(document),
-      workflowStub: stubify(workflow),
+      document: stubify(document),
+      workflow: stubify(workflow),
     });
     if (workflowExecution.output.type === "Exception") {
       throw new Error(workflowExecution.output.message);
@@ -80,7 +80,16 @@ describe("WorkflowEngine", () => {
       (stepExecution) =>
         stepExecution.type === "WorkflowQuestionnaireStepExecution" &&
         stepExecution.output.type !== "Exception"
-          ? stepExecution.output.answers.flatMap((answer) => answer.claims)
+          ? stepExecution.subProcesses.questionnaireAdministration
+              .map((questionnaireAdministration) =>
+                questionnaireAdministration.subProcesses.questionAdministrations.flatMap(
+                  (questionAdministration) =>
+                    questionAdministration.output.type !== "Exception"
+                      ? questionAdministration.output.answer.claims
+                      : [],
+                ),
+              )
+              .orDefault([])
           : [],
     );
   }
@@ -143,10 +152,10 @@ describe("WorkflowEngine", () => {
 
   it("should handle an unresolvable Document stub", async ({ expect }) => {
     const execution = await createWorkflowEngine().execute({
-      documentStub: new DocumentStub({
+      document: new DocumentStub({
         identifier: dataFactory.namedNode("http://example.com/nonextant"),
       }),
-      workflowStub: stubify(workflows.questionnaireStep),
+      workflow: stubify(workflows.questionnaireStep),
     });
     expect(execution.output.type).toStrictEqual("Exception");
     expect((execution.output as Exception).message).toMatch(
@@ -156,8 +165,8 @@ describe("WorkflowEngine", () => {
 
   it("should handle an unresolvable Workflow stub", async ({ expect }) => {
     const execution = await createWorkflowEngine().execute({
-      documentStub: stubify(document),
-      workflowStub: new WorkflowStub({
+      document: stubify(document),
+      workflow: new WorkflowStub({
         identifier: dataFactory.namedNode("http://example.com/nonextant"),
       }),
     });

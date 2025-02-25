@@ -57,7 +57,7 @@ import {
 import { RdfjsDatasetModelSet } from "@/lib/models/RdfjsDatasetModelSet";
 import { dataFactory } from "@/lib/rdfEnvironment";
 import { formatPromptTemplate } from "@/lib/utilities/server";
-import { dcterms } from "@/lib/vocabularies";
+import { dcterms } from "@tpluscode/rdf-ns-builders";
 import { Maybe } from "purify-ts";
 
 export interface SyntheticTestData {

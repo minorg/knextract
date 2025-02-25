@@ -9,8 +9,8 @@ import {
   PromptSparqlSelectInputValue,
   PromptTemplate,
 } from "@/lib/models";
+import { OxigraphModelSet } from "@/lib/models/OxigraphModelSet";
 import { RdfjsDatasetModelSet } from "@/lib/models/RdfjsDatasetModelSet";
-import { OxigraphModelSet } from "@/lib/models/impl/rdf/sparql/OxigraphModelSet";
 import { dataFactory } from "@/lib/rdfEnvironment";
 import { formatPromptTemplate } from "@/lib/utilities/server";
 import { describe, expect, it } from "vitest";
