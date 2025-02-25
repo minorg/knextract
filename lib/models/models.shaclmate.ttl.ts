@@ -3,7 +3,9 @@
 
 import { rdfEnvironment } from "@/lib/rdfEnvironment";
 
-const dataset = rdfEnvironment.parsers.parseString(String.raw`
+const dataset = rdfEnvironment.parsers
+  .parseString(
+    String.raw`
 <http://purl.archive.org/purl/knextract/ontology#Answer> <http://minorg.github.io/shaclmate/ns#name> "Answer" .
 <http://purl.archive.org/purl/knextract/ontology#Answer> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
 <http://purl.archive.org/purl/knextract/ontology#Answer> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#NodeShape> .
@@ -1687,5 +1689,8 @@ _:n3-107 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://purl.archive
 _:n3-107 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:n3-108 .
 _:n3-108 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://purl.archive.org/purl/knextract/cbox#_Role_System> .
 _:n3-108 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
-`, { format: "application/n-triples" } ).unsafeCoerce();
+`,
+    { format: "application/n-triples" },
+  )
+  .unsafeCoerce();
 export default dataset;
