@@ -364,7 +364,7 @@ export namespace SyntheticTestData {
         ],
       }),
       questionnaireStep: new Workflow({
-        label: "exception",
+        label: "questionnaireStep",
         steps: [
           new WorkflowQuestionnaireStep({
             languageModel: languageModelSpecificationStub,

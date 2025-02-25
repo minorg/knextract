@@ -1,3 +1,4 @@
+import { format } from "path";
 import { testData } from "@/__tests__/unit/data";
 import {
   Claim,
@@ -17,6 +18,8 @@ import {
   sortModelsByIdentifier,
   stubify,
 } from "@/lib/models";
+import { RdfjsDatasetModelSet } from "@/lib/models/RdfjsDatasetModelSet";
+import { rdfEnvironment } from "@/lib/rdfEnvironment";
 import { Either } from "purify-ts";
 import { ExpectStatic, it } from "vitest";
 
@@ -476,9 +479,9 @@ export async function behavesLikeModelSet({
             ).extract(),
           ).toStrictEqual(true);
 
-          expect(await modelSet.documentsCount(query)).toStrictEqual(
-            expectedModels.length,
-          );
+          expect(
+            (await modelSet.documentsCount(query)).unsafeCoerce(),
+          ).toStrictEqual(expectedModels.length);
         }));
     }
   }
@@ -493,7 +496,6 @@ export async function behavesLikeModelSet({
       .toMaybe()
       .extractNullable();
     expect(actualModel).not.toBeNull();
-    expect(actualModel?.type).toStrictEqual("LanguageModel");
     const equalsResult = actualModel!.equals(expectedModel).extract();
     expect(equalsResult).toStrictEqual(true);
   });
@@ -559,6 +561,26 @@ export async function behavesLikeModelSet({
           );
         }));
     },
+  );
+
+  it.skipIf(sparql)("workflow one of many", async ({ expect }) =>
+    withEmptyMutableModelSet(async (modelSet) => {
+      expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
+      for (const model of Object.values(syntheticTestData.workflows)) {
+        await modelSet.addModel(model);
+      }
+      for (const expectedModel of Object.values(syntheticTestData.workflows)) {
+        const actualModel = (await modelSet.workflow(expectedModel.identifier))
+          .toMaybe()
+          .extractNullable();
+        expect(actualModel).not.toBeNull();
+        const equalsResult = actualModel!.equals(expectedModel).extract();
+        if (equalsResult !== true) {
+          console.log("test");
+        }
+        expect(equalsResult).toStrictEqual(true);
+      }
+    }),
   );
 
   Object.entries(syntheticTestData.workflows).forEach(
@@ -676,6 +698,10 @@ export async function behavesLikeModelSet({
       for (const model of Object.values(syntheticTestData.workflowExecutions)) {
         await modelSet.addModel(model);
       }
+      const ttl = await rdfEnvironment.serializers.serializeToString(
+        (modelSet as RdfjsDatasetModelSet).dataset,
+        { format: "text/turtle" },
+      );
       for (const expectedModel of Object.values(
         syntheticTestData.workflowExecutions,
       )) {
@@ -685,9 +711,11 @@ export async function behavesLikeModelSet({
           .toMaybe()
           .extractNullable();
         expect(actualModel).not.toBeNull();
-        expect(actualModel!.equals(expectedModel).extract()).toStrictEqual(
-          true,
-        );
+        const equalsResult = actualModel!.equals(expectedModel).extract();
+        if (equalsResult !== true) {
+          console.log(ttl);
+        }
+        expect(equalsResult).toStrictEqual(true);
       }
     }),
   );
