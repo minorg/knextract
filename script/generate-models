@@ -10,8 +10,8 @@ format_rdf() {
 }
 
 format_rdf lib/models/models.shaclmate.ttl
-script/rdf-to-ts.sh "$PWD/lib/models/models.shaclmate.ttl" > "$PWD/lib/models/models.shaclmate.ttl.ts"
+script/rdf-to-ts.sh "$PWD/lib/models/models.shaclmate.ttl" > "$PWD/lib/models/models.shaclmate.dataset.ts"
 
-../shaclmate/packages/cli/cli.sh generate "$PWD/lib/models/models.shaclmate.ttl" "$PWD/../kos-kit/lib/packages/models/stubs.shaclmate.ttl" >lib/models/models.shaclmate-generated.ts
+../shaclmate/packages/cli/cli.sh generate "$PWD/lib/models/models.shaclmate.ttl" "$PWD/../kos-kit/lib/packages/models/stubs.shaclmate.ttl" >lib/models/models.shaclmate.generated.ts
 
-npm exec biome -- check --write --unsafe lib/models/models.shaclmate-generated.ts
+npm exec biome -- check --write --unsafe lib/models/models.shaclmate.dataset.ts lib/models/models.shaclmate.generated.ts

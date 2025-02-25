@@ -264,7 +264,9 @@ export namespace LabelStub {
       );
   }
 
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       identifier: rdfjs.BlankNode | rdfjs.NamedNode;
@@ -740,7 +742,9 @@ export namespace KosResourceStub {
       );
   }
 
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       identifier: rdfjs.NamedNode;
@@ -1786,19 +1790,21 @@ export class WorkflowQuestionnaireStepExecutionSubProcesses extends ProcessSubPr
   override equals(
     other: WorkflowQuestionnaireStepExecutionSubProcesses,
   ): EqualsResult {
-    return super.equals(other).chain(() =>
-      ((left, right) =>
-        maybeEquals(left, right, (left, right) => left.equals(right)))(
-        this.questionnaireAdministration,
-        other.questionnaireAdministration,
-      ).mapLeft((propertyValuesUnequal) => ({
-        left: this,
-        right: other,
-        propertyName: "questionnaireAdministration",
-        propertyValuesUnequal,
-        type: "Property" as const,
-      })),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        ((left, right) =>
+          maybeEquals(left, right, (left, right) => left.equals(right)))(
+          this.questionnaireAdministration,
+          other.questionnaireAdministration,
+        ).mapLeft((propertyValuesUnequal) => ({
+          left: this,
+          right: other,
+          propertyName: "questionnaireAdministration",
+          propertyValuesUnequal,
+          type: "Property" as const,
+        })),
+      );
   }
 
   override hash<
@@ -1872,7 +1878,9 @@ export class WorkflowQuestionnaireStepExecutionSubProcesses extends ProcessSubPr
 }
 
 export namespace WorkflowQuestionnaireStepExecutionSubProcesses {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       identifier: rdfjs.NamedNode;
@@ -3097,7 +3105,9 @@ export class WorkflowQuestionnaireStepExecutionInput extends ProcessInput {
 }
 
 export namespace WorkflowQuestionnaireStepExecutionInput {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       document: DocumentStub;
@@ -3609,7 +3619,9 @@ export abstract class Process extends Entity {
 }
 
 export namespace Process {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       endedAtTime: purify.Maybe<Date>;
@@ -4082,7 +4094,9 @@ export class WorkflowQuestionnaireStepExecution extends Process {
 }
 
 export namespace WorkflowQuestionnaireStepExecution {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       identifier: rdfjs.NamedNode;
@@ -5053,7 +5067,9 @@ export class WorkflowQuestionnaireStep extends InformationContentEntity {
 }
 
 export namespace WorkflowQuestionnaireStep {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       identifier: rdfjs.NamedNode;
@@ -5790,18 +5806,21 @@ export class WorkflowExecutionSubProcesses extends ProcessSubProcesses {
   }
 
   override equals(other: WorkflowExecutionSubProcesses): EqualsResult {
-    return super.equals(other).chain(() =>
-      ((left, right) => arrayEquals(left, right, WorkflowStepExecution.equals))(
-        this.stepExecutions,
-        other.stepExecutions,
-      ).mapLeft((propertyValuesUnequal) => ({
-        left: this,
-        right: other,
-        propertyName: "stepExecutions",
-        propertyValuesUnequal,
-        type: "Property" as const,
-      })),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        ((left, right) =>
+          arrayEquals(left, right, WorkflowStepExecution.equals))(
+          this.stepExecutions,
+          other.stepExecutions,
+        ).mapLeft((propertyValuesUnequal) => ({
+          left: this,
+          right: other,
+          propertyName: "stepExecutions",
+          propertyValuesUnequal,
+          type: "Property" as const,
+        })),
+      );
   }
 
   override hash<
@@ -5937,7 +5956,9 @@ export class WorkflowExecutionSubProcesses extends ProcessSubProcesses {
 }
 
 export namespace WorkflowExecutionSubProcesses {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       identifier: rdfjs.NamedNode;
@@ -6867,7 +6888,9 @@ export class WorkflowStub {
 }
 
 export namespace WorkflowStub {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       deleted: boolean;
@@ -7233,18 +7256,20 @@ export class WorkflowDeletionInput extends ProcessInput {
   }
 
   override equals(other: WorkflowDeletionInput): EqualsResult {
-    return super.equals(other).chain(() =>
-      ((left, right) => left.equals(right))(
-        this.workflow,
-        other.workflow,
-      ).mapLeft((propertyValuesUnequal) => ({
-        left: this,
-        right: other,
-        propertyName: "workflow",
-        propertyValuesUnequal,
-        type: "Property" as const,
-      })),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        ((left, right) => left.equals(right))(
+          this.workflow,
+          other.workflow,
+        ).mapLeft((propertyValuesUnequal) => ({
+          left: this,
+          right: other,
+          propertyName: "workflow",
+          propertyValuesUnequal,
+          type: "Property" as const,
+        })),
+      );
   }
 
   override hash<
@@ -7649,17 +7674,19 @@ export class WorkflowDeletion extends Process {
   }
 
   override equals(other: WorkflowDeletion): EqualsResult {
-    return super.equals(other).chain(() =>
-      ((left, right) => left.equals(right))(this.input, other.input).mapLeft(
-        (propertyValuesUnequal) => ({
-          left: this,
-          right: other,
-          propertyName: "input",
-          propertyValuesUnequal,
-          type: "Property" as const,
-        }),
-      ),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        ((left, right) => left.equals(right))(this.input, other.input).mapLeft(
+          (propertyValuesUnequal) => ({
+            left: this,
+            right: other,
+            propertyName: "input",
+            propertyValuesUnequal,
+            type: "Property" as const,
+          }),
+        ),
+      );
   }
 
   override hash<
@@ -8258,7 +8285,9 @@ export class Workflow extends InformationContentEntity {
 }
 
 export namespace Workflow {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       deleted: boolean;
@@ -8816,18 +8845,20 @@ export class ValueExtractionOutput extends ProcessOutput {
   }
 
   override equals(other: ValueExtractionOutput): EqualsResult {
-    return super.equals(other).chain(() =>
-      ((left, right) => arrayEquals(left, right, Value.equals))(
-        this.values,
-        other.values,
-      ).mapLeft((propertyValuesUnequal) => ({
-        left: this,
-        right: other,
-        propertyName: "values",
-        propertyValuesUnequal,
-        type: "Property" as const,
-      })),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        ((left, right) => arrayEquals(left, right, Value.equals))(
+          this.values,
+          other.values,
+        ).mapLeft((propertyValuesUnequal) => ({
+          left: this,
+          right: other,
+          propertyName: "values",
+          propertyValuesUnequal,
+          type: "Property" as const,
+        })),
+      );
   }
 
   override hash<
@@ -9422,18 +9453,20 @@ export class ValueExtractionInput extends ProcessInput {
   }
 
   override equals(other: ValueExtractionInput): EqualsResult {
-    return super.equals(other).chain(() =>
-      ((left, right) => left.equals(right))(
-        this.completionMessage,
-        other.completionMessage,
-      ).mapLeft((propertyValuesUnequal) => ({
-        left: this,
-        right: other,
-        propertyName: "completionMessage",
-        propertyValuesUnequal,
-        type: "Property" as const,
-      })),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        ((left, right) => left.equals(right))(
+          this.completionMessage,
+          other.completionMessage,
+        ).mapLeft((propertyValuesUnequal) => ({
+          left: this,
+          right: other,
+          propertyName: "completionMessage",
+          propertyValuesUnequal,
+          type: "Property" as const,
+        })),
+      );
   }
 
   override hash<
@@ -9500,7 +9533,9 @@ export class ValueExtractionInput extends ProcessInput {
 }
 
 export namespace ValueExtractionInput {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       completionMessage: CompletionMessage;
@@ -9899,7 +9934,9 @@ export class TruePositiveClaimPair extends InformationContentEntity {
 }
 
 export namespace TruePositiveClaimPair {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       goldClaim: Claim;
@@ -10208,17 +10245,19 @@ export class TextValue extends BaseValue {
   }
 
   override equals(other: TextValue): EqualsResult {
-    return super.equals(other).chain(() =>
-      strictEquals(this.value, other.value).mapLeft(
-        (propertyValuesUnequal) => ({
-          left: this,
-          right: other,
-          propertyName: "value",
-          propertyValuesUnequal,
-          type: "Property" as const,
-        }),
-      ),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        strictEquals(this.value, other.value).mapLeft(
+          (propertyValuesUnequal) => ({
+            left: this,
+            right: other,
+            propertyName: "value",
+            propertyValuesUnequal,
+            type: "Property" as const,
+          }),
+        ),
+      );
   }
 
   override hash<
@@ -10584,17 +10623,19 @@ export class RealValue extends BaseValue {
   }
 
   override equals(other: RealValue): EqualsResult {
-    return super.equals(other).chain(() =>
-      strictEquals(this.value, other.value).mapLeft(
-        (propertyValuesUnequal) => ({
-          left: this,
-          right: other,
-          propertyName: "value",
-          propertyValuesUnequal,
-          type: "Property" as const,
-        }),
-      ),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        strictEquals(this.value, other.value).mapLeft(
+          (propertyValuesUnequal) => ({
+            left: this,
+            right: other,
+            propertyName: "value",
+            propertyValuesUnequal,
+            type: "Property" as const,
+          }),
+        ),
+      );
   }
 
   override hash<
@@ -10962,19 +11003,21 @@ export class QuestionnaireAdministrationSubProcesses extends ProcessSubProcesses
   override equals(
     other: QuestionnaireAdministrationSubProcesses,
   ): EqualsResult {
-    return super.equals(other).chain(() =>
-      ((left, right) =>
-        arrayEquals(left, right, (left, right) => left.equals(right)))(
-        this.questionAdministrations,
-        other.questionAdministrations,
-      ).mapLeft((propertyValuesUnequal) => ({
-        left: this,
-        right: other,
-        propertyName: "questionAdministrations",
-        propertyValuesUnequal,
-        type: "Property" as const,
-      })),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        ((left, right) =>
+          arrayEquals(left, right, (left, right) => left.equals(right)))(
+          this.questionAdministrations,
+          other.questionAdministrations,
+        ).mapLeft((propertyValuesUnequal) => ({
+          left: this,
+          right: other,
+          propertyName: "questionAdministrations",
+          propertyValuesUnequal,
+          type: "Property" as const,
+        })),
+      );
   }
 
   override hash<
@@ -11114,7 +11157,9 @@ export class QuestionnaireAdministrationSubProcesses extends ProcessSubProcesses
 }
 
 export namespace QuestionnaireAdministrationSubProcesses {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       identifier: rdfjs.NamedNode;
@@ -12093,7 +12138,9 @@ export class QuestionnaireAdministrationInput extends ProcessInput {
 }
 
 export namespace QuestionnaireAdministrationInput {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       document: DocumentStub;
@@ -12753,7 +12800,9 @@ export class QuestionnaireAdministration extends Process {
 }
 
 export namespace QuestionnaireAdministration {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       identifier: rdfjs.NamedNode;
@@ -13318,18 +13367,20 @@ export class Questionnaire extends InformationContentEntity {
   }
 
   override equals(other: Questionnaire): EqualsResult {
-    return super.equals(other).chain(() =>
-      ((left, right) => arrayEquals(left, right, QuestionnaireMember.equals))(
-        this.members,
-        other.members,
-      ).mapLeft((propertyValuesUnequal) => ({
-        left: this,
-        right: other,
-        propertyName: "members",
-        propertyValuesUnequal,
-        type: "Property" as const,
-      })),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        ((left, right) => arrayEquals(left, right, QuestionnaireMember.equals))(
+          this.members,
+          other.members,
+        ).mapLeft((propertyValuesUnequal) => ({
+          left: this,
+          right: other,
+          propertyName: "members",
+          propertyValuesUnequal,
+          type: "Property" as const,
+        })),
+      );
   }
 
   override hash<
@@ -13466,7 +13517,9 @@ export class Questionnaire extends InformationContentEntity {
 }
 
 export namespace Questionnaire {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       identifier: rdfjs.NamedNode;
@@ -14073,7 +14126,9 @@ export class ValueExtraction extends Process {
 }
 
 export namespace ValueExtraction {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       identifier: rdfjs.NamedNode;
@@ -14737,7 +14792,9 @@ export class QuestionAdministrationSubProcesses extends ProcessSubProcesses {
 }
 
 export namespace QuestionAdministrationSubProcesses {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       identifier: rdfjs.NamedNode;
@@ -15264,17 +15321,20 @@ export class QuestionAdministrationOutput extends ProcessOutput {
   }
 
   override equals(other: QuestionAdministrationOutput): EqualsResult {
-    return super.equals(other).chain(() =>
-      ((left, right) => left.equals(right))(this.answer, other.answer).mapLeft(
-        (propertyValuesUnequal) => ({
+    return super
+      .equals(other)
+      .chain(() =>
+        ((left, right) => left.equals(right))(
+          this.answer,
+          other.answer,
+        ).mapLeft((propertyValuesUnequal) => ({
           left: this,
           right: other,
           propertyName: "answer",
           propertyValuesUnequal,
           type: "Property" as const,
-        }),
-      ),
-    );
+        })),
+      );
   }
 
   override hash<
@@ -15823,7 +15883,9 @@ export class QuestionAdministrationInput extends ProcessInput {
 }
 
 export namespace QuestionAdministrationInput {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       document: DocumentStub;
@@ -16474,7 +16536,9 @@ export class QuestionAdministration extends Process {
 }
 
 export namespace QuestionAdministration {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       identifier: rdfjs.NamedNode;
@@ -17115,7 +17179,9 @@ abstract class BaseQuestion extends InformationContentEntity {
 }
 
 namespace BaseQuestion {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       identifier: rdfjs.NamedNode;
@@ -18191,7 +18257,9 @@ export class PromptTemplate extends InformationContentEntity {
 }
 
 export namespace PromptTemplate {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       identifier: rdfjs.NamedNode;
@@ -18762,17 +18830,19 @@ export class PromptSparqlSelectInputValue extends InformationContentEntity {
   }
 
   override equals(other: PromptSparqlSelectInputValue): EqualsResult {
-    return super.equals(other).chain(() =>
-      strictEquals(this.sparqlSelect, other.sparqlSelect).mapLeft(
-        (propertyValuesUnequal) => ({
-          left: this,
-          right: other,
-          propertyName: "sparqlSelect",
-          propertyValuesUnequal,
-          type: "Property" as const,
-        }),
-      ),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        strictEquals(this.sparqlSelect, other.sparqlSelect).mapLeft(
+          (propertyValuesUnequal) => ({
+            left: this,
+            right: other,
+            propertyName: "sparqlSelect",
+            propertyValuesUnequal,
+            type: "Property" as const,
+          }),
+        ),
+      );
   }
 
   override hash<
@@ -19267,7 +19337,9 @@ export class PromptLiteralInputValue extends InformationContentEntity {
 }
 
 export namespace PromptLiteralInputValue {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       identifier: rdfjs.NamedNode;
@@ -19631,17 +19703,20 @@ export class PromptConstructionOutput extends ProcessOutput {
   }
 
   override equals(other: PromptConstructionOutput): EqualsResult {
-    return super.equals(other).chain(() =>
-      ((left, right) => left.equals(right))(this.prompt, other.prompt).mapLeft(
-        (propertyValuesUnequal) => ({
+    return super
+      .equals(other)
+      .chain(() =>
+        ((left, right) => left.equals(right))(
+          this.prompt,
+          other.prompt,
+        ).mapLeft((propertyValuesUnequal) => ({
           left: this,
           right: other,
           propertyName: "prompt",
           propertyValuesUnequal,
           type: "Property" as const,
-        }),
-      ),
-    );
+        })),
+      );
   }
 
   override hash<
@@ -20279,7 +20354,9 @@ export class PromptConstructionInput extends ProcessInput {
 }
 
 export namespace PromptConstructionInput {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       concepts: purify.Maybe<readonly ConceptStub[]>;
@@ -21039,7 +21116,9 @@ export class PromptConstruction extends Process {
 }
 
 export namespace PromptConstruction {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       identifier: rdfjs.NamedNode;
@@ -21497,17 +21576,19 @@ abstract class BaseEvent extends Entity {
   }
 
   override equals(other: BaseEvent): EqualsResult {
-    return super.equals(other).chain(() =>
-      dateEquals(this.timestamp, other.timestamp).mapLeft(
-        (propertyValuesUnequal) => ({
-          left: this,
-          right: other,
-          propertyName: "timestamp",
-          propertyValuesUnequal,
-          type: "Property" as const,
-        }),
-      ),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        dateEquals(this.timestamp, other.timestamp).mapLeft(
+          (propertyValuesUnequal) => ({
+            left: this,
+            right: other,
+            propertyName: "timestamp",
+            propertyValuesUnequal,
+            type: "Property" as const,
+          }),
+        ),
+      );
   }
 
   override hash<
@@ -21788,17 +21869,19 @@ export class PreWorkflowStepExecutionEvent extends BaseEvent {
   }
 
   override equals(other: PreWorkflowStepExecutionEvent): EqualsResult {
-    return super.equals(other).chain(() =>
-      WorkflowStepExecutionInput.equals(this.payload, other.payload).mapLeft(
-        (propertyValuesUnequal) => ({
-          left: this,
-          right: other,
-          propertyName: "payload",
-          propertyValuesUnequal,
-          type: "Property" as const,
-        }),
-      ),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        WorkflowStepExecutionInput.equals(this.payload, other.payload).mapLeft(
+          (propertyValuesUnequal) => ({
+            left: this,
+            right: other,
+            propertyName: "payload",
+            propertyValuesUnequal,
+            type: "Property" as const,
+          }),
+        ),
+      );
   }
 
   override hash<
@@ -21830,7 +21913,9 @@ export class PreWorkflowStepExecutionEvent extends BaseEvent {
 }
 
 export namespace PreWorkflowStepExecutionEvent {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       identifier: rdfjs.NamedNode;
@@ -22033,7 +22118,9 @@ export class WorkflowExecutionInput extends ProcessInput {
 }
 
 export namespace WorkflowExecutionInput {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       document: DocumentStub;
@@ -22434,18 +22521,20 @@ export class PreWorkflowExecutionEvent extends BaseEvent {
   }
 
   override equals(other: PreWorkflowExecutionEvent): EqualsResult {
-    return super.equals(other).chain(() =>
-      ((left, right) => left.equals(right))(
-        this.payload,
-        other.payload,
-      ).mapLeft((propertyValuesUnequal) => ({
-        left: this,
-        right: other,
-        propertyName: "payload",
-        propertyValuesUnequal,
-        type: "Property" as const,
-      })),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        ((left, right) => left.equals(right))(
+          this.payload,
+          other.payload,
+        ).mapLeft((propertyValuesUnequal) => ({
+          left: this,
+          right: other,
+          propertyName: "payload",
+          propertyValuesUnequal,
+          type: "Property" as const,
+        })),
+      );
   }
 
   override hash<
@@ -22574,17 +22663,19 @@ export class PostWorkflowStepExecutionEvent extends BaseEvent {
   }
 
   override equals(other: PostWorkflowStepExecutionEvent): EqualsResult {
-    return super.equals(other).chain(() =>
-      WorkflowStepExecution.equals(this.payload, other.payload).mapLeft(
-        (propertyValuesUnequal) => ({
-          left: this,
-          right: other,
-          propertyName: "payload",
-          propertyValuesUnequal,
-          type: "Property" as const,
-        }),
-      ),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        WorkflowStepExecution.equals(this.payload, other.payload).mapLeft(
+          (propertyValuesUnequal) => ({
+            left: this,
+            right: other,
+            propertyName: "payload",
+            propertyValuesUnequal,
+            type: "Property" as const,
+          }),
+        ),
+      );
   }
 
   override hash<
@@ -22883,7 +22974,9 @@ export class WorkflowExecution extends Process {
 }
 
 export namespace WorkflowExecution {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       identifier: rdfjs.NamedNode;
@@ -23492,7 +23585,9 @@ export class PostWorkflowExecutionEventPayload extends Entity {
 }
 
 export namespace PostWorkflowExecutionEventPayload {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       documentClaims: DocumentClaims;
@@ -23601,18 +23696,20 @@ export class PostWorkflowExecutionEvent extends BaseEvent {
   }
 
   override equals(other: PostWorkflowExecutionEvent): EqualsResult {
-    return super.equals(other).chain(() =>
-      ((left, right) => left.equals(right))(
-        this.payload,
-        other.payload,
-      ).mapLeft((propertyValuesUnequal) => ({
-        left: this,
-        right: other,
-        propertyName: "payload",
-        propertyValuesUnequal,
-        type: "Property" as const,
-      })),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        ((left, right) => left.equals(right))(
+          this.payload,
+          other.payload,
+        ).mapLeft((propertyValuesUnequal) => ({
+          left: this,
+          right: other,
+          propertyName: "payload",
+          propertyValuesUnequal,
+          type: "Property" as const,
+        })),
+      );
   }
 
   override hash<
@@ -23642,7 +23739,9 @@ export class PostWorkflowExecutionEvent extends BaseEvent {
 }
 
 export namespace PostWorkflowExecutionEvent {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       identifier: rdfjs.NamedNode;
@@ -23888,7 +23987,9 @@ export class LanguageModelSpecification extends InformationContentEntity {
 }
 
 export namespace LanguageModelSpecification {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       apiIdentifier: string;
@@ -24384,19 +24485,21 @@ export class Prompt extends InformationContentEntity {
   }
 
   override equals(other: Prompt): EqualsResult {
-    return super.equals(other).chain(() =>
-      ((left, right) =>
-        arrayEquals(left, right, (left, right) => left.equals(right)))(
-        this.messages,
-        other.messages,
-      ).mapLeft((propertyValuesUnequal) => ({
-        left: this,
-        right: other,
-        propertyName: "messages",
-        propertyValuesUnequal,
-        type: "Property" as const,
-      })),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        ((left, right) =>
+          arrayEquals(left, right, (left, right) => left.equals(right)))(
+          this.messages,
+          other.messages,
+        ).mapLeft((propertyValuesUnequal) => ({
+          left: this,
+          right: other,
+          propertyName: "messages",
+          propertyValuesUnequal,
+          type: "Property" as const,
+        })),
+      );
   }
 
   override hash<
@@ -24527,7 +24630,9 @@ export class Prompt extends InformationContentEntity {
 }
 
 export namespace Prompt {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       identifier: rdfjs.NamedNode;
@@ -25399,18 +25504,20 @@ export class LanguageModelInvocationOutput extends ProcessOutput {
   }
 
   override equals(other: LanguageModelInvocationOutput): EqualsResult {
-    return super.equals(other).chain(() =>
-      ((left, right) => left.equals(right))(
-        this.completionMessage,
-        other.completionMessage,
-      ).mapLeft((propertyValuesUnequal) => ({
-        left: this,
-        right: other,
-        propertyName: "completionMessage",
-        propertyValuesUnequal,
-        type: "Property" as const,
-      })),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        ((left, right) => left.equals(right))(
+          this.completionMessage,
+          other.completionMessage,
+        ).mapLeft((propertyValuesUnequal) => ({
+          left: this,
+          right: other,
+          propertyName: "completionMessage",
+          propertyValuesUnequal,
+          type: "Property" as const,
+        })),
+      );
   }
 
   override hash<
@@ -25477,7 +25584,9 @@ export class LanguageModelInvocationOutput extends ProcessOutput {
 }
 
 export namespace LanguageModelInvocationOutput {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       completionMessage: CompletionMessage;
@@ -25931,7 +26040,9 @@ export class LanguageModelInvocationInput extends ProcessInput {
 }
 
 export namespace LanguageModelInvocationInput {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       identifier: rdfjs.NamedNode;
@@ -26485,7 +26596,9 @@ export class LanguageModelInvocation extends Process {
 }
 
 export namespace LanguageModelInvocation {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       identifier: rdfjs.NamedNode;
@@ -27066,7 +27179,9 @@ export class LanguageModelFamily extends InformationContentEntity {
 }
 
 export namespace LanguageModelFamily {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       creator: LanguageModelCreator;
@@ -28026,7 +28141,9 @@ export class PromptMessageTemplate extends InformationContentEntity {
 }
 
 export namespace PromptMessageTemplate {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       identifier: rdfjs.NamedNode;
@@ -28683,7 +28800,9 @@ export class Instruction extends InformationContentEntity {
 }
 
 export namespace Instruction {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       identifier: rdfjs.NamedNode;
@@ -29097,17 +29216,19 @@ export class Exception extends InformationContentEntity {
   }
 
   override equals(other: Exception): EqualsResult {
-    return super.equals(other).chain(() =>
-      strictEquals(this.message, other.message).mapLeft(
-        (propertyValuesUnequal) => ({
-          left: this,
-          right: other,
-          propertyName: "message",
-          propertyValuesUnequal,
-          type: "Property" as const,
-        }),
-      ),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        strictEquals(this.message, other.message).mapLeft(
+          (propertyValuesUnequal) => ({
+            left: this,
+            right: other,
+            propertyName: "message",
+            propertyValuesUnequal,
+            type: "Property" as const,
+          }),
+        ),
+      );
   }
 
   override hash<
@@ -29610,7 +29731,9 @@ export class DocumentStub {
 }
 
 export namespace DocumentStub {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       deleted: boolean;
@@ -29995,18 +30118,20 @@ export class DocumentDeletionInput extends ProcessInput {
   }
 
   override equals(other: DocumentDeletionInput): EqualsResult {
-    return super.equals(other).chain(() =>
-      ((left, right) => left.equals(right))(
-        this.document,
-        other.document,
-      ).mapLeft((propertyValuesUnequal) => ({
-        left: this,
-        right: other,
-        propertyName: "document",
-        propertyValuesUnequal,
-        type: "Property" as const,
-      })),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        ((left, right) => left.equals(right))(
+          this.document,
+          other.document,
+        ).mapLeft((propertyValuesUnequal) => ({
+          left: this,
+          right: other,
+          propertyName: "document",
+          propertyValuesUnequal,
+          type: "Property" as const,
+        })),
+      );
   }
 
   override hash<
@@ -30411,17 +30536,19 @@ export class DocumentDeletion extends Process {
   }
 
   override equals(other: DocumentDeletion): EqualsResult {
-    return super.equals(other).chain(() =>
-      ((left, right) => left.equals(right))(this.input, other.input).mapLeft(
-        (propertyValuesUnequal) => ({
-          left: this,
-          right: other,
-          propertyName: "input",
-          propertyValuesUnequal,
-          type: "Property" as const,
-        }),
-      ),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        ((left, right) => left.equals(right))(this.input, other.input).mapLeft(
+          (propertyValuesUnequal) => ({
+            left: this,
+            right: other,
+            propertyName: "input",
+            propertyValuesUnequal,
+            type: "Property" as const,
+          }),
+        ),
+      );
   }
 
   override hash<
@@ -30818,19 +30945,21 @@ export class UnevaluatedClaims extends InformationContentEntity {
   }
 
   override equals(other: UnevaluatedClaims): EqualsResult {
-    return super.equals(other).chain(() =>
-      ((left, right) =>
-        arrayEquals(left, right, (left, right) => left.equals(right)))(
-        this.claims,
-        other.claims,
-      ).mapLeft((propertyValuesUnequal) => ({
-        left: this,
-        right: other,
-        propertyName: "claims",
-        propertyValuesUnequal,
-        type: "Property" as const,
-      })),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        ((left, right) =>
+          arrayEquals(left, right, (left, right) => left.equals(right)))(
+          this.claims,
+          other.claims,
+        ).mapLeft((propertyValuesUnequal) => ({
+          left: this,
+          right: other,
+          propertyName: "claims",
+          propertyValuesUnequal,
+          type: "Property" as const,
+        })),
+      );
   }
 
   override hash<
@@ -31064,7 +31193,9 @@ export class EvaluatedClaims extends InformationContentEntity {
 }
 
 export namespace EvaluatedClaims {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       falseNegativeClaims: readonly Claim[];
@@ -31314,7 +31445,9 @@ export class TextualEntity extends InformationContentEntity {
 }
 
 export namespace TextualEntity {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       encodingType: rdfjs.NamedNode<
@@ -32152,7 +32285,9 @@ export class Image extends InformationContentEntity {
 }
 
 export namespace Image {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       heightPx: number;
@@ -32832,7 +32967,9 @@ export class Document extends InformationContentEntity {
 }
 
 export namespace Document {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       deleted: boolean;
@@ -33775,7 +33912,9 @@ export class DichotomousQuestion extends BaseQuestion {
 }
 
 export namespace DichotomousQuestion {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       identifier: rdfjs.NamedNode;
@@ -34329,7 +34468,9 @@ export class CorpusStub {
 }
 
 export namespace CorpusStub {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       deleted: boolean;
@@ -34692,17 +34833,20 @@ export class CorpusDeletionInput extends ProcessInput {
   }
 
   override equals(other: CorpusDeletionInput): EqualsResult {
-    return super.equals(other).chain(() =>
-      ((left, right) => left.equals(right))(this.corpus, other.corpus).mapLeft(
-        (propertyValuesUnequal) => ({
+    return super
+      .equals(other)
+      .chain(() =>
+        ((left, right) => left.equals(right))(
+          this.corpus,
+          other.corpus,
+        ).mapLeft((propertyValuesUnequal) => ({
           left: this,
           right: other,
           propertyName: "corpus",
           propertyValuesUnequal,
           type: "Property" as const,
-        }),
-      ),
-    );
+        })),
+      );
   }
 
   override hash<
@@ -35098,17 +35242,19 @@ export class CorpusDeletion extends Process {
   }
 
   override equals(other: CorpusDeletion): EqualsResult {
-    return super.equals(other).chain(() =>
-      ((left, right) => left.equals(right))(this.input, other.input).mapLeft(
-        (propertyValuesUnequal) => ({
-          left: this,
-          right: other,
-          propertyName: "input",
-          propertyValuesUnequal,
-          type: "Property" as const,
-        }),
-      ),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        ((left, right) => left.equals(right))(this.input, other.input).mapLeft(
+          (propertyValuesUnequal) => ({
+            left: this,
+            right: other,
+            propertyName: "input",
+            propertyValuesUnequal,
+            type: "Property" as const,
+          }),
+        ),
+      );
   }
 
   override hash<
@@ -35647,7 +35793,9 @@ export class Corpus extends InformationContentEntity {
 }
 
 export namespace Corpus {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       deleted: boolean;
@@ -36285,17 +36433,19 @@ abstract class BaseFocusConceptSelector extends BaseConceptSelector {
   }
 
   override equals(other: BaseFocusConceptSelector): EqualsResult {
-    return super.equals(other).chain(() =>
-      ConceptStub.equals(this.focusConcept, other.focusConcept).mapLeft(
-        (propertyValuesUnequal) => ({
-          left: this,
-          right: other,
-          propertyName: "focusConcept",
-          propertyValuesUnequal,
-          type: "Property" as const,
-        }),
-      ),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        ConceptStub.equals(this.focusConcept, other.focusConcept).mapLeft(
+          (propertyValuesUnequal) => ({
+            left: this,
+            right: other,
+            propertyName: "focusConcept",
+            propertyValuesUnequal,
+            type: "Property" as const,
+          }),
+        ),
+      );
   }
 
   override hash<
@@ -37241,18 +37391,20 @@ export class EnumeratedConceptSelector extends BaseConceptSelector {
   }
 
   override equals(other: EnumeratedConceptSelector): EqualsResult {
-    return super.equals(other).chain(() =>
-      ((left, right) => arrayEquals(left, right, ConceptStub.equals))(
-        this.concepts,
-        other.concepts,
-      ).mapLeft((propertyValuesUnequal) => ({
-        left: this,
-        right: other,
-        propertyName: "concepts",
-        propertyValuesUnequal,
-        type: "Property" as const,
-      })),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        ((left, right) => arrayEquals(left, right, ConceptStub.equals))(
+          this.concepts,
+          other.concepts,
+        ).mapLeft((propertyValuesUnequal) => ({
+          left: this,
+          right: other,
+          propertyName: "concepts",
+          propertyValuesUnequal,
+          type: "Property" as const,
+        })),
+      );
   }
 
   override hash<
@@ -37853,17 +38005,20 @@ abstract class BaseConceptSchemeConceptSelector extends BaseConceptSelector {
   }
 
   override equals(other: BaseConceptSchemeConceptSelector): EqualsResult {
-    return super.equals(other).chain(() =>
-      ConceptSchemeStub.equals(this.conceptScheme, other.conceptScheme).mapLeft(
-        (propertyValuesUnequal) => ({
+    return super
+      .equals(other)
+      .chain(() =>
+        ConceptSchemeStub.equals(
+          this.conceptScheme,
+          other.conceptScheme,
+        ).mapLeft((propertyValuesUnequal) => ({
           left: this,
           right: other,
           propertyName: "conceptScheme",
           propertyValuesUnequal,
           type: "Property" as const,
-        }),
-      ),
-    );
+        })),
+      );
   }
 
   override hash<
@@ -38965,7 +39120,9 @@ export class PromptMessage extends InformationContentEntity {
 }
 
 export namespace PromptMessage {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       identifier: rdfjs.NamedNode;
@@ -39859,7 +40016,9 @@ export class ClaimProperty {
 }
 
 export namespace ClaimProperty {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       comments: readonly rdfjs.Literal[];
@@ -40452,7 +40611,9 @@ export class Claim extends InformationContentEntity {
 }
 
 export namespace Claim {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       gold: boolean;
@@ -40926,17 +41087,19 @@ export class CategoricalValue extends BaseValue {
   }
 
   override equals(other: CategoricalValue): EqualsResult {
-    return super.equals(other).chain(() =>
-      ConceptStub.equals(this.value, other.value).mapLeft(
-        (propertyValuesUnequal) => ({
-          left: this,
-          right: other,
-          propertyName: "value",
-          propertyValuesUnequal,
-          type: "Property" as const,
-        }),
-      ),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        ConceptStub.equals(this.value, other.value).mapLeft(
+          (propertyValuesUnequal) => ({
+            left: this,
+            right: other,
+            propertyName: "value",
+            propertyValuesUnequal,
+            type: "Property" as const,
+          }),
+        ),
+      );
   }
 
   override hash<
@@ -41454,7 +41617,9 @@ export class CategoricalQuestion extends BaseQuestion {
 }
 
 export namespace CategoricalQuestion {
-  export function propertiesFromJson(_json: unknown): purify.Either<
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
     zod.ZodError,
     {
       class_: rdfjs.NamedNode;
@@ -41853,17 +42018,19 @@ export class BooleanValue extends BaseValue {
   }
 
   override equals(other: BooleanValue): EqualsResult {
-    return super.equals(other).chain(() =>
-      strictEquals(this.value, other.value).mapLeft(
-        (propertyValuesUnequal) => ({
-          left: this,
-          right: other,
-          propertyName: "value",
-          propertyValuesUnequal,
-          type: "Property" as const,
-        }),
-      ),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        strictEquals(this.value, other.value).mapLeft(
+          (propertyValuesUnequal) => ({
+            left: this,
+            right: other,
+            propertyName: "value",
+            propertyValuesUnequal,
+            type: "Property" as const,
+          }),
+        ),
+      );
   }
 
   override hash<
@@ -42855,19 +43022,21 @@ export class Answer extends InformationContentEntity {
   }
 
   override equals(other: Answer): EqualsResult {
-    return super.equals(other).chain(() =>
-      ((left, right) =>
-        arrayEquals(left, right, (left, right) => left.equals(right)))(
-        this.claims,
-        other.claims,
-      ).mapLeft((propertyValuesUnequal) => ({
-        left: this,
-        right: other,
-        propertyName: "claims",
-        propertyValuesUnequal,
-        type: "Property" as const,
-      })),
-    );
+    return super
+      .equals(other)
+      .chain(() =>
+        ((left, right) =>
+          arrayEquals(left, right, (left, right) => left.equals(right)))(
+          this.claims,
+          other.claims,
+        ).mapLeft((propertyValuesUnequal) => ({
+          left: this,
+          right: other,
+          propertyName: "claims",
+          propertyValuesUnequal,
+          type: "Property" as const,
+        })),
+      );
   }
 
   override hash<

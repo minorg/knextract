@@ -1,14 +1,12 @@
 import { LanguageModel } from "@/lib/language-models";
 import {
   CompletionMessage,
+  LanguageModelCreator,
+  LanguageModelFamily,
   LanguageModelSpecification,
   Prompt,
   PromptMessage,
 } from "@/lib/models";
-import {
-  LanguageModelCreator,
-  LanguageModelFamily,
-} from "@/lib/models/models.shaclmate-generated";
 import { dataFactory } from "@/lib/rdfEnvironment";
 import { Either, Left } from "purify-ts";
 import invariant from "ts-invariant";

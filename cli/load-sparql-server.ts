@@ -1,6 +1,6 @@
 import { Project } from "@/lib/Project";
 import { SparqlModelSet } from "@/lib/models/SparqlModelSet";
-import ontologyDataset from "@/lib/models/models.shaclmate.ttl";
+import ontologyDataset from "@/lib/models/models.shaclmate.dataset";
 import { logShaclValidationReport } from "@/lib/utilities/logShaclValidationReport";
 import { command, flag, run } from "cmd-ts";
 import SHACLValidator from "rdf-validate-shacl";

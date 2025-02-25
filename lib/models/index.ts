@@ -70,6 +70,8 @@ export {
   Exception,
   Image,
   Instruction,
+  LanguageModelCreator,
+  LanguageModelFamily,
   LanguageModelInvocation,
   LanguageModelInvocationInput,
   LanguageModelInvocationOutput,
@@ -136,7 +138,7 @@ export {
   WorkflowStepExecution,
   WorkflowStepExecutionInput,
   WorkflowStub,
-} from "./models.shaclmate-generated";
+} from "./models.shaclmate.generated";
 
 // Re-export handwritten code
 export * from "./ClaimQuery";

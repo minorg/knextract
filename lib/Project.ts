@@ -9,7 +9,7 @@ import { logger } from "@/lib/logger";
 import { ClientConfiguration, Locale, ModelSet } from "@/lib/models";
 import { FsModelSet } from "@/lib/models/FsModelSet";
 import { SparqlModelSet } from "@/lib/models/SparqlModelSet";
-import ontologyDataset from "@/lib/models/models.shaclmate.ttl";
+import ontologyDataset from "@/lib/models/models.shaclmate.dataset";
 import { dataFactory, datasetCoreFactory } from "@/lib/rdfEnvironment";
 import { logShaclValidationReport } from "@/lib/utilities/logShaclValidationReport";
 import { RdfDirectory, intValidator } from "@kos-kit/next-utils/server";
