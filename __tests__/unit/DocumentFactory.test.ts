@@ -95,9 +95,10 @@ describe("DocumentFactory", async () => {
     const array = new TextEncoder().encode(text);
     const document = (
       await sut.createDocumentFromFileUpload({
+        // @ts-ignore
         fileUpload: {
           arrayBuffer: async () => array.buffer as ArrayBuffer,
-          bytes: async () => array,
+          // bytes: async () => array,
           lastModified: Date.now(),
           name: "test.txt",
           size: array.length,

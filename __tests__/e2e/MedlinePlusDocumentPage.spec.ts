@@ -20,31 +20,27 @@ test.describe("MedlinePlusDocumentPage", () => {
     await expect(page).toHaveURL(testHrefs.corpus(testData.medlinePlus.corpus));
   });
 
-  testData.medlinePlus.document.annotations.forEach((annotation) => {
-    test(`should link to the ${annotation.concept.displayLabel} concept annotation concept`, async ({
+  testData.medlinePlus.document.claims.forEach((claim) => {
+    test(`should link to the ${claim.concept.displayLabel} concept claim concept`, async ({
       page,
     }) => {
       if (
-        !annotation.concept.identifier.value.startsWith(
-          "https://medlineplus.gov/",
-        )
+        !claim.concept.identifier.value.startsWith("https://medlineplus.gov/")
       ) {
         // No MeSH in the test project
         return;
       }
-      await page.getByText(annotation.concept.displayLabel).click();
-      await expect(page).toHaveURL(testHrefs.concept(annotation.concept));
+      await page.getByText(claim.concept.displayLabel).click();
+      await expect(page).toHaveURL(testHrefs.concept(claim.concept));
     });
   });
 
-  testData.medlinePlus.document.annotations.forEach((annotation) => {
-    test(`should link to the ${annotation.concept.displayLabel} concept annotation`, async ({
+  testData.medlinePlus.document.claims.forEach((claim) => {
+    test(`should link to the ${claim.concept.displayLabel} claim`, async ({
       page,
     }) => {
-      await page
-        .getByTestId(`annotation-link-${annotation.identifier.value}`)
-        .click();
-      await expect(page).toHaveURL(testHrefs.annotation(annotation));
+      await page.getByTestId(`claim-link-${claim.identifier.value}`).click();
+      await expect(page).toHaveURL(testHrefs.claim(claim));
     });
   });
 

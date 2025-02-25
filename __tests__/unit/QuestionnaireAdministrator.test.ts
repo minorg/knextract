@@ -1,12 +1,8 @@
 import { testData } from "@/__tests__/unit/data";
 import { MockLanguageModel } from "@/__tests__/unit/language-models/MockLanguageModel";
+import { questionnaireAdministrationAnswers } from "@/__tests__/unit/questionnaireAdministrationAnswers";
 import { QuestionnaireAdministrator } from "@/lib/QuestionnaireAdministrator";
-import {
-  Exception,
-  Question,
-  Questionnaire,
-  QuestionnaireAdministrationOutput,
-} from "@/lib/models";
+import { Exception, Question, Questionnaire } from "@/lib/models";
 import { describe, it } from "vitest";
 
 describe("QuestionnaireAdministrator", () => {
@@ -91,12 +87,12 @@ describe("QuestionnaireAdministrator", () => {
     expect(process.output.type).toStrictEqual(
       "QuestionnaireAdministrationOutput",
     );
-    const answers = (process.output as QuestionnaireAdministrationOutput)
-      .answers;
+    const answers = questionnaireAdministrationAnswers(process);
     expect(answers).toHaveLength(2);
-    expect(answers[0].object.type).toStrictEqual("BooleanValue");
-    expect(answers[0].object.value).toStrictEqual(true);
-    expect(answers[1].object.type).toStrictEqual("RealValue");
-    expect(answers[1].object.value).toStrictEqual(1);
+    const claims = answers.flatMap((answer) => answer.claims);
+    expect(claims[0].object.type).toStrictEqual("BooleanValue");
+    expect(claims[0].object.value).toStrictEqual(true);
+    expect(claims[1].object.type).toStrictEqual("RealValue");
+    expect(claims[1].object.value).toStrictEqual(1);
   });
 });

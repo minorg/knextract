@@ -15,13 +15,11 @@
   },
   "ClaimPage": {
     "Claim": "Claim",
-    "Concept path": "Concept path",
-    "Document": "Document",
     "Gold": "Gold",
     "Inferred": "Inferred",
-    "Missing concept": "Missing concept",
-    "Missing document": "Missing document",
     "Output of": "Output of",
+    "Predicate": "Predicate",
+    "Subject": "Subject",
     "Type": "Type",
     "Workflow execution": "Workflow execution"
   },

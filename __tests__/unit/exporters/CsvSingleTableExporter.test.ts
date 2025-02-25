@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { arrayToAsyncIterable } from "@/__tests__/unit/exporters/arrayToAsyncIterable";
 import { exporterTestData } from "@/__tests__/unit/exporters/exporterTestData";
 import { Adapters } from "@/lib/exporters/Adapters";
 import { CsvSingleTableExporter } from "@/lib/exporters/CsvSingleTableExporter";
@@ -11,24 +12,18 @@ describe.skipIf(process.env["CI"])("CsvSingleTableExporter", () => {
     "should export plants annotations",
     async ({ expect }) => {
       const {
-        plants: { corpus, conceptSchemes },
+        plants: { documents, modelSet },
       } = await exporterTestData();
       await tmp.withDir(
         async ({ path: tempDirPath }) => {
           const tempFilePath = path.resolve(tempDirPath, "test.csv");
-          await new Adapters.CorpusAnnotationsExporterToSingleTableExporter(
+          await new Adapters.CorpusClaimsExporterToSingleTableExporter(
             new CsvSingleTableExporter({
               csvFilePath: tempFilePath,
             }),
           ).export({
-            conceptSchemes,
-            documents: (
-              await corpus.documents({
-                includeDeleted: false,
-                limit: 10,
-                offset: 0,
-              })
-            ).flatResolveEach(),
+            documents: arrayToAsyncIterable(documents.slice(0, 10)),
+            modelSet,
           });
           const csvLines = (await fs.promises.readFile(tempFilePath))
             .toString()

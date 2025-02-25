@@ -1,13 +1,13 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { Project } from "@/lib/Project";
-import { ConceptScheme, Corpus } from "@/lib/models";
+import { DocumentStub, ModelSet } from "@/lib/models";
 import invariant from "ts-invariant";
 
 interface ExporterTestData {
   readonly plants: {
-    readonly conceptSchemes: readonly ConceptScheme[];
-    readonly corpus: Corpus;
+    readonly documents: readonly DocumentStub[];
+    readonly modelSet: ModelSet;
   };
 }
 
@@ -26,24 +26,19 @@ export async function exporterTestData(): Promise<ExporterTestData> {
         "plants",
       ),
     }).modelSet({ locale: "en" });
-    const plantsConceptSchemes = await (
-      await plantsModelSet.conceptSchemes({
+    const plantsDocuments = (
+      await plantsModelSet.documentStubs({
         limit: null,
         offset: 0,
-      })
-    ).flatResolve();
-    invariant(plantsConceptSchemes.length === 71);
-    const plantsCorpora = await (
-      await plantsModelSet.corpora({
         query: { includeDeleted: false, type: "All" },
       })
-    ).flatResolve();
-    invariant(plantsCorpora.length === 1);
+    ).unsafeCoerce();
+    invariant(plantsDocuments.length === 73);
 
     lazyExporterTestData = {
       plants: {
-        conceptSchemes: plantsConceptSchemes,
-        corpus: plantsCorpora[0],
+        documents: plantsDocuments,
+        modelSet: plantsModelSet,
       },
     };
   }

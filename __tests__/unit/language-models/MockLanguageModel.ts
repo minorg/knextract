@@ -1,5 +1,14 @@
 import { LanguageModel } from "@/lib/language-models";
-import { CompletionMessage, Prompt, PromptMessage } from "@/lib/models";
+import {
+  CompletionMessage,
+  LanguageModelSpecification,
+  Prompt,
+  PromptMessage,
+} from "@/lib/models";
+import {
+  LanguageModelCreator,
+  LanguageModelFamily,
+} from "@/lib/models/models.shaclmate-generated";
 import { dataFactory } from "@/lib/rdfEnvironment";
 import { Either, Left } from "purify-ts";
 import invariant from "ts-invariant";
@@ -9,9 +18,9 @@ export class MockLanguageModel implements LanguageModel {
   static readonly IDENTIFIER = dataFactory.namedNode(
     "http://example.com/mockLanguageModel",
   );
-  static readonly LOCAL_IDENTIFIER = "mock";
+  static readonly API_IDENTIFIER = "mock";
   readonly invocations: Prompt[] = [];
-  readonly specification: LanguageModel["specification"];
+  readonly specification: LanguageModelSpecification;
   private readonly invocationResults: Either<Error, CompletionMessage>[];
 
   constructor({
@@ -34,11 +43,19 @@ export class MockLanguageModel implements LanguageModel {
         }
         return Left(invocationResult);
       });
-    this.specification = {
+    this.specification = new LanguageModelSpecification({
+      apiIdentifier: MockLanguageModel.API_IDENTIFIER,
       contextWindow: contextWindow ?? Number.MAX_SAFE_INTEGER,
+      family: new LanguageModelFamily({
+        creator: new LanguageModelCreator({
+          identifier: "http://openai.com/",
+          label: "Mock language model creator",
+        }),
+        label: "Mock language model family",
+      }),
       identifier: MockLanguageModel.IDENTIFIER,
-      localIdentifier: MockLanguageModel.LOCAL_IDENTIFIER,
-    };
+      label: "Mock language model",
+    });
   }
 
   countTokens(message: PromptMessage | string): number {

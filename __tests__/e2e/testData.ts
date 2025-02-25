@@ -25,7 +25,7 @@ export const testData = {
       ),
     },
     document: {
-      annotations: [
+      claims: [
         {
           concept: {
             displayLabel: "Diabetes Mellitus",

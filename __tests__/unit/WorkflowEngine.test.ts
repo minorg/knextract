@@ -1,4 +1,5 @@
 import { testData } from "@/__tests__/unit/data";
+import { questionnaireAdministrationAnswers } from "@/__tests__/unit/questionnaireAdministrationAnswers";
 import { WorkflowEngine } from "@/lib/WorkflowEngine";
 import { LanguageModelFactory } from "@/lib/language-models";
 import {
@@ -81,15 +82,9 @@ describe("WorkflowEngine", () => {
         stepExecution.type === "WorkflowQuestionnaireStepExecution" &&
         stepExecution.output.type !== "Exception"
           ? stepExecution.subProcesses.questionnaireAdministration
-              .map((questionnaireAdministration) =>
-                questionnaireAdministration.subProcesses.questionAdministrations.flatMap(
-                  (questionAdministration) =>
-                    questionAdministration.output.type !== "Exception"
-                      ? questionAdministration.output.answer.claims
-                      : [],
-                ),
-              )
+              .map(questionnaireAdministrationAnswers)
               .orDefault([])
+              .flatMap((answer) => answer.claims)
           : [],
     );
   }

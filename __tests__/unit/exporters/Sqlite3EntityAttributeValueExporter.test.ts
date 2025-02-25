@@ -1,4 +1,5 @@
 import path from "node:path";
+import { arrayToAsyncIterable } from "@/__tests__/unit/exporters/arrayToAsyncIterable";
 import { exporterTestData } from "@/__tests__/unit/exporters/exporterTestData";
 import { Adapters } from "@/lib/exporters/Adapters";
 import { Sqlite3EntityAttributeValueExporter } from "@/lib/exporters/Sqlite3EntityAttributeValueExporter";
@@ -15,23 +16,18 @@ describe.skipIf(process.env["CI"])(
       "should export plants annotations",
       async ({ expect }) => {
         const {
-          plants: { corpus, conceptSchemes },
+          plants: { documents, modelSet },
         } = await exporterTestData();
         await tmp.withDir(
           async ({ path: tempDirPath }) => {
             const tempFilePath = path.resolve(tempDirPath, "test.db");
-            const documents = await corpus.documents({
-              includeDeleted: false,
-              limit: 10,
-              offset: 0,
-            });
-            await new Adapters.CorpusAnnotationsExporterToEntityAttributeValueExporter(
+            await new Adapters.CorpusClaimsExporterToEntityAttributeValueExporter(
               new Sqlite3EntityAttributeValueExporter({
                 sqlite3FilePath: tempFilePath,
               }),
             ).export({
-              conceptSchemes,
-              documents: documents.flatResolveEach(),
+              documents: arrayToAsyncIterable(documents),
+              modelSet,
             });
             const db = await AsyncDatabase.open(
               tempFilePath,
@@ -46,7 +42,7 @@ describe.skipIf(process.env["CI"])(
                 (row) => row["iri"],
               );
               expect(actualDocumentIris.sort()).toStrictEqual(
-                (await documents.flatResolve()).map((document) =>
+                documents.map((document) =>
                   Identifier.toString(document.identifier),
                 ),
               );

@@ -1,5 +1,5 @@
 import { testData } from "@/__tests__/unit/data";
-import { rdf } from "@/lib/models/impl";
+import { RdfjsDatasetModelSet } from "@/lib/models/RdfjsDatasetModelSet";
 import { describe, it } from "vitest";
 import { behavesLikeModelSet } from "./behavesLikeModelSet";
 
@@ -8,7 +8,7 @@ describe("RdfjsDatasetModelSet", async () => {
 
   await behavesLikeModelSet({
     immutableModelSet: immutableModelSet,
-    withEmptyMutableModelSet: (use) => use(new rdf.mem.ModelSet()),
+    withEmptyMutableModelSet: (use) => use(new RdfjsDatasetModelSet()),
   });
 
   it("clone", ({ expect }) => {
