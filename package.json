@@ -59,7 +59,7 @@
     "next": "^14.2.5",
     "next-intl": "^3.19.4",
     "nuqs": "^1.17.6",
-    "oxigraph": "0.4.0",
+    "oxigraph": "0.4.8",
     "pino": "^9.2.0",
     "promised-sqlite3": "^2.1.0",
     "purify-ts": "~2.1.0",
