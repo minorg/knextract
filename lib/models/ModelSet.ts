@@ -11,6 +11,8 @@ import {
   DocumentQuery,
   DocumentStub,
   Identifier,
+  LanguageModelCreator,
+  LanguageModelFamily,
   LanguageModelSpecification,
   LanguageModelSpecificationStub,
   Workflow,
@@ -118,6 +120,9 @@ export namespace ModelSet {
     | CorpusDeletion
     | Document
     | DocumentDeletion
+    | LanguageModelCreator
+    | LanguageModelFamily
+    | LanguageModelSpecification
     | Workflow
     | WorkflowDeletion
     | WorkflowExecution
