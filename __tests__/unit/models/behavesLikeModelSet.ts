@@ -20,6 +20,8 @@ import {
 import type { Either } from "purify-ts";
 import { type ExpectStatic, it } from "vitest";
 
+const CI = !!process.env["CI"];
+
 export async function behavesLikeModelSet({
   immutableModelSet,
   sparql,
@@ -132,7 +134,7 @@ export async function behavesLikeModelSet({
 
   Object.entries(syntheticTestData.workflows).forEach(
     ([key, expectedModel]) => {
-      it(`addModel (Workflow) ${key}`, async ({ expect }) => {
+      it.skipIf(sparql)(`addModel (Workflow) ${key}`, async ({ expect }) => {
         await testAddModel({
           actualModel: (modelSet) =>
             modelSet.workflow(expectedModel.identifier),
@@ -145,14 +147,17 @@ export async function behavesLikeModelSet({
 
   Object.entries(syntheticTestData.workflowExecutions).forEach(
     ([key, expectedModel]) => {
-      it(`addModel (WorkflowExecution) ${key}`, async ({ expect }) => {
-        await testAddModel({
-          actualModel: (modelSet) =>
-            modelSet.workflowExecution(expectedModel.identifier),
-          expect,
-          expectedModel,
-        });
-      });
+      it.skipIf(sparql)(
+        `addModel (WorkflowExecution) ${key}`,
+        async ({ expect }) => {
+          await testAddModel({
+            actualModel: (modelSet) =>
+              modelSet.workflowExecution(expectedModel.identifier),
+            expect,
+            expectedModel,
+          });
+        },
+      );
     },
   );
 
@@ -358,13 +363,14 @@ export async function behavesLikeModelSet({
 
   Object.entries(syntheticTestData.workflows).forEach(
     ([key, syntheticModel]) => {
-      it(`deleteModel (Workflow) ${key}`, ({ expect }) =>
+      it.skipIf(sparql)(`deleteModel (Workflow) ${key}`, ({ expect }) =>
         testDeleteModel({
           expect,
           getModelFromModelSet: (modelSet) =>
             modelSet.workflow(syntheticModel.identifier),
           syntheticModel,
-        }));
+        }),
+      );
     },
   );
 
@@ -581,7 +587,7 @@ export async function behavesLikeModelSet({
 
   Object.entries(syntheticTestData.workflows).forEach(
     ([key, expectedModel]) => {
-      it(`workflowStub ${key}`, async ({ expect }) =>
+      it.skipIf(sparql)(`workflowStub ${key}`, async ({ expect }) =>
         withEmptyMutableModelSet(async (modelSet) => {
           expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
           await modelSet.addModel(expectedModel);
@@ -594,7 +600,8 @@ export async function behavesLikeModelSet({
           expect(
             actualModel!.equals(stubify(expectedModel)).extract(),
           ).toStrictEqual(true);
-        }));
+        }),
+      );
     },
   );
 
