@@ -6042,7 +6042,6 @@ export namespace WorkflowExecutionSubProcesses {
             .chain((_resource) =>
               WorkflowStepExecution.fromRdf({
                 ..._context,
-                ignoreRdfType: true,
                 languageIn: _languageIn,
                 resource: _resource,
               }),
@@ -6193,7 +6192,6 @@ export namespace WorkflowExecutionSubProcesses {
         ),
       },
       ...WorkflowStepExecution.sparqlConstructTemplateTriples({
-        ignoreRdfType: true,
         subject: dataFactory.variable!(
           `${`${variablePrefix}StepExecutions`}Item0`,
         ),
@@ -6220,7 +6218,6 @@ export namespace WorkflowExecutionSubProcesses {
         ),
       },
       ...WorkflowStepExecution.sparqlConstructTemplateTriples({
-        ignoreRdfType: true,
         subject: dataFactory.variable!(
           `${`${variablePrefix}StepExecutions`}ItemN`,
         ),
@@ -6316,7 +6313,6 @@ export namespace WorkflowExecutionSubProcesses {
         ],
       },
       ...WorkflowStepExecution.sparqlWherePatterns({
-        ignoreRdfType: true,
         subject: dataFactory.variable!(
           `${`${variablePrefix}StepExecutions`}Item0`,
         ),
@@ -6378,7 +6374,6 @@ export namespace WorkflowExecutionSubProcesses {
             ],
           },
           ...WorkflowStepExecution.sparqlWherePatterns({
-            ignoreRdfType: true,
             subject: dataFactory.variable!(
               `${`${variablePrefix}StepExecutions`}ItemN`,
             ),
@@ -8417,7 +8412,6 @@ export namespace Workflow {
             .chain((_resource) =>
               WorkflowStep.fromRdf({
                 ..._context,
-                ignoreRdfType: true,
                 languageIn: _languageIn,
                 resource: _resource,
               }),
@@ -8577,7 +8571,6 @@ export namespace Workflow {
         object: dataFactory.variable!(`${`${variablePrefix}Steps`}Item0`),
       },
       ...WorkflowStep.sparqlConstructTemplateTriples({
-        ignoreRdfType: true,
         subject: dataFactory.variable!(`${`${variablePrefix}Steps`}Item0`),
         variablePrefix: `${`${variablePrefix}Steps`}Item0`,
       }),
@@ -8596,7 +8589,6 @@ export namespace Workflow {
         object: dataFactory.variable!(`${`${variablePrefix}Steps`}ItemN`),
       },
       ...WorkflowStep.sparqlConstructTemplateTriples({
-        ignoreRdfType: true,
         subject: dataFactory.variable!(`${`${variablePrefix}Steps`}ItemN`),
         variablePrefix: `${`${variablePrefix}Steps`}ItemN`,
       }),
@@ -8709,7 +8701,6 @@ export namespace Workflow {
         ],
       },
       ...WorkflowStep.sparqlWherePatterns({
-        ignoreRdfType: true,
         subject: dataFactory.variable!(`${`${variablePrefix}Steps`}Item0`),
         variablePrefix: `${`${variablePrefix}Steps`}Item0`,
       }),
@@ -8765,7 +8756,6 @@ export namespace Workflow {
             ],
           },
           ...WorkflowStep.sparqlWherePatterns({
-            ignoreRdfType: true,
             subject: dataFactory.variable!(`${`${variablePrefix}Steps`}ItemN`),
             variablePrefix: `${`${variablePrefix}Steps`}ItemN`,
           }),
@@ -9075,7 +9065,6 @@ export namespace ValueExtractionOutput {
             .chain((_resource) =>
               Value.fromRdf({
                 ..._context,
-                ignoreRdfType: true,
                 languageIn: _languageIn,
                 resource: _resource,
               }),
@@ -9215,7 +9204,6 @@ export namespace ValueExtractionOutput {
         object: dataFactory.variable!(`${`${variablePrefix}Values`}Item0`),
       },
       ...Value.sparqlConstructTemplateTriples({
-        ignoreRdfType: true,
         subject: dataFactory.variable!(`${`${variablePrefix}Values`}Item0`),
         variablePrefix: `${`${variablePrefix}Values`}Item0`,
       }),
@@ -9234,7 +9222,6 @@ export namespace ValueExtractionOutput {
         object: dataFactory.variable!(`${`${variablePrefix}Values`}ItemN`),
       },
       ...Value.sparqlConstructTemplateTriples({
-        ignoreRdfType: true,
         subject: dataFactory.variable!(`${`${variablePrefix}Values`}ItemN`),
         variablePrefix: `${`${variablePrefix}Values`}ItemN`,
       }),
@@ -9321,7 +9308,6 @@ export namespace ValueExtractionOutput {
         ],
       },
       ...Value.sparqlWherePatterns({
-        ignoreRdfType: true,
         subject: dataFactory.variable!(`${`${variablePrefix}Values`}Item0`),
         variablePrefix: `${`${variablePrefix}Values`}Item0`,
       }),
@@ -9377,7 +9363,6 @@ export namespace ValueExtractionOutput {
             ],
           },
           ...Value.sparqlWherePatterns({
-            ignoreRdfType: true,
             subject: dataFactory.variable!(`${`${variablePrefix}Values`}ItemN`),
             variablePrefix: `${`${variablePrefix}Values`}ItemN`,
           }),
@@ -13583,7 +13568,6 @@ export namespace Questionnaire {
             .chain((_resource) =>
               QuestionnaireMember.fromRdf({
                 ..._context,
-                ignoreRdfType: true,
                 languageIn: _languageIn,
                 resource: _resource,
               }),
@@ -13723,7 +13707,6 @@ export namespace Questionnaire {
         object: dataFactory.variable!(`${`${variablePrefix}Members`}Item0`),
       },
       ...QuestionnaireMember.sparqlConstructTemplateTriples({
-        ignoreRdfType: true,
         subject: dataFactory.variable!(`${`${variablePrefix}Members`}Item0`),
         variablePrefix: `${`${variablePrefix}Members`}Item0`,
       }),
@@ -13742,7 +13725,6 @@ export namespace Questionnaire {
         object: dataFactory.variable!(`${`${variablePrefix}Members`}ItemN`),
       },
       ...QuestionnaireMember.sparqlConstructTemplateTriples({
-        ignoreRdfType: true,
         subject: dataFactory.variable!(`${`${variablePrefix}Members`}ItemN`),
         variablePrefix: `${`${variablePrefix}Members`}ItemN`,
       }),
@@ -13829,7 +13811,6 @@ export namespace Questionnaire {
         ],
       },
       ...QuestionnaireMember.sparqlWherePatterns({
-        ignoreRdfType: true,
         subject: dataFactory.variable!(`${`${variablePrefix}Members`}Item0`),
         variablePrefix: `${`${variablePrefix}Members`}Item0`,
       }),
@@ -13885,7 +13866,6 @@ export namespace Questionnaire {
             ],
           },
           ...QuestionnaireMember.sparqlWherePatterns({
-            ignoreRdfType: true,
             subject: dataFactory.variable!(
               `${`${variablePrefix}Members`}ItemN`,
             ),
@@ -16003,7 +15983,6 @@ export namespace QuestionAdministrationInput {
       .chain((_resource) =>
         Question.fromRdf({
           ..._context,
-          ignoreRdfType: true,
           languageIn: _languageIn,
           resource: _resource,
         }),
@@ -16179,7 +16158,6 @@ export namespace QuestionAdministrationInput {
         subject,
       },
       ...Question.sparqlConstructTemplateTriples({
-        ignoreRdfType: true,
         subject: dataFactory.variable!(`${variablePrefix}Question`),
         variablePrefix: `${variablePrefix}Question`,
       }),
@@ -16282,7 +16260,6 @@ export namespace QuestionAdministrationInput {
         type: "bgp",
       },
       ...Question.sparqlWherePatterns({
-        ignoreRdfType: true,
         subject: dataFactory.variable!(`${variablePrefix}Question`),
         variablePrefix: `${variablePrefix}Question`,
       }),
@@ -17226,7 +17203,6 @@ namespace BaseQuestion {
       .chain((_resource) =>
         PromptTemplateLike.fromRdf({
           ..._context,
-          ignoreRdfType: true,
           languageIn: _languageIn,
           resource: _resource,
         }),
@@ -17341,7 +17317,6 @@ namespace BaseQuestion {
         subject,
       },
       ...PromptTemplateLike.sparqlConstructTemplateTriples({
-        ignoreRdfType: true,
         subject: dataFactory.variable!(`${variablePrefix}PromptTemplate`),
         variablePrefix: `${variablePrefix}PromptTemplate`,
       }),
@@ -17387,7 +17362,6 @@ namespace BaseQuestion {
         type: "bgp",
       },
       ...PromptTemplateLike.sparqlWherePatterns({
-        ignoreRdfType: true,
         subject: dataFactory.variable!(`${variablePrefix}PromptTemplate`),
         variablePrefix: `${variablePrefix}PromptTemplate`,
       }),
@@ -18331,7 +18305,6 @@ export namespace PromptTemplate {
             .chain((_resource) =>
               PromptInputValue.fromRdf({
                 ..._context,
-                ignoreRdfType: true,
                 languageIn: _languageIn,
                 resource: _resource,
               }),
@@ -18509,7 +18482,6 @@ export namespace PromptTemplate {
         subject,
       },
       ...PromptInputValue.sparqlConstructTemplateTriples({
-        ignoreRdfType: true,
         subject: dataFactory.variable!(`${variablePrefix}InputValues`),
         variablePrefix: `${variablePrefix}InputValues`,
       }),
@@ -18638,7 +18610,6 @@ export namespace PromptTemplate {
             type: "bgp",
           },
           ...PromptInputValue.sparqlWherePatterns({
-            ignoreRdfType: true,
             subject: dataFactory.variable!(`${variablePrefix}InputValues`),
             variablePrefix: `${variablePrefix}InputValues`,
           }),
@@ -20488,7 +20459,6 @@ export namespace PromptConstructionInput {
       .chain((_resource) =>
         Question.fromRdf({
           ..._context,
-          ignoreRdfType: true,
           languageIn: _languageIn,
           resource: _resource,
         }),
@@ -20690,7 +20660,6 @@ export namespace PromptConstructionInput {
         subject,
       },
       ...Question.sparqlConstructTemplateTriples({
-        ignoreRdfType: true,
         subject: dataFactory.variable!(`${variablePrefix}Question`),
         variablePrefix: `${variablePrefix}Question`,
       }),
@@ -20891,7 +20860,6 @@ export namespace PromptConstructionInput {
         type: "bgp",
       },
       ...Question.sparqlWherePatterns({
-        ignoreRdfType: true,
         subject: dataFactory.variable!(`${variablePrefix}Question`),
         variablePrefix: `${variablePrefix}Question`,
       }),
@@ -28187,7 +28155,6 @@ export namespace PromptMessageTemplate {
             .chain((_resource) =>
               PromptInputValue.fromRdf({
                 ..._context,
-                ignoreRdfType: true,
                 languageIn: _languageIn,
                 resource: _resource,
               }),
@@ -28447,7 +28414,6 @@ export namespace PromptMessageTemplate {
         subject,
       },
       ...PromptInputValue.sparqlConstructTemplateTriples({
-        ignoreRdfType: true,
         subject: dataFactory.variable!(`${variablePrefix}InputValues`),
         variablePrefix: `${variablePrefix}InputValues`,
       }),
@@ -28531,7 +28497,6 @@ export namespace PromptMessageTemplate {
             type: "bgp",
           },
           ...PromptInputValue.sparqlWherePatterns({
-            ignoreRdfType: true,
             subject: dataFactory.variable!(`${variablePrefix}InputValues`),
             variablePrefix: `${variablePrefix}InputValues`,
           }),
@@ -40636,7 +40601,6 @@ export namespace Claim {
       .chain((_resource) =>
         Value.fromRdf({
           ..._context,
-          ignoreRdfType: true,
           languageIn: _languageIn,
           resource: _resource,
         }),
@@ -40813,7 +40777,6 @@ export namespace Claim {
         subject,
       },
       ...Value.sparqlConstructTemplateTriples({
-        ignoreRdfType: true,
         subject: dataFactory.variable!(`${variablePrefix}Object`),
         variablePrefix: `${variablePrefix}Object`,
       }),
@@ -40909,7 +40872,6 @@ export namespace Claim {
         type: "bgp",
       },
       ...Value.sparqlWherePatterns({
-        ignoreRdfType: true,
         subject: dataFactory.variable!(`${variablePrefix}Object`),
         variablePrefix: `${variablePrefix}Object`,
       }),
@@ -41642,7 +41604,6 @@ export namespace CategoricalQuestion {
       .chain((_resource) =>
         ConceptSelector.fromRdf({
           ..._context,
-          ignoreRdfType: true,
           languageIn: _languageIn,
           resource: _resource,
         }),
@@ -41782,7 +41743,6 @@ export namespace CategoricalQuestion {
         subject,
       },
       ...ConceptSelector.sparqlConstructTemplateTriples({
-        ignoreRdfType: true,
         subject: dataFactory.variable!(`${variablePrefix}ConceptSelector`),
         variablePrefix: `${variablePrefix}ConceptSelector`,
       }),
@@ -41865,7 +41825,6 @@ export namespace CategoricalQuestion {
         type: "bgp",
       },
       ...ConceptSelector.sparqlWherePatterns({
-        ignoreRdfType: true,
         subject: dataFactory.variable!(`${variablePrefix}ConceptSelector`),
         variablePrefix: `${variablePrefix}ConceptSelector`,
       }),
@@ -43540,41 +43499,48 @@ export namespace PromptTemplateLike {
       );
   }
 
-  export function fromRdf(parameters: {
+  export function fromRdf({
+    ignoreRdfType,
+    resource,
+    ...context
+  }: {
     [_index: string]: any;
     ignoreRdfType?: boolean;
     resource: rdfjsResource.Resource<rdfjs.NamedNode>;
   }): purify.Either<rdfjsResource.Resource.ValueError, PromptTemplateLike> {
     return (
-      CompletionMessage.fromRdf(parameters) as purify.Either<
+      CompletionMessage.fromRdf({ ...context, resource }) as purify.Either<
         rdfjsResource.Resource.ValueError,
         PromptTemplateLike
       >
     )
       .altLazy(
         () =>
-          Prompt.fromRdf(parameters) as purify.Either<
+          Prompt.fromRdf({ ...context, resource }) as purify.Either<
             rdfjsResource.Resource.ValueError,
             PromptTemplateLike
           >,
       )
       .altLazy(
         () =>
-          PromptMessage.fromRdf(parameters) as purify.Either<
+          PromptMessage.fromRdf({ ...context, resource }) as purify.Either<
             rdfjsResource.Resource.ValueError,
             PromptTemplateLike
           >,
       )
       .altLazy(
         () =>
-          PromptMessageTemplate.fromRdf(parameters) as purify.Either<
+          PromptMessageTemplate.fromRdf({
+            ...context,
+            resource,
+          }) as purify.Either<
             rdfjsResource.Resource.ValueError,
             PromptTemplateLike
           >,
       )
       .altLazy(
         () =>
-          PromptTemplate.fromRdf(parameters) as purify.Either<
+          PromptTemplate.fromRdf({ ...context, resource }) as purify.Either<
             rdfjsResource.Resource.ValueError,
             PromptTemplateLike
           >,
@@ -43656,7 +43622,6 @@ export namespace PromptTemplateLike {
   }): readonly sparqljs.Triple[] {
     return [
       ...CompletionMessage.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject:
           parameters.subject ??
           dataFactory.variable!("promptTemplateLikeCompletionMessage"),
@@ -43665,7 +43630,6 @@ export namespace PromptTemplateLike {
           : "promptTemplateLikeCompletionMessage",
       }).concat(),
       ...Prompt.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject:
           parameters.subject ??
           dataFactory.variable!("promptTemplateLikePrompt"),
@@ -43674,7 +43638,6 @@ export namespace PromptTemplateLike {
           : "promptTemplateLikePrompt",
       }).concat(),
       ...PromptMessage.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject:
           parameters.subject ??
           dataFactory.variable!("promptTemplateLikePromptMessage"),
@@ -43683,7 +43646,6 @@ export namespace PromptTemplateLike {
           : "promptTemplateLikePromptMessage",
       }).concat(),
       ...PromptMessageTemplate.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject:
           parameters.subject ??
           dataFactory.variable!("promptTemplateLikePromptMessageTemplate"),
@@ -43692,7 +43654,6 @@ export namespace PromptTemplateLike {
           : "promptTemplateLikePromptMessageTemplate",
       }).concat(),
       ...PromptTemplate.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject:
           parameters.subject ??
           dataFactory.variable!("promptTemplateLikePromptTemplate"),
@@ -43713,7 +43674,6 @@ export namespace PromptTemplateLike {
         patterns: [
           {
             patterns: CompletionMessage.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ??
                 dataFactory.variable!("promptTemplateLikeCompletionMessage"),
@@ -43725,7 +43685,6 @@ export namespace PromptTemplateLike {
           },
           {
             patterns: Prompt.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ??
                 dataFactory.variable!("promptTemplateLikePrompt"),
@@ -43737,7 +43696,6 @@ export namespace PromptTemplateLike {
           },
           {
             patterns: PromptMessage.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ??
                 dataFactory.variable!("promptTemplateLikePromptMessage"),
@@ -43749,7 +43707,6 @@ export namespace PromptTemplateLike {
           },
           {
             patterns: PromptMessageTemplate.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ??
                 dataFactory.variable!(
@@ -43763,7 +43720,6 @@ export namespace PromptTemplateLike {
           },
           {
             patterns: PromptTemplate.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ??
                 dataFactory.variable!("promptTemplateLikePromptTemplate"),
@@ -43893,43 +43849,57 @@ export namespace ConceptSelector {
       );
   }
 
-  export function fromRdf(parameters: {
+  export function fromRdf({
+    ignoreRdfType,
+    resource,
+    ...context
+  }: {
     [_index: string]: any;
     ignoreRdfType?: boolean;
     resource: rdfjsResource.Resource<rdfjs.NamedNode>;
   }): purify.Either<rdfjsResource.Resource.ValueError, ConceptSelector> {
     return (
-      ConceptSchemeConceptSelector.fromRdf(parameters) as purify.Either<
-        rdfjsResource.Resource.ValueError,
-        ConceptSelector
-      >
+      ConceptSchemeConceptSelector.fromRdf({
+        ...context,
+        resource,
+      }) as purify.Either<rdfjsResource.Resource.ValueError, ConceptSelector>
     )
       .altLazy(
         () =>
-          ConceptSchemeTopConceptSelector.fromRdf(parameters) as purify.Either<
+          ConceptSchemeTopConceptSelector.fromRdf({
+            ...context,
+            resource,
+          }) as purify.Either<
             rdfjsResource.Resource.ValueError,
             ConceptSelector
           >,
       )
       .altLazy(
         () =>
-          EnumeratedConceptSelector.fromRdf(parameters) as purify.Either<
+          EnumeratedConceptSelector.fromRdf({
+            ...context,
+            resource,
+          }) as purify.Either<
             rdfjsResource.Resource.ValueError,
             ConceptSelector
           >,
       )
       .altLazy(
         () =>
-          NarrowerConceptSelector.fromRdf(parameters) as purify.Either<
+          NarrowerConceptSelector.fromRdf({
+            ...context,
+            resource,
+          }) as purify.Either<
             rdfjsResource.Resource.ValueError,
             ConceptSelector
           >,
       )
       .altLazy(
         () =>
-          NarrowerTransitiveConceptSelector.fromRdf(
-            parameters,
-          ) as purify.Either<
+          NarrowerTransitiveConceptSelector.fromRdf({
+            ...context,
+            resource,
+          }) as purify.Either<
             rdfjsResource.Resource.ValueError,
             ConceptSelector
           >,
@@ -44011,7 +43981,6 @@ export namespace ConceptSelector {
   }): readonly sparqljs.Triple[] {
     return [
       ...ConceptSchemeConceptSelector.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject:
           parameters.subject ??
           dataFactory.variable!("conceptSelectorConceptSchemeConceptSelector"),
@@ -44020,7 +43989,6 @@ export namespace ConceptSelector {
           : "conceptSelectorConceptSchemeConceptSelector",
       }).concat(),
       ...ConceptSchemeTopConceptSelector.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject:
           parameters.subject ??
           dataFactory.variable!(
@@ -44031,7 +43999,6 @@ export namespace ConceptSelector {
           : "conceptSelectorConceptSchemeTopConceptSelector",
       }).concat(),
       ...EnumeratedConceptSelector.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject:
           parameters.subject ??
           dataFactory.variable!("conceptSelectorEnumeratedConceptSelector"),
@@ -44040,7 +44007,6 @@ export namespace ConceptSelector {
           : "conceptSelectorEnumeratedConceptSelector",
       }).concat(),
       ...NarrowerConceptSelector.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject:
           parameters.subject ??
           dataFactory.variable!("conceptSelectorNarrowerConceptSelector"),
@@ -44049,7 +44015,6 @@ export namespace ConceptSelector {
           : "conceptSelectorNarrowerConceptSelector",
       }).concat(),
       ...NarrowerTransitiveConceptSelector.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject:
           parameters.subject ??
           dataFactory.variable!(
@@ -44072,7 +44037,6 @@ export namespace ConceptSelector {
         patterns: [
           {
             patterns: ConceptSchemeConceptSelector.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ??
                 dataFactory.variable!(
@@ -44086,7 +44050,6 @@ export namespace ConceptSelector {
           },
           {
             patterns: ConceptSchemeTopConceptSelector.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ??
                 dataFactory.variable!(
@@ -44100,7 +44063,6 @@ export namespace ConceptSelector {
           },
           {
             patterns: EnumeratedConceptSelector.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ??
                 dataFactory.variable!(
@@ -44114,7 +44076,6 @@ export namespace ConceptSelector {
           },
           {
             patterns: NarrowerConceptSelector.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ??
                 dataFactory.variable!("conceptSelectorNarrowerConceptSelector"),
@@ -44126,7 +44087,6 @@ export namespace ConceptSelector {
           },
           {
             patterns: NarrowerTransitiveConceptSelector.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ??
                 dataFactory.variable!(
@@ -44219,34 +44179,38 @@ export namespace Value {
       );
   }
 
-  export function fromRdf(parameters: {
+  export function fromRdf({
+    ignoreRdfType,
+    resource,
+    ...context
+  }: {
     [_index: string]: any;
     ignoreRdfType?: boolean;
     resource: rdfjsResource.Resource<rdfjs.NamedNode>;
   }): purify.Either<rdfjsResource.Resource.ValueError, Value> {
     return (
-      BooleanValue.fromRdf(parameters) as purify.Either<
+      BooleanValue.fromRdf({ ...context, resource }) as purify.Either<
         rdfjsResource.Resource.ValueError,
         Value
       >
     )
       .altLazy(
         () =>
-          CategoricalValue.fromRdf(parameters) as purify.Either<
+          CategoricalValue.fromRdf({ ...context, resource }) as purify.Either<
             rdfjsResource.Resource.ValueError,
             Value
           >,
       )
       .altLazy(
         () =>
-          RealValue.fromRdf(parameters) as purify.Either<
+          RealValue.fromRdf({ ...context, resource }) as purify.Either<
             rdfjsResource.Resource.ValueError,
             Value
           >,
       )
       .altLazy(
         () =>
-          TextValue.fromRdf(parameters) as purify.Either<
+          TextValue.fromRdf({ ...context, resource }) as purify.Either<
             rdfjsResource.Resource.ValueError,
             Value
           >,
@@ -44322,7 +44286,6 @@ export namespace Value {
   }): readonly sparqljs.Triple[] {
     return [
       ...BooleanValue.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject:
           parameters.subject ?? dataFactory.variable!("valueBooleanValue"),
         variablePrefix: parameters?.variablePrefix
@@ -44330,7 +44293,6 @@ export namespace Value {
           : "valueBooleanValue",
       }).concat(),
       ...CategoricalValue.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject:
           parameters.subject ?? dataFactory.variable!("valueCategoricalValue"),
         variablePrefix: parameters?.variablePrefix
@@ -44338,14 +44300,12 @@ export namespace Value {
           : "valueCategoricalValue",
       }).concat(),
       ...RealValue.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject: parameters.subject ?? dataFactory.variable!("valueRealValue"),
         variablePrefix: parameters?.variablePrefix
           ? `${parameters.variablePrefix}RealValue`
           : "valueRealValue",
       }).concat(),
       ...TextValue.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject: parameters.subject ?? dataFactory.variable!("valueTextValue"),
         variablePrefix: parameters?.variablePrefix
           ? `${parameters.variablePrefix}TextValue`
@@ -44364,7 +44324,6 @@ export namespace Value {
         patterns: [
           {
             patterns: BooleanValue.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ??
                 dataFactory.variable!("valueBooleanValue"),
@@ -44376,7 +44335,6 @@ export namespace Value {
           },
           {
             patterns: CategoricalValue.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ??
                 dataFactory.variable!("valueCategoricalValue"),
@@ -44388,7 +44346,6 @@ export namespace Value {
           },
           {
             patterns: RealValue.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ?? dataFactory.variable!("valueRealValue"),
               variablePrefix: parameters?.variablePrefix
@@ -44399,7 +44356,6 @@ export namespace Value {
           },
           {
             patterns: TextValue.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ?? dataFactory.variable!("valueTextValue"),
               variablePrefix: parameters?.variablePrefix
@@ -44545,14 +44501,19 @@ export namespace WorkflowStepExecution {
     >;
   }
 
-  export function fromRdf(parameters: {
+  export function fromRdf({
+    ignoreRdfType,
+    resource,
+    ...context
+  }: {
     [_index: string]: any;
     ignoreRdfType?: boolean;
     resource: rdfjsResource.Resource<rdfjs.NamedNode>;
   }): purify.Either<rdfjsResource.Resource.ValueError, WorkflowStepExecution> {
-    return WorkflowQuestionnaireStepExecution.fromRdf(
-      parameters,
-    ) as purify.Either<
+    return WorkflowQuestionnaireStepExecution.fromRdf({
+      ...context,
+      resource,
+    }) as purify.Either<
       rdfjsResource.Resource.ValueError,
       WorkflowStepExecution
     >;
@@ -44621,7 +44582,6 @@ export namespace WorkflowStepExecution {
   }): readonly sparqljs.Triple[] {
     return [
       ...WorkflowQuestionnaireStepExecution.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject:
           parameters.subject ??
           dataFactory.variable!(
@@ -44644,7 +44604,6 @@ export namespace WorkflowStepExecution {
         patterns: [
           {
             patterns: WorkflowQuestionnaireStepExecution.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ??
                 dataFactory.variable!(
@@ -44710,7 +44669,11 @@ export namespace WorkflowStepExecutionInput {
     ) as purify.Either<zod.ZodError, WorkflowStepExecutionInput>;
   }
 
-  export function fromRdf(parameters: {
+  export function fromRdf({
+    ignoreRdfType,
+    resource,
+    ...context
+  }: {
     [_index: string]: any;
     ignoreRdfType?: boolean;
     resource: rdfjsResource.Resource<rdfjs.NamedNode>;
@@ -44718,9 +44681,10 @@ export namespace WorkflowStepExecutionInput {
     rdfjsResource.Resource.ValueError,
     WorkflowStepExecutionInput
   > {
-    return WorkflowQuestionnaireStepExecutionInput.fromRdf(
-      parameters,
-    ) as purify.Either<
+    return WorkflowQuestionnaireStepExecutionInput.fromRdf({
+      ...context,
+      resource,
+    }) as purify.Either<
       rdfjsResource.Resource.ValueError,
       WorkflowStepExecutionInput
     >;
@@ -44796,7 +44760,6 @@ export namespace WorkflowStepExecutionInput {
     return [
       ...WorkflowQuestionnaireStepExecutionInput.sparqlConstructTemplateTriples(
         {
-          ignoreRdfType: parameters?.ignoreRdfType,
           subject:
             parameters.subject ??
             dataFactory.variable!(
@@ -44821,7 +44784,6 @@ export namespace WorkflowStepExecutionInput {
           {
             patterns:
               WorkflowQuestionnaireStepExecutionInput.sparqlWherePatterns({
-                ignoreRdfType: parameters?.ignoreRdfType,
                 subject:
                   parameters.subject ??
                   dataFactory.variable!(
@@ -44912,34 +44874,38 @@ export namespace Question {
       );
   }
 
-  export function fromRdf(parameters: {
+  export function fromRdf({
+    ignoreRdfType,
+    resource,
+    ...context
+  }: {
     [_index: string]: any;
     ignoreRdfType?: boolean;
     resource: rdfjsResource.Resource<rdfjs.NamedNode>;
   }): purify.Either<rdfjsResource.Resource.ValueError, Question> {
     return (
-      CategoricalQuestion.fromRdf(parameters) as purify.Either<
+      CategoricalQuestion.fromRdf({ ...context, resource }) as purify.Either<
         rdfjsResource.Resource.ValueError,
         Question
       >
     )
       .altLazy(
         () =>
-          DichotomousQuestion.fromRdf(parameters) as purify.Either<
+          DichotomousQuestion.fromRdf({
+            ...context,
+            resource,
+          }) as purify.Either<rdfjsResource.Resource.ValueError, Question>,
+      )
+      .altLazy(
+        () =>
+          RealValuedQuestion.fromRdf({ ...context, resource }) as purify.Either<
             rdfjsResource.Resource.ValueError,
             Question
           >,
       )
       .altLazy(
         () =>
-          RealValuedQuestion.fromRdf(parameters) as purify.Either<
-            rdfjsResource.Resource.ValueError,
-            Question
-          >,
-      )
-      .altLazy(
-        () =>
-          TextQuestion.fromRdf(parameters) as purify.Either<
+          TextQuestion.fromRdf({ ...context, resource }) as purify.Either<
             rdfjsResource.Resource.ValueError,
             Question
           >,
@@ -45015,7 +44981,6 @@ export namespace Question {
   }): readonly sparqljs.Triple[] {
     return [
       ...CategoricalQuestion.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject:
           parameters.subject ??
           dataFactory.variable!("questionCategoricalQuestion"),
@@ -45024,7 +44989,6 @@ export namespace Question {
           : "questionCategoricalQuestion",
       }).concat(),
       ...DichotomousQuestion.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject:
           parameters.subject ??
           dataFactory.variable!("questionDichotomousQuestion"),
@@ -45033,7 +44997,6 @@ export namespace Question {
           : "questionDichotomousQuestion",
       }).concat(),
       ...RealValuedQuestion.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject:
           parameters.subject ??
           dataFactory.variable!("questionRealValuedQuestion"),
@@ -45042,7 +45005,6 @@ export namespace Question {
           : "questionRealValuedQuestion",
       }).concat(),
       ...TextQuestion.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject:
           parameters.subject ?? dataFactory.variable!("questionTextQuestion"),
         variablePrefix: parameters?.variablePrefix
@@ -45062,7 +45024,6 @@ export namespace Question {
         patterns: [
           {
             patterns: CategoricalQuestion.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ??
                 dataFactory.variable!("questionCategoricalQuestion"),
@@ -45074,7 +45035,6 @@ export namespace Question {
           },
           {
             patterns: DichotomousQuestion.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ??
                 dataFactory.variable!("questionDichotomousQuestion"),
@@ -45086,7 +45046,6 @@ export namespace Question {
           },
           {
             patterns: RealValuedQuestion.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ??
                 dataFactory.variable!("questionRealValuedQuestion"),
@@ -45098,7 +45057,6 @@ export namespace Question {
           },
           {
             patterns: TextQuestion.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ??
                 dataFactory.variable!("questionTextQuestion"),
@@ -45188,19 +45146,26 @@ export namespace PromptInputValue {
     );
   }
 
-  export function fromRdf(parameters: {
+  export function fromRdf({
+    ignoreRdfType,
+    resource,
+    ...context
+  }: {
     [_index: string]: any;
     ignoreRdfType?: boolean;
     resource: rdfjsResource.Resource<rdfjs.NamedNode>;
   }): purify.Either<rdfjsResource.Resource.ValueError, PromptInputValue> {
     return (
-      PromptLiteralInputValue.fromRdf(parameters) as purify.Either<
-        rdfjsResource.Resource.ValueError,
-        PromptInputValue
-      >
+      PromptLiteralInputValue.fromRdf({
+        ...context,
+        resource,
+      }) as purify.Either<rdfjsResource.Resource.ValueError, PromptInputValue>
     ).altLazy(
       () =>
-        PromptSparqlSelectInputValue.fromRdf(parameters) as purify.Either<
+        PromptSparqlSelectInputValue.fromRdf({
+          ...context,
+          resource,
+        }) as purify.Either<
           rdfjsResource.Resource.ValueError,
           PromptInputValue
         >,
@@ -45273,7 +45238,6 @@ export namespace PromptInputValue {
   }): readonly sparqljs.Triple[] {
     return [
       ...PromptLiteralInputValue.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject:
           parameters.subject ??
           dataFactory.variable!("promptInputValuePromptLiteralInputValue"),
@@ -45282,7 +45246,6 @@ export namespace PromptInputValue {
           : "promptInputValuePromptLiteralInputValue",
       }).concat(),
       ...PromptSparqlSelectInputValue.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject:
           parameters.subject ??
           dataFactory.variable!("promptInputValuePromptSparqlSelectInputValue"),
@@ -45303,7 +45266,6 @@ export namespace PromptInputValue {
         patterns: [
           {
             patterns: PromptLiteralInputValue.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ??
                 dataFactory.variable!(
@@ -45317,7 +45279,6 @@ export namespace PromptInputValue {
           },
           {
             patterns: PromptSparqlSelectInputValue.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ??
                 dataFactory.variable!(
@@ -45430,41 +45391,51 @@ export namespace QuestionnaireMember {
       );
   }
 
-  export function fromRdf(parameters: {
+  export function fromRdf({
+    ignoreRdfType,
+    resource,
+    ...context
+  }: {
     [_index: string]: any;
     ignoreRdfType?: boolean;
     resource: rdfjsResource.Resource<rdfjs.NamedNode>;
   }): purify.Either<rdfjsResource.Resource.ValueError, QuestionnaireMember> {
     return (
-      Instruction.fromRdf(parameters) as purify.Either<
+      Instruction.fromRdf({ ...context, resource }) as purify.Either<
         rdfjsResource.Resource.ValueError,
         QuestionnaireMember
       >
     )
       .altLazy(
         () =>
-          CategoricalQuestion.fromRdf(parameters) as purify.Either<
+          CategoricalQuestion.fromRdf({
+            ...context,
+            resource,
+          }) as purify.Either<
             rdfjsResource.Resource.ValueError,
             QuestionnaireMember
           >,
       )
       .altLazy(
         () =>
-          DichotomousQuestion.fromRdf(parameters) as purify.Either<
+          DichotomousQuestion.fromRdf({
+            ...context,
+            resource,
+          }) as purify.Either<
             rdfjsResource.Resource.ValueError,
             QuestionnaireMember
           >,
       )
       .altLazy(
         () =>
-          RealValuedQuestion.fromRdf(parameters) as purify.Either<
+          RealValuedQuestion.fromRdf({ ...context, resource }) as purify.Either<
             rdfjsResource.Resource.ValueError,
             QuestionnaireMember
           >,
       )
       .altLazy(
         () =>
-          TextQuestion.fromRdf(parameters) as purify.Either<
+          TextQuestion.fromRdf({ ...context, resource }) as purify.Either<
             rdfjsResource.Resource.ValueError,
             QuestionnaireMember
           >,
@@ -45546,7 +45517,6 @@ export namespace QuestionnaireMember {
   }): readonly sparqljs.Triple[] {
     return [
       ...Instruction.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject:
           parameters.subject ??
           dataFactory.variable!("questionnaireMemberInstruction"),
@@ -45555,7 +45525,6 @@ export namespace QuestionnaireMember {
           : "questionnaireMemberInstruction",
       }).concat(),
       ...CategoricalQuestion.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject:
           parameters.subject ??
           dataFactory.variable!("questionnaireMemberCategoricalQuestion"),
@@ -45564,7 +45533,6 @@ export namespace QuestionnaireMember {
           : "questionnaireMemberCategoricalQuestion",
       }).concat(),
       ...DichotomousQuestion.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject:
           parameters.subject ??
           dataFactory.variable!("questionnaireMemberDichotomousQuestion"),
@@ -45573,7 +45541,6 @@ export namespace QuestionnaireMember {
           : "questionnaireMemberDichotomousQuestion",
       }).concat(),
       ...RealValuedQuestion.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject:
           parameters.subject ??
           dataFactory.variable!("questionnaireMemberRealValuedQuestion"),
@@ -45582,7 +45549,6 @@ export namespace QuestionnaireMember {
           : "questionnaireMemberRealValuedQuestion",
       }).concat(),
       ...TextQuestion.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject:
           parameters.subject ??
           dataFactory.variable!("questionnaireMemberTextQuestion"),
@@ -45603,7 +45569,6 @@ export namespace QuestionnaireMember {
         patterns: [
           {
             patterns: Instruction.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ??
                 dataFactory.variable!("questionnaireMemberInstruction"),
@@ -45615,7 +45580,6 @@ export namespace QuestionnaireMember {
           },
           {
             patterns: CategoricalQuestion.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ??
                 dataFactory.variable!("questionnaireMemberCategoricalQuestion"),
@@ -45627,7 +45591,6 @@ export namespace QuestionnaireMember {
           },
           {
             patterns: DichotomousQuestion.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ??
                 dataFactory.variable!("questionnaireMemberDichotomousQuestion"),
@@ -45639,7 +45602,6 @@ export namespace QuestionnaireMember {
           },
           {
             patterns: RealValuedQuestion.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ??
                 dataFactory.variable!("questionnaireMemberRealValuedQuestion"),
@@ -45651,7 +45613,6 @@ export namespace QuestionnaireMember {
           },
           {
             patterns: TextQuestion.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ??
                 dataFactory.variable!("questionnaireMemberTextQuestion"),
@@ -45841,15 +45802,19 @@ export namespace WorkflowStep {
     >;
   }
 
-  export function fromRdf(parameters: {
+  export function fromRdf({
+    ignoreRdfType,
+    resource,
+    ...context
+  }: {
     [_index: string]: any;
     ignoreRdfType?: boolean;
     resource: rdfjsResource.Resource<rdfjs.NamedNode>;
   }): purify.Either<rdfjsResource.Resource.ValueError, WorkflowStep> {
-    return WorkflowQuestionnaireStep.fromRdf(parameters) as purify.Either<
-      rdfjsResource.Resource.ValueError,
-      WorkflowStep
-    >;
+    return WorkflowQuestionnaireStep.fromRdf({
+      ...context,
+      resource,
+    }) as purify.Either<rdfjsResource.Resource.ValueError, WorkflowStep>;
   }
 
   export function hash<
@@ -45912,7 +45877,6 @@ export namespace WorkflowStep {
   }): readonly sparqljs.Triple[] {
     return [
       ...WorkflowQuestionnaireStep.sparqlConstructTemplateTriples({
-        ignoreRdfType: parameters?.ignoreRdfType,
         subject:
           parameters.subject ??
           dataFactory.variable!("workflowStepWorkflowQuestionnaireStep"),
@@ -45933,7 +45897,6 @@ export namespace WorkflowStep {
         patterns: [
           {
             patterns: WorkflowQuestionnaireStep.sparqlWherePatterns({
-              ignoreRdfType: parameters?.ignoreRdfType,
               subject:
                 parameters.subject ??
                 dataFactory.variable!("workflowStepWorkflowQuestionnaireStep"),
