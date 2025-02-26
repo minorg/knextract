@@ -274,17 +274,19 @@ export namespace SyntheticTestData {
       exception?: Exception;
       questionnaire: Questionnaire;
     }): QuestionnaireAdministration => {
-      const questionAdministrations = questionnaire.members.flatMap(
-        (member, memberI) =>
-          member.type !== "Instruction"
-            ? [
-                createQuestionAdministration({
-                  exception: exception && memberI === 0 ? exception : undefined,
-                  question: member,
-                }),
-              ]
-            : [],
-      );
+      const questionAdministrations = exception
+        ? []
+        : questionnaire.members.flatMap((member, memberI) =>
+            member.type !== "Instruction"
+              ? [
+                  createQuestionAdministration({
+                    exception:
+                      exception && memberI === 0 ? exception : undefined,
+                    question: member,
+                  }),
+                ]
+              : [],
+          );
       return new QuestionnaireAdministration({
         ...nextProcessTimes(),
         input: new QuestionnaireAdministrationInput({

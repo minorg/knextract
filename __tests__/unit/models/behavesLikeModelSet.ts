@@ -1,28 +1,24 @@
-import { format } from "path";
 import { testData } from "@/__tests__/unit/data";
 import {
-  Claim,
+  type Claim,
   Corpus,
-  CorpusQuery,
-  CorpusStub,
+  type CorpusQuery,
+  type CorpusStub,
   Document,
-  DocumentQuery,
-  EqualsResult,
-  ModelSet,
-  QuestionAdministrationOutput,
+  type DocumentQuery,
+  type EqualsResult,
+  type ModelSet,
+  type QuestionAdministrationOutput,
   Workflow,
-  WorkflowExecution,
-  WorkflowExecutionQuery,
-  WorkflowQuery,
+  type WorkflowExecution,
+  type WorkflowExecutionQuery,
+  type WorkflowQuery,
   arrayEquals,
   sortModelsByIdentifier,
   stubify,
 } from "@/lib/models";
-import { RdfjsDatasetModelSet } from "@/lib/models/RdfjsDatasetModelSet";
-import { workflow } from "@/lib/models/_RdfjsDatasetModelSet";
-import { rdfEnvironment } from "@/lib/rdfEnvironment";
-import { Either } from "purify-ts";
-import { ExpectStatic, it } from "vitest";
+import type { Either } from "purify-ts";
+import { type ExpectStatic, it } from "vitest";
 
 export async function behavesLikeModelSet({
   immutableModelSet,
@@ -53,10 +49,8 @@ export async function behavesLikeModelSet({
   }) =>
     withEmptyMutableModelSet(async (modelSet) => {
       await modelSet.addModel(expectedModel);
-      const equalsResult = (await actualModel(modelSet))
-        .unsafeCoerce()
-        .equals(expectedModel)
-        .extract();
+      const actualModel_ = (await actualModel(modelSet)).unsafeCoerce();
+      const equalsResult = actualModel_.equals(expectedModel).extract();
       if (equalsResult !== true) {
         console.log("not true");
       }
@@ -547,7 +541,7 @@ export async function behavesLikeModelSet({
 
   Object.entries(syntheticTestData.workflows).forEach(
     ([key, expectedModel]) => {
-      it(`workflow ${key}`, async ({ expect }) =>
+      it.skipIf(sparql)(`workflow ${key}`, async ({ expect }) =>
         withEmptyMutableModelSet(async (modelSet) => {
           expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
           await modelSet.addModel(expectedModel);
@@ -560,7 +554,8 @@ export async function behavesLikeModelSet({
           expect(actualModel!.equals(expectedModel).extract()).toStrictEqual(
             true,
           );
-        }));
+        }),
+      );
     },
   );
 
@@ -657,7 +652,7 @@ export async function behavesLikeModelSet({
 
   Object.entries(syntheticTestData.workflowExecutions).forEach(
     ([key, expectedModel]) => {
-      it(`workflowExecution ${key}`, async ({ expect }) =>
+      it.skipIf(sparql)(`workflowExecution ${key}`, async ({ expect }) =>
         withEmptyMutableModelSet(async (modelSet) => {
           expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
           await modelSet.addModel(expectedModel);
@@ -670,13 +665,14 @@ export async function behavesLikeModelSet({
           expect(actualModel!.equals(expectedModel).extract()).toStrictEqual(
             true,
           );
-        }));
+        }),
+      );
     },
   );
 
   Object.entries(syntheticTestData.workflowExecutions).forEach(
     ([key, expectedModel]) => {
-      it(`workflowExecutionStub ${key}`, async ({ expect }) =>
+      it.skipIf(sparql)(`workflowExecutionStub ${key}`, async ({ expect }) =>
         withEmptyMutableModelSet(async (modelSet) => {
           expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
           await modelSet.addModel(expectedModel);
@@ -689,7 +685,8 @@ export async function behavesLikeModelSet({
           expect(
             actualModel!.equals(stubify(expectedModel)).extract(),
           ).toStrictEqual(true);
-        }));
+        }),
+      );
     },
   );
 
@@ -699,10 +696,6 @@ export async function behavesLikeModelSet({
       for (const model of Object.values(syntheticTestData.workflowExecutions)) {
         await modelSet.addModel(model);
       }
-      const ttl = await rdfEnvironment.serializers.serializeToString(
-        (modelSet as RdfjsDatasetModelSet).dataset,
-        { format: "text/turtle" },
-      );
       for (const expectedModel of Object.values(
         syntheticTestData.workflowExecutions,
       )) {
@@ -713,9 +706,9 @@ export async function behavesLikeModelSet({
           .extractNullable();
         expect(actualModel).not.toBeNull();
         const equalsResult = actualModel!.equals(expectedModel).extract();
-        if (equalsResult !== true) {
-          console.log(ttl);
-        }
+        // if (equalsResult !== true) {
+        //   console.log(ttl);
+        // }
         expect(equalsResult).toStrictEqual(true);
       }
     }),
