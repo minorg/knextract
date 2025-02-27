@@ -29,7 +29,7 @@ export function sparqlFilterDeletedPattern({
           type: "bgp",
         },
       ],
-      operator: "NOT EXISTS",
+      operator: "notexists",
       type: "operation",
     },
     type: "filter",
