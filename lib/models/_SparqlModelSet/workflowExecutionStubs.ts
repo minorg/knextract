@@ -1,5 +1,4 @@
 import {
-  WorkflowExecution,
   WorkflowExecutionQuery,
   WorkflowExecutionStub,
   WorkflowQuestionnaireStepExecution,
@@ -8,7 +7,6 @@ import { RdfjsDatasetModelSet } from "@/lib/models/RdfjsDatasetModelSet";
 import { SparqlModelSet } from "@/lib/models/SparqlModelSet";
 import { dataFactory, datasetCoreFactory } from "@/lib/rdfEnvironment";
 import { knextract } from "@/lib/vocabularies";
-import { sparqlRdfTypePattern } from "@kos-kit/models/sparqlRdfTypePattern";
 import { Variable } from "@rdfjs/types";
 import { rdf } from "@tpluscode/rdf-ns-builders";
 import { Either, EitherAsync } from "purify-ts";
@@ -82,12 +80,7 @@ function workflowExecutionQueryToWherePatterns(
 ): readonly sparqljs.Pattern[] {
   switch (query.type) {
     case "All":
-      return [
-        sparqlRdfTypePattern({
-          rdfType: WorkflowExecution.fromRdfType,
-          subject: workflowExecutionVariable,
-        }),
-      ];
+      return [];
     case "ClaimGenerator":
       return [
         {

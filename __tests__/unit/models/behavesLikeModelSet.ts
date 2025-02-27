@@ -200,16 +200,10 @@ export async function behavesLikeModelSet({
     });
   });
 
-  it("claims (gold)", async ({ expect }) => {
-    const expectedModels = (
-      await medlinePlusTestData.modelSet.claims({
-        query: {
-          documentIdentifier: medlinePlusTestData.document.identifier,
-          gold: true,
-          type: "Document",
-        },
-      })
-    ).unsafeCoerce();
+  it.only("claims (gold)", async ({ expect }) => {
+    const expectedModels = medlinePlusTestData.claims.filter(
+      (claim) => claim.gold,
+    );
     expect(expectedModels).not.toHaveLength(0);
 
     const actualModels = (

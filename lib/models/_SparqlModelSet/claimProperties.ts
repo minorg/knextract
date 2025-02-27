@@ -3,7 +3,6 @@ import { RdfjsDatasetModelSet } from "@/lib/models/RdfjsDatasetModelSet";
 import { SparqlModelSet } from "@/lib/models/SparqlModelSet";
 import { dataFactory, datasetCoreFactory } from "@/lib/rdfEnvironment";
 import { mapBindingsToIdentifiers } from "@kos-kit/models";
-import { sparqlRdfTypePattern } from "@kos-kit/models/sparqlRdfTypePattern";
 import TermMap from "@rdfjs/term-map";
 import { NamedNode } from "@rdfjs/types";
 import { rdf } from "@tpluscode/rdf-ns-builders";
@@ -26,12 +25,6 @@ export async function claimProperties(
             ClaimProperty.sparqlConstructQueryString({
               subject: claimPropertyVariable,
               variablePrefix: "claimProperty",
-              where: [
-                sparqlRdfTypePattern({
-                  rdfType: ClaimProperty.fromRdfType,
-                  subject: claimPropertyVariable,
-                }),
-              ],
             }),
           )
         ).concat(),

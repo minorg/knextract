@@ -1,7 +1,6 @@
-import { Document, DocumentQuery } from "@/lib/models";
+import { DocumentQuery } from "@/lib/models";
 import { sparqlFilterDeletedPattern } from "@/lib/models/_SparqlModelSet/sparqlFilterDeletedPattern";
 import { knextract } from "@/lib/vocabularies";
-import { sparqlRdfTypePattern } from "@kos-kit/models/sparqlRdfTypePattern";
 import { Variable } from "@rdfjs/types";
 import * as sparqljs from "sparqljs";
 
@@ -14,13 +13,7 @@ export function documentQueryToWherePatterns({
 }): readonly sparqljs.Pattern[] {
   switch (query.type) {
     case "All":
-      return [
-        sparqlRdfTypePattern({
-          rdfType: Document.fromRdfType,
-          subject,
-        }),
-        ...sparqlFilterDeletedPattern({ query, subject }).toList(),
-      ];
+      return sparqlFilterDeletedPattern({ query, subject }).toList();
     case "Identifiers":
       return [
         {

@@ -1,9 +1,8 @@
-import { Workflow, WorkflowQuery, WorkflowStub } from "@/lib/models";
+import { WorkflowQuery, WorkflowStub } from "@/lib/models";
 import { RdfjsDatasetModelSet } from "@/lib/models/RdfjsDatasetModelSet";
 import { SparqlModelSet } from "@/lib/models/SparqlModelSet";
 import { sparqlFilterDeletedPattern } from "@/lib/models/_SparqlModelSet/sparqlFilterDeletedPattern";
 import { dataFactory, datasetCoreFactory } from "@/lib/rdfEnvironment";
-import { sparqlRdfTypePattern } from "@kos-kit/models/sparqlRdfTypePattern";
 import { Either, EitherAsync } from "purify-ts";
 import * as sparqljs from "sparqljs";
 import { invariant } from "ts-invariant";
@@ -14,16 +13,10 @@ function workflowQueryToWherePatterns(
   query: WorkflowQuery,
 ): readonly sparqljs.Pattern[] {
   invariant(query.type === "All");
-  return [
-    sparqlRdfTypePattern({
-      rdfType: Workflow.fromRdfType,
-      subject: workflowVariable,
-    }),
-    ...sparqlFilterDeletedPattern({
-      query,
-      subject: workflowVariable,
-    }).toList(),
-  ];
+  return sparqlFilterDeletedPattern({
+    query,
+    subject: workflowVariable,
+  }).toList();
 }
 
 export async function workflowStubs(

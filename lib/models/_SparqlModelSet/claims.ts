@@ -3,7 +3,6 @@ import { RdfjsDatasetModelSet } from "@/lib/models/RdfjsDatasetModelSet";
 import { SparqlModelSet } from "@/lib/models/SparqlModelSet";
 import { dataFactory, datasetCoreFactory } from "@/lib/rdfEnvironment";
 import { knextract } from "@/lib/vocabularies";
-import { sparqlRdfTypePattern } from "@kos-kit/models/sparqlRdfTypePattern";
 import { rdf } from "@tpluscode/rdf-ns-builders";
 import { Either, EitherAsync } from "purify-ts";
 import { toRdf } from "rdf-literal";
@@ -14,35 +13,33 @@ const claimVariable = dataFactory.variable!("claim");
 function claimQueryToWherePatterns(
   query: ClaimQuery,
 ): readonly sparqljs.Pattern[] {
-  const patterns: sparqljs.Pattern[] = [
-    sparqlRdfTypePattern({
-      rdfType: Claim.fromRdfType,
-      subject: claimVariable,
-    }),
-  ];
-
   switch (query.type) {
     case "All":
-      return patterns;
+      return [];
     case "Document": {
-      const triples: sparqljs.Triple[] = [
-        {
-          object: query.documentIdentifier,
-          predicate: rdf.subject,
-          subject: claimVariable,
-        },
-      ];
-      if (typeof query.gold !== "undefined") {
-        triples.push({
-          object: toRdf(query.gold),
-          predicate: knextract.gold,
-          subject: claimVariable,
-        });
-      }
+      const patterns: sparqljs.Pattern[] = [];
       patterns.push({
-        triples,
+        triples: [
+          {
+            object: query.documentIdentifier,
+            predicate: rdf.subject,
+            subject: claimVariable,
+          },
+        ],
         type: "bgp",
       });
+      if (typeof query.gold !== "undefined") {
+        patterns.push({
+          triples: [
+            {
+              object: toRdf(query.gold),
+              predicate: knextract.gold,
+              subject: claimVariable,
+            },
+          ],
+          type: "bgp",
+        });
+      }
       return patterns;
     }
   }
@@ -56,6 +53,12 @@ export async function claims(
     query: ClaimQuery;
   },
 ): Promise<Either<Error, readonly Claim[]>> {
+  const queryString = Claim.sparqlConstructQueryString({
+    subject: claimVariable,
+    variablePrefix: "claim",
+    where: claimQueryToWherePatterns(query).concat(),
+  });
+  console.log(queryString);
   return EitherAsync(async () =>
     new RdfjsDatasetModelSet({
       dataset: datasetCoreFactory.dataset(

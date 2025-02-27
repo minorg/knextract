@@ -1,9 +1,8 @@
-import { Corpus, CorpusQuery, CorpusStub } from "@/lib/models";
+import { CorpusQuery, CorpusStub } from "@/lib/models";
 import { RdfjsDatasetModelSet } from "@/lib/models/RdfjsDatasetModelSet";
 import { SparqlModelSet } from "@/lib/models/SparqlModelSet";
 import { sparqlFilterDeletedPattern } from "@/lib/models/_SparqlModelSet/sparqlFilterDeletedPattern";
 import { dataFactory, datasetCoreFactory } from "@/lib/rdfEnvironment";
-import { sparqlRdfTypePattern } from "@kos-kit/models/sparqlRdfTypePattern";
 import { Either, EitherAsync } from "purify-ts";
 import * as sparqljs from "sparqljs";
 import { invariant } from "ts-invariant";
@@ -14,13 +13,10 @@ function corpusQueryToWherePatterns(
   query: CorpusQuery,
 ): readonly sparqljs.Pattern[] {
   invariant(query.type === "All");
-  return [
-    sparqlRdfTypePattern({
-      rdfType: Corpus.fromRdfType,
-      subject: corpusVariable,
-    }),
-    ...sparqlFilterDeletedPattern({ query, subject: corpusVariable }).toList(),
-  ];
+  return sparqlFilterDeletedPattern({
+    query,
+    subject: corpusVariable,
+  }).toList();
 }
 
 export async function corpusStubs(
