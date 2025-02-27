@@ -454,6 +454,7 @@ export namespace LabelStub {
       update: (message: string | number[] | ArrayBuffer | Uint8Array) => void;
     },
   >(_labelStub: LabelStub, _hasher: HasherT): HasherT {
+    _hasher.update(_labelStub.identifier.value);
     for (const _item0 of _labelStub.literalForm) {
       _hasher.update(_item0.datatype.value);
       _hasher.update(_item0.language);
@@ -6820,6 +6821,7 @@ export class WorkflowStub {
     },
   >(_hasher: HasherT): HasherT {
     _hasher.update(this.deleted.toString());
+    _hasher.update(this.identifier.value);
     this.label.ifJust((_value0) => {
       _hasher.update(_value0);
     });
@@ -8139,6 +8141,7 @@ export class Workflow extends InformationContentEntity {
   >(_hasher: HasherT): HasherT {
     super.hash(_hasher);
     _hasher.update(this.deleted.toString());
+    _hasher.update(this.identifier.value);
     _hasher.update(this.label);
     for (const _element0 of this.steps) {
       _element0.hash(_hasher);
@@ -23613,6 +23616,7 @@ export class PostWorkflowExecutionEventPayload extends Entity {
   >(_hasher: HasherT): HasherT {
     super.hash(_hasher);
     this.documentClaims.hash(_hasher);
+    _hasher.update(this.identifier.value);
     this.workflowExecution.hash(_hasher);
     return _hasher;
   }
@@ -25196,6 +25200,7 @@ export class LanguageModelSpecificationStub {
       update: (message: string | number[] | ArrayBuffer | Uint8Array) => void;
     },
   >(_hasher: HasherT): HasherT {
+    _hasher.update(this.identifier.value);
     this.label.ifJust((_value0) => {
       _hasher.update(_value0);
     });
@@ -27644,6 +27649,7 @@ export class LanguageModelCreator {
       update: (message: string | number[] | ArrayBuffer | Uint8Array) => void;
     },
   >(_hasher: HasherT): HasherT {
+    _hasher.update(this.identifier.value);
     _hasher.update(this.label);
     return _hasher;
   }
@@ -29711,6 +29717,7 @@ export class DocumentStub {
     },
   >(_hasher: HasherT): HasherT {
     _hasher.update(this.deleted.toString());
+    _hasher.update(this.identifier.value);
     this.title.ifJust((_value0) => {
       _value0.hash(_hasher);
     });
@@ -32875,6 +32882,7 @@ export class Document extends InformationContentEntity {
   >(_hasher: HasherT): HasherT {
     super.hash(_hasher);
     _hasher.update(this.deleted.toString());
+    _hasher.update(this.identifier.value);
     for (const _item0 of this.images) {
       _item0.hash(_hasher);
     }
@@ -34434,6 +34442,7 @@ export class CorpusStub {
     },
   >(_hasher: HasherT): HasherT {
     _hasher.update(this.deleted.toString());
+    _hasher.update(this.identifier.value);
     this.label.ifJust((_value0) => {
       _hasher.update(_value0);
     });
@@ -35747,6 +35756,7 @@ export class Corpus extends InformationContentEntity {
   >(_hasher: HasherT): HasherT {
     super.hash(_hasher);
     _hasher.update(this.deleted.toString());
+    _hasher.update(this.identifier.value);
     _hasher.update(this.label);
     _hasher.update(this.mutable.toString());
     return _hasher;
@@ -39959,6 +39969,7 @@ export class ClaimProperty {
       _hasher.update(_item0.value);
     }
 
+    _hasher.update(this.identifier.value);
     for (const _item0 of this.labels) {
       _hasher.update(_item0.datatype.value);
       _hasher.update(_item0.language);
@@ -42542,6 +42553,7 @@ export namespace ConceptStub {
     },
   >(_conceptStub: ConceptStub, _hasher: HasherT): HasherT {
     KosResourceStub.hashKosResourceStub(_conceptStub, _hasher);
+    _hasher.update(_conceptStub.identifier.value);
     return _hasher;
   }
 
@@ -42854,6 +42866,7 @@ export namespace ConceptSchemeStub {
     },
   >(_conceptSchemeStub: ConceptSchemeStub, _hasher: HasherT): HasherT {
     KosResourceStub.hashKosResourceStub(_conceptSchemeStub, _hasher);
+    _hasher.update(_conceptSchemeStub.identifier.value);
     return _hasher;
   }
 

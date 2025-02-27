@@ -84,7 +84,10 @@ export namespace RdfModelSetTestData {
             type: "HasTopConcept",
           },
         });
-        invariant(conceptSchemeStubs.length === 1);
+        if (conceptSchemeStubs.length === 0) {
+          // The MeSH concept scheme isn't asserted in the test data. Continue until we get a claim on a Medline Plus Health Topics concept.
+          continue;
+        }
         const conceptSchemeStub = conceptSchemeStubs.at(0)!;
         const conceptScheme = modelSet
           .conceptSchemeSync(conceptSchemeStub.identifier)

@@ -200,7 +200,7 @@ export async function behavesLikeModelSet({
     });
   });
 
-  it.only("claims (gold)", async ({ expect }) => {
+  it("claims (gold)", async ({ expect }) => {
     const expectedModels = medlinePlusTestData.claims.filter(
       (claim) => claim.gold,
     );
