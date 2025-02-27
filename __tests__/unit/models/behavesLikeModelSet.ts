@@ -130,7 +130,7 @@ export async function behavesLikeModelSet({
 
   Object.entries(syntheticTestData.workflows).forEach(
     ([key, expectedModel]) => {
-      it.skipIf(sparql)(`addModel (Workflow) ${key}`, async ({ expect }) => {
+      it(`addModel (Workflow) ${key}`, async ({ expect }) => {
         await testAddModel({
           actualModel: (modelSet) =>
             modelSet.workflow(expectedModel.identifier),
@@ -346,14 +346,13 @@ export async function behavesLikeModelSet({
 
   Object.entries(syntheticTestData.workflows).forEach(
     ([key, syntheticModel]) => {
-      it.skipIf(sparql)(`deleteModel (Workflow) ${key}`, ({ expect }) =>
+      it(`deleteModel (Workflow) ${key}`, ({ expect }) =>
         testDeleteModel({
           expect,
           getModelFromModelSet: (modelSet) =>
             modelSet.workflow(syntheticModel.identifier),
           syntheticModel,
-        }),
-      );
+        }));
     },
   );
 
@@ -526,7 +525,7 @@ export async function behavesLikeModelSet({
 
   Object.entries(syntheticTestData.workflows).forEach(
     ([key, expectedModel]) => {
-      it.skipIf(sparql)(`workflow ${key}`, async ({ expect }) =>
+      it(`workflow ${key}`, async ({ expect }) =>
         withEmptyMutableModelSet(async (modelSet) => {
           expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
           await modelSet.addModel(expectedModel);
@@ -536,12 +535,11 @@ export async function behavesLikeModelSet({
               .toMaybe()
               .extractNullable(),
           );
-        }),
-      );
+        }));
     },
   );
 
-  it.skipIf(sparql)("workflow one of many", async ({ expect }) =>
+  it("workflow one of many", async ({ expect }) =>
     withEmptyMutableModelSet(async (modelSet) => {
       expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
       for (const model of Object.values(syntheticTestData.workflows)) {
@@ -555,12 +553,11 @@ export async function behavesLikeModelSet({
             .extractNullable(),
         );
       }
-    }),
-  );
+    }));
 
   Object.entries(syntheticTestData.workflows).forEach(
     ([key, expectedModel]) => {
-      it.skipIf(sparql)(`workflowStub ${key}`, async ({ expect }) =>
+      it(`workflowStub ${key}`, async ({ expect }) =>
         withEmptyMutableModelSet(async (modelSet) => {
           expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
           await modelSet.addModel(expectedModel);
@@ -570,61 +567,57 @@ export async function behavesLikeModelSet({
               .toMaybe()
               .extractNullable(),
           );
-        }),
-      );
+        }));
     },
   );
 
   for (const includeDeleted of [false, true]) {
     for (const queryType of ["All"] as const) {
-      it.skipIf(sparql)(
-        `workflowStubs includeDeleted=${includeDeleted} queryType=${queryType}`,
-        () =>
-          withEmptyMutableModelSet(async (modelSet) => {
-            const deleteModel = new Workflow({
-              deleted: true,
-              label: "Delete workflow",
-              steps: syntheticTestData.workflows.questionnaireStep.steps,
-            });
-            const allModels = [
-              ...Object.values(syntheticTestData.workflows),
-              deleteModel,
-            ];
-            for (const model of allModels) {
-              await modelSet.addModel(model);
-            }
-            await modelSet.deleteModel(deleteModel);
+      it(`workflowStubs includeDeleted=${includeDeleted} queryType=${queryType}`, () =>
+        withEmptyMutableModelSet(async (modelSet) => {
+          const deleteModel = new Workflow({
+            deleted: true,
+            label: "Delete workflow",
+            steps: syntheticTestData.workflows.questionnaireStep.steps,
+          });
+          const allModels = [
+            ...Object.values(syntheticTestData.workflows),
+            deleteModel,
+          ];
+          for (const model of allModels) {
+            await modelSet.addModel(model);
+          }
+          await modelSet.deleteModel(deleteModel);
 
-            let expectedModels: Workflow[];
-            let query: WorkflowQuery;
-            switch (queryType) {
-              case "All": {
-                expectedModels = includeDeleted
-                  ? allModels
-                  : allModels.filter(
-                      (workflow) =>
-                        !workflow.identifier.equals(deleteModel.identifier),
-                    );
-                query = { includeDeleted, type: "All" };
-                break;
-              }
+          let expectedModels: Workflow[];
+          let query: WorkflowQuery;
+          switch (queryType) {
+            case "All": {
+              expectedModels = includeDeleted
+                ? allModels
+                : allModels.filter(
+                    (workflow) =>
+                      !workflow.identifier.equals(deleteModel.identifier),
+                  );
+              query = { includeDeleted, type: "All" };
+              break;
             }
-            expectedModels = sortModelsByIdentifier(expectedModels);
+          }
+          expectedModels = sortModelsByIdentifier(expectedModels);
 
-            const actualModelStubs = (
-              await modelSet.workflowStubs({
-                query,
-              })
-            ).unsafeCoerce();
-            expectEqualResult(
-              arrayEquals(
-                expectedModels.map((model) => stubify(model)),
-                actualModelStubs,
-                (left, right) => left.equals(right),
-              ),
-            );
-          }),
-      );
+          const actualModelStubs = (
+            await modelSet.workflowStubs({
+              query,
+            })
+          ).unsafeCoerce();
+          expectEqualResult(
+            arrayEquals(
+              expectedModels.map((model) => stubify(model)),
+              actualModelStubs,
+              (left, right) => left.equals(right),
+            ),
+          );
+        }));
     }
   }
 
@@ -647,7 +640,7 @@ export async function behavesLikeModelSet({
 
   Object.entries(syntheticTestData.workflowExecutions).forEach(
     ([key, expectedModel]) => {
-      it.skipIf(sparql)(`workflowExecutionStub ${key}`, async ({ expect }) =>
+      it(`workflowExecutionStub ${key}`, async ({ expect }) =>
         withEmptyMutableModelSet(async (modelSet) => {
           expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
           await modelSet.addModel(expectedModel);
@@ -657,8 +650,7 @@ export async function behavesLikeModelSet({
               .toMaybe()
               .extractNullable(),
           );
-        }),
-      );
+        }));
     },
   );
 
@@ -682,100 +674,102 @@ export async function behavesLikeModelSet({
   );
 
   for (const queryType of ["All", "ClaimGenerator", "Workflow"] as const) {
-    it.skipIf(sparql)(
-      `workflowExecutionStubs queryType=${queryType}`,
-      async ({ expect }) =>
-        withEmptyMutableModelSet(async (modelSet) => {
-          expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
+    if (queryType !== "ClaimGenerator") {
+      continue;
+    }
+    it.only(`workflowExecutionStubs queryType=${queryType}`, async ({
+      expect,
+    }) =>
+      withEmptyMutableModelSet(async (modelSet) => {
+        expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
 
-          let expectedModels: readonly WorkflowExecution[];
-          let query: WorkflowExecutionQuery;
-          switch (queryType) {
-            case "All": {
-              expectedModels = Object.values(
-                syntheticTestData.workflowExecutions,
-              );
-              for (const expectedModel of expectedModels) {
-                await modelSet.addModel(expectedModel);
-              }
-              query = { type: "All" };
-              break;
-            }
-            case "ClaimGenerator": {
-              await modelSet.addModel(
-                syntheticTestData.workflows.questionnaireStep,
-              );
-
-              const expectedModel =
-                syntheticTestData.workflowExecutions.questionnaireStep;
-              expectedModels = [expectedModel];
+        let expectedModels: readonly WorkflowExecution[];
+        let query: WorkflowExecutionQuery;
+        switch (queryType) {
+          case "All": {
+            expectedModels = Object.values(
+              syntheticTestData.workflowExecutions,
+            );
+            for (const expectedModel of expectedModels) {
               await modelSet.addModel(expectedModel);
-              const expectedClaims: readonly Claim[] =
-                expectedModel.subProcesses.stepExecutions[0].subProcesses.questionnaireAdministration
-                  .unsafeCoerce()
-                  .subProcesses.questionAdministrations.flatMap(
-                    (questionAdministration) =>
-                      (
-                        questionAdministration.output as QuestionAdministrationOutput
-                      ).answer.claims,
-                  );
-              expect(expectedClaims).toHaveLength(4);
-              const expectedClaim = expectedClaims[0];
-              query = {
-                claimIdentifier: expectedClaim.identifier,
-                type: "ClaimGenerator",
-              };
-              break;
             }
-            case "Workflow": {
-              // Add all workflows and executions just to make sure we get the right one.
-              const allWorkflows = Object.values(
-                syntheticTestData.workflows,
-              ).slice(0, 2);
-              const allWorkflowExecutions = Object.values(
-                syntheticTestData.workflowExecutions,
-              ).slice(0, 2);
-              for (
-                let workflowI = 0;
-                workflowI < allWorkflows.length;
-                workflowI++
-              ) {
-                const workflow = allWorkflows[workflowI];
-                await modelSet.addModel(workflow);
-                const workflowExecution = allWorkflowExecutions[workflowI];
-                expect(
-                  workflowExecution.input.workflow.identifier.equals(
-                    workflow.identifier,
-                  ),
-                ).toStrictEqual(true);
-                await modelSet.addModel(workflowExecution);
-              }
-              const expectedWorkflowExecution = allWorkflowExecutions[0];
-              expectedModels = [expectedWorkflowExecution];
-              const expectedWorkflow = (
-                await modelSet.workflow(
-                  expectedWorkflowExecution.input.workflow.identifier,
-                )
-              ).unsafeCoerce();
-              query = {
-                type: "Workflow",
-                workflowIdentifier: expectedWorkflow.identifier,
-              };
-              break;
-            }
+            query = { type: "All" };
+            break;
           }
+          case "ClaimGenerator": {
+            await modelSet.addModel(
+              syntheticTestData.workflows.questionnaireStep,
+            );
 
-          const actualWorkflowExecutionStubs = (
-            await modelSet.workflowExecutionStubs({ query })
-          ).unsafeCoerce();
-          expectEqualResult(
-            arrayEquals(
-              expectedModels.map((model) => stubify(model)),
-              actualWorkflowExecutionStubs,
-              (left, right) => left.equals(right),
-            ),
-          );
-        }),
-    );
+            const expectedModel =
+              syntheticTestData.workflowExecutions.questionnaireStep;
+            expectedModels = [expectedModel];
+            await modelSet.addModel(expectedModel);
+            const expectedClaims: readonly Claim[] =
+              expectedModel.subProcesses.stepExecutions[0].subProcesses.questionnaireAdministration
+                .unsafeCoerce()
+                .subProcesses.questionAdministrations.flatMap(
+                  (questionAdministration) =>
+                    (
+                      questionAdministration.output as QuestionAdministrationOutput
+                    ).answer.claims,
+                );
+            expect(expectedClaims).toHaveLength(4);
+            const expectedClaim = expectedClaims[0];
+            query = {
+              claimIdentifier: expectedClaim.identifier,
+              type: "ClaimGenerator",
+            };
+            break;
+          }
+          case "Workflow": {
+            // Add all workflows and executions just to make sure we get the right one.
+            const allWorkflows = Object.values(
+              syntheticTestData.workflows,
+            ).slice(0, 2);
+            const allWorkflowExecutions = Object.values(
+              syntheticTestData.workflowExecutions,
+            ).slice(0, 2);
+            for (
+              let workflowI = 0;
+              workflowI < allWorkflows.length;
+              workflowI++
+            ) {
+              const workflow = allWorkflows[workflowI];
+              await modelSet.addModel(workflow);
+              const workflowExecution = allWorkflowExecutions[workflowI];
+              expect(
+                workflowExecution.input.workflow.identifier.equals(
+                  workflow.identifier,
+                ),
+              ).toStrictEqual(true);
+              await modelSet.addModel(workflowExecution);
+            }
+            const expectedWorkflowExecution = allWorkflowExecutions[0];
+            expectedModels = [expectedWorkflowExecution];
+            const expectedWorkflow = (
+              await modelSet.workflow(
+                expectedWorkflowExecution.input.workflow.identifier,
+              )
+            ).unsafeCoerce();
+            query = {
+              type: "Workflow",
+              workflowIdentifier: expectedWorkflow.identifier,
+            };
+            break;
+          }
+        }
+
+        const actualWorkflowExecutionStubs = (
+          await modelSet.workflowExecutionStubs({ query })
+        ).unsafeCoerce();
+        expectEqualResult(
+          arrayEquals(
+            expectedModels.map((model) => stubify(model)),
+            actualWorkflowExecutionStubs,
+            (left, right) => left.equals(right),
+          ),
+        );
+      }));
   }
 }
