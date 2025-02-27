@@ -222,6 +222,8 @@ _:n3-3 <http://www.w3.org/ns/shacl#hasValue> <http://www.w3.org/1999/02/22-rdf-s
 <http://purl.archive.org/purl/knextract/ontology#ClaimProperty> <http://www.w3.org/ns/shacl#property> <http://purl.archive.org/purl/knextract/ontology#ClaimProperty-labels> .
 <http://purl.archive.org/purl/knextract/ontology#ClaimProperty> <http://www.w3.org/ns/shacl#nodeKind> <http://www.w3.org/ns/shacl#IRI> .
 <http://purl.archive.org/purl/knextract/ontology#ClaimProperty> <http://minorg.github.io/shaclmate/ns#fromRdfType> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://purl.archive.org/purl/knextract/ontology#ClaimProperty> <http://minorg.github.io/shaclmate/ns#tsFeatureInclude> <http://minorg.github.io/shaclmate/ns#_TsFeature_Equals> .
+<http://purl.archive.org/purl/knextract/ontology#ClaimProperty> <http://minorg.github.io/shaclmate/ns#tsFeatureInclude> <http://minorg.github.io/shaclmate/ns#_TsFeature_Rdf> .
 <http://purl.archive.org/purl/knextract/ontology#ClaimProperty-comments> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/shacl#PropertyShape> .
 <http://purl.archive.org/purl/knextract/ontology#ClaimProperty-comments> <http://www.w3.org/ns/shacl#name> "comments" .
 <http://purl.archive.org/purl/knextract/ontology#ClaimProperty-comments> <http://www.w3.org/ns/shacl#path> <http://www.w3.org/2000/01/rdf-schema#comment> .

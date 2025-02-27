@@ -236,6 +236,7 @@ knextract:ClaimList-rest
 knextract:ClaimProperty
     shaclmate:fromRdfType rdf:Property ;
     shaclmate:name "ClaimProperty" ;
+    shaclmate:tsFeatureInclude shaclmate:_TsFeature_Equals, shaclmate:_TsFeature_Rdf ;
     a owl:Class, sh:NodeShape ;
     sh:nodeKind sh:IRI ;
     sh:property knextract:ClaimProperty-comments, knextract:ClaimProperty-labels .

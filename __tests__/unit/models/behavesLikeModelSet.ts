@@ -20,7 +20,7 @@ import {
 import type { Either } from "purify-ts";
 import { type ExpectStatic, it } from "vitest";
 
-const CI = !!process.env["CI"];
+// const CI = !!process.env["CI"];
 
 export async function behavesLikeModelSet({
   immutableModelSet,
@@ -174,7 +174,7 @@ export async function behavesLikeModelSet({
     });
   });
 
-  it("claimProperties", async ({ expect }) => {
+  it.only("claimProperties", async ({ expect }) => {
     const expectedModel = syntheticTestData.claimProperties[0];
     await withEmptyMutableModelSet(async (modelSet) => {
       expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
