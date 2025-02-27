@@ -39922,6 +39922,66 @@ export class ClaimProperty {
       );
   }
 
+  hash<
+    HasherT extends {
+      update: (message: string | number[] | ArrayBuffer | Uint8Array) => void;
+    },
+  >(_hasher: HasherT): HasherT {
+    for (const _item0 of this.comments) {
+      _hasher.update(_item0.datatype.value);
+      _hasher.update(_item0.language);
+      _hasher.update(_item0.termType);
+      _hasher.update(_item0.value);
+    }
+
+    for (const _item0 of this.labels) {
+      _hasher.update(_item0.datatype.value);
+      _hasher.update(_item0.language);
+      _hasher.update(_item0.termType);
+      _hasher.update(_item0.value);
+    }
+
+    return _hasher;
+  }
+
+  toJson(): {
+    readonly comments: readonly {
+      readonly "@language": string | undefined;
+      readonly "@type": string | undefined;
+      readonly "@value": string;
+    }[];
+    readonly "@id": string;
+    readonly labels: readonly {
+      readonly "@language": string | undefined;
+      readonly "@type": string | undefined;
+      readonly "@value": string;
+    }[];
+    readonly type: "ClaimProperty";
+  } {
+    return JSON.parse(
+      JSON.stringify({
+        comments: this.comments.map((_item) => ({
+          "@language": _item.language.length > 0 ? _item.language : undefined,
+          "@type":
+            _item.datatype.value !== "http://www.w3.org/2001/XMLSchema#string"
+              ? _item.datatype.value
+              : undefined,
+          "@value": _item.value,
+        })),
+        "@id": this.identifier.value,
+        labels: this.labels.map((_item) => ({
+          "@language": _item.language.length > 0 ? _item.language : undefined,
+          "@type":
+            _item.datatype.value !== "http://www.w3.org/2001/XMLSchema#string"
+              ? _item.datatype.value
+              : undefined,
+          "@value": _item.value,
+        })),
+        type: this.type,
+      } satisfies ReturnType<ClaimProperty["toJson"]>),
+    );
+  }
+
   toRdf({
     ignoreRdfType,
     mutateGraph,
@@ -39956,9 +40016,61 @@ export class ClaimProperty {
     );
     return _resource;
   }
+
+  toString(): string {
+    return JSON.stringify(this.toJson());
+  }
 }
 
 export namespace ClaimProperty {
+  export function propertiesFromJson(
+    _json: unknown,
+  ): purify.Either<
+    zod.ZodError,
+    {
+      comments: readonly rdfjs.Literal[];
+      identifier: rdfjs.NamedNode;
+      labels: readonly rdfjs.Literal[];
+    }
+  > {
+    const _jsonSafeParseResult = jsonZodSchema().safeParse(_json);
+    if (!_jsonSafeParseResult.success) {
+      return purify.Left(_jsonSafeParseResult.error);
+    }
+
+    const _jsonObject = _jsonSafeParseResult.data;
+    const comments = _jsonObject["comments"].map((_item) =>
+      dataFactory.literal(
+        _item["@value"],
+        typeof _item["@language"] !== "undefined"
+          ? _item["@language"]
+          : typeof _item["@type"] !== "undefined"
+            ? dataFactory.namedNode(_item["@type"])
+            : undefined,
+      ),
+    );
+    const identifier = dataFactory.namedNode(_jsonObject["@id"]);
+    const labels = _jsonObject["labels"].map((_item) =>
+      dataFactory.literal(
+        _item["@value"],
+        typeof _item["@language"] !== "undefined"
+          ? _item["@language"]
+          : typeof _item["@type"] !== "undefined"
+            ? dataFactory.namedNode(_item["@type"])
+            : undefined,
+      ),
+    );
+    return purify.Either.of({ comments, identifier, labels });
+  }
+
+  export function fromJson(
+    json: unknown,
+  ): purify.Either<zod.ZodError, ClaimProperty> {
+    return ClaimProperty.propertiesFromJson(json).map(
+      (properties) => new ClaimProperty(properties),
+    );
+  }
+
   export function propertiesFromRdf({
     ignoreRdfType: _ignoreRdfType,
     languageIn: _languageIn,
@@ -40084,6 +40196,215 @@ export namespace ClaimProperty {
   export const fromRdfType: rdfjs.NamedNode<string> = dataFactory.namedNode(
     "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
   );
+
+  export function jsonSchema() {
+    return zodToJsonSchema(jsonZodSchema());
+  }
+
+  export function jsonUiSchema(parameters?: { scopePrefix?: string }) {
+    const scopePrefix = parameters?.scopePrefix ?? "#";
+    return {
+      elements: [
+        { scope: `${scopePrefix}/properties/comments`, type: "Control" },
+        {
+          label: "Identifier",
+          scope: `${scopePrefix}/properties/@id`,
+          type: "Control",
+        },
+        { scope: `${scopePrefix}/properties/labels`, type: "Control" },
+        {
+          rule: {
+            condition: {
+              schema: { const: "ClaimProperty" },
+              scope: `${scopePrefix}/properties/type`,
+            },
+            effect: "HIDE",
+          },
+          scope: `${scopePrefix}/properties/type`,
+          type: "Control",
+        },
+      ],
+      label: "ClaimProperty",
+      type: "Group",
+    };
+  }
+
+  export function jsonZodSchema() {
+    return zod.object({
+      comments: zod
+        .object({
+          "@language": zod.string().optional(),
+          "@type": zod.string().optional(),
+          "@value": zod.string(),
+        })
+        .array(),
+      "@id": zod.string().min(1),
+      labels: zod
+        .object({
+          "@language": zod.string().optional(),
+          "@type": zod.string().optional(),
+          "@value": zod.string(),
+        })
+        .array(),
+      type: zod.literal("ClaimProperty"),
+    });
+  }
+
+  export function sparqlConstructQuery(
+    parameters?: {
+      ignoreRdfType?: boolean;
+      prefixes?: { [prefix: string]: string };
+      subject?: sparqljs.Triple["subject"];
+    } & Omit<sparqljs.ConstructQuery, "prefixes" | "queryType" | "type">,
+  ): sparqljs.ConstructQuery {
+    const { ignoreRdfType, subject, ...queryParameters } = parameters ?? {};
+
+    return {
+      ...queryParameters,
+      prefixes: parameters?.prefixes ?? {},
+      queryType: "CONSTRUCT",
+      template: (queryParameters.template ?? []).concat(
+        ClaimProperty.sparqlConstructTemplateTriples({
+          ignoreRdfType,
+          subject,
+        }),
+      ),
+      type: "query",
+      where: (queryParameters.where ?? []).concat(
+        ClaimProperty.sparqlWherePatterns({ ignoreRdfType, subject }),
+      ),
+    };
+  }
+
+  export function sparqlConstructQueryString(
+    parameters?: {
+      ignoreRdfType?: boolean;
+      subject?: sparqljs.Triple["subject"];
+      variablePrefix?: string;
+    } & Omit<sparqljs.ConstructQuery, "prefixes" | "queryType" | "type"> &
+      sparqljs.GeneratorOptions,
+  ): string {
+    return new sparqljs.Generator(parameters).stringify(
+      ClaimProperty.sparqlConstructQuery(parameters),
+    );
+  }
+
+  export function sparqlConstructTemplateTriples(parameters?: {
+    ignoreRdfType?: boolean;
+    subject?: sparqljs.Triple["subject"];
+    variablePrefix?: string;
+  }): readonly sparqljs.Triple[] {
+    const subject =
+      parameters?.subject ?? dataFactory.variable!("claimProperty");
+    const variablePrefix =
+      parameters?.variablePrefix ??
+      (subject.termType === "Variable" ? subject.value : "claimProperty");
+    return [
+      ...(parameters?.ignoreRdfType
+        ? []
+        : [
+            {
+              subject,
+              predicate: dataFactory.namedNode(
+                "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+              ),
+              object: dataFactory.variable!(`${variablePrefix}RdfType`),
+            },
+          ]),
+      {
+        object: dataFactory.variable!(`${variablePrefix}Comments`),
+        predicate: dataFactory.namedNode(
+          "http://www.w3.org/2000/01/rdf-schema#comment",
+        ),
+        subject,
+      },
+      {
+        object: dataFactory.variable!(`${variablePrefix}Labels`),
+        predicate: dataFactory.namedNode(
+          "http://www.w3.org/2000/01/rdf-schema#label",
+        ),
+        subject,
+      },
+    ];
+  }
+
+  export function sparqlWherePatterns(parameters: {
+    ignoreRdfType?: boolean;
+    subject?: sparqljs.Triple["subject"];
+    variablePrefix?: string;
+  }): readonly sparqljs.Pattern[] {
+    const subject =
+      parameters?.subject ?? dataFactory.variable!("claimProperty");
+    const variablePrefix =
+      parameters?.variablePrefix ??
+      (subject.termType === "Variable" ? subject.value : "claimProperty");
+    return [
+      ...(parameters?.ignoreRdfType
+        ? []
+        : [
+            {
+              triples: [
+                {
+                  subject,
+                  predicate: dataFactory.namedNode(
+                    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                  ),
+                  object: dataFactory.namedNode(
+                    "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",
+                  ),
+                },
+              ],
+              type: "bgp" as const,
+            },
+            {
+              triples: [
+                {
+                  subject,
+                  predicate: dataFactory.namedNode(
+                    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                  ),
+                  object: dataFactory.variable!(`${variablePrefix}RdfType`),
+                },
+              ],
+              type: "bgp" as const,
+            },
+          ]),
+      {
+        patterns: [
+          {
+            triples: [
+              {
+                object: dataFactory.variable!(`${variablePrefix}Comments`),
+                predicate: dataFactory.namedNode(
+                  "http://www.w3.org/2000/01/rdf-schema#comment",
+                ),
+                subject,
+              },
+            ],
+            type: "bgp",
+          },
+        ],
+        type: "optional",
+      },
+      {
+        patterns: [
+          {
+            triples: [
+              {
+                object: dataFactory.variable!(`${variablePrefix}Labels`),
+                predicate: dataFactory.namedNode(
+                  "http://www.w3.org/2000/01/rdf-schema#label",
+                ),
+                subject,
+              },
+            ],
+            type: "bgp",
+          },
+        ],
+        type: "optional",
+      },
+    ];
+  }
 }
 export class Claim extends InformationContentEntity {
   readonly gold: boolean;

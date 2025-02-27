@@ -1,9 +1,4 @@
-import {
-  Claim,
-  ClaimProperty,
-  CorpusStub,
-  sortModelsByIdentifier,
-} from "@/lib/models";
+import { Claim, ClaimProperty, sortModelsByIdentifier } from "@/lib/models";
 import { RdfjsDatasetModelSet } from "@/lib/models/RdfjsDatasetModelSet";
 import { SparqlModelSet } from "@/lib/models/SparqlModelSet";
 import { dataFactory, datasetCoreFactory } from "@/lib/rdfEnvironment";
@@ -28,7 +23,7 @@ export async function claimProperties(
       dataset: datasetCoreFactory.dataset(
         (
           await this.sparqlQueryClient.queryQuads(
-            CorpusStub.sparqlConstructQueryString({
+            ClaimProperty.sparqlConstructQueryString({
               subject: claimPropertyVariable,
               variablePrefix: "claimProperty",
               where: [
