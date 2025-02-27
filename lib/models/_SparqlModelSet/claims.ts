@@ -53,12 +53,6 @@ export async function claims(
     query: ClaimQuery;
   },
 ): Promise<Either<Error, readonly Claim[]>> {
-  const queryString = Claim.sparqlConstructQueryString({
-    subject: claimVariable,
-    variablePrefix: "claim",
-    where: claimQueryToWherePatterns(query).concat(),
-  });
-  console.log(queryString);
   return EitherAsync(async () =>
     new RdfjsDatasetModelSet({
       dataset: datasetCoreFactory.dataset(
