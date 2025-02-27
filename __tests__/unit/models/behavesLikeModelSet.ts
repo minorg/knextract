@@ -143,7 +143,7 @@ export async function behavesLikeModelSet({
 
   Object.entries(syntheticTestData.workflowExecutions).forEach(
     ([key, expectedModel]) => {
-      it.skipIf(sparql).only(
+      it.skipIf(sparql)(
         `addModel (WorkflowExecution) ${key}`,
         async ({ expect }) => {
           await testAddModel({
