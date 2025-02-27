@@ -1,4 +1,7 @@
 import { testData } from "@/__tests__/unit/data";
+import { expectEqualResult } from "@/__tests__/unit/models/expectEqualResult";
+import { expectModelsEqual } from "@/__tests__/unit/models/expectModelsEqual";
+import { expectModelsUnequal } from "@/__tests__/unit/models/expectModelsUnequal";
 import {
   type Claim,
   Corpus,
@@ -42,7 +45,6 @@ export async function behavesLikeModelSet({
     },
   >({
     actualModel,
-    expect,
     expectedModel,
   }: {
     actualModel: (modelSet: ModelSet) => Promise<Either<Error, ModelT>>;
@@ -51,12 +53,10 @@ export async function behavesLikeModelSet({
   }) =>
     withEmptyMutableModelSet(async (modelSet) => {
       await modelSet.addModel(expectedModel);
-      const actualModel_ = (await actualModel(modelSet)).unsafeCoerce();
-      const equalsResult = actualModel_.equals(expectedModel).extract();
-      if (equalsResult !== true) {
-        console.log("not true");
-      }
-      expect(equalsResult).toStrictEqual(true);
+      expectModelsEqual(
+        expectedModel,
+        (await actualModel(modelSet)).unsafeCoerce(),
+      );
     });
 
   const testDeleteModel = async <
@@ -83,9 +83,7 @@ export async function behavesLikeModelSet({
       const preDeletionModel = (
         await getModelFromModelSet(modelSet)
       ).unsafeCoerce();
-      expect(preDeletionModel.equals(syntheticModel).extract()).toStrictEqual(
-        true,
-      );
+      expectModelsEqual(syntheticModel, preDeletionModel);
       expect(preDeletionModel.deleted).toStrictEqual(false);
 
       await modelSet.deleteModel(syntheticModel);
@@ -94,9 +92,7 @@ export async function behavesLikeModelSet({
         await getModelFromModelSet(modelSet)
       ).unsafeCoerce();
       expect(postDeletionModel.deleted).toStrictEqual(true);
-      expect(
-        postDeletionModel.equals(syntheticModel).extract(),
-      ).not.toStrictEqual(true);
+      expectModelsUnequal(syntheticModel, postDeletionModel);
     });
 
   syntheticTestData.claims.forEach((expectedModel, expectedModelI) => {
@@ -147,7 +143,7 @@ export async function behavesLikeModelSet({
 
   Object.entries(syntheticTestData.workflowExecutions).forEach(
     ([key, expectedModel]) => {
-      it.skipIf(sparql)(
+      it.skipIf(sparql).only(
         `addModel (WorkflowExecution) ${key}`,
         async ({ expect }) => {
           await testAddModel({
@@ -166,24 +162,23 @@ export async function behavesLikeModelSet({
     await withEmptyMutableModelSet(async (modelSet) => {
       expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
       await modelSet.addModel(expectedModel);
-      const actualModel = (await modelSet.claim(expectedModel.identifier))
-        .toMaybe()
-        .extractNullable();
-      expect(actualModel).not.toBeNull();
-      expect(actualModel!.equals(expectedModel).extract()).toStrictEqual(true);
+      expectModelsEqual(
+        expectedModel,
+        (await modelSet.claim(expectedModel.identifier))
+          .toMaybe()
+          .extractNullable(),
+      );
     });
   });
 
-  it.only("claimProperties", async ({ expect }) => {
+  it("claimProperties", async ({ expect }) => {
     const expectedModel = syntheticTestData.claimProperties[0];
     await withEmptyMutableModelSet(async (modelSet) => {
       expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
       await modelSet.addModel(expectedModel);
       const actualModels = (await modelSet.claimProperties()).unsafeCoerce();
       expect(actualModels).toHaveLength(1);
-      expect(actualModels[0].equals(expectedModel).extract()).toStrictEqual(
-        true,
-      );
+      expectModelsEqual(expectedModel, actualModels[0]);
     });
   });
 
@@ -227,11 +222,11 @@ export async function behavesLikeModelSet({
       })
     ).unsafeCoerce();
 
-    expect(
+    expectEqualResult(
       arrayEquals(expectedModels, actualModels, (left, right) =>
         left.equals(right),
-      ).extract(),
-    ).toStrictEqual(true);
+      ),
+    );
   });
 
   it("claims (Medline Plus document)", async ({ expect }) => {
@@ -254,46 +249,40 @@ export async function behavesLikeModelSet({
       })
     ).unsafeCoerce();
 
-    expect(
+    expectEqualResult(
       arrayEquals(expectedModels, actualModels, (left, right) =>
         left.equals(right),
-      ).extract(),
-    ).toStrictEqual(true);
+      ),
+    );
   });
 
   Object.entries(syntheticTestData.corpora).forEach(([key, expectedModel]) => {
-    it(`corpus ${key}`, ({ expect }) => {
+    it(`corpus ${key}`, () => {
       withEmptyMutableModelSet(async (modelSet) => {
         await modelSet.addModel(expectedModel);
-        expect(
-          (await modelSet.corpus(expectedModel.identifier))
-            .unsafeCoerce()
-            .equals(expectedModel)
-            .extract(),
-        ).toStrictEqual(true);
+        expectModelsEqual(
+          expectedModel,
+          (await modelSet.corpus(expectedModel.identifier)).unsafeCoerce(),
+        );
       });
     });
   });
 
   Object.entries(syntheticTestData.corpora).forEach(([key, expectedModel]) => {
-    it(`corpusStub ${key}`, ({ expect }) => {
+    it(`corpusStub ${key}`, () => {
       withEmptyMutableModelSet(async (modelSet) => {
         await modelSet.addModel(expectedModel);
-        expect(
-          (await modelSet.corpusStub(expectedModel.identifier))
-            .unsafeCoerce()
-            .equals(stubify(expectedModel))
-            .extract(),
-        ).toStrictEqual(true);
+        expectModelsEqual(
+          stubify(expectedModel),
+          (await modelSet.corpusStub(expectedModel.identifier)).unsafeCoerce(),
+        );
       });
     });
   });
 
   for (const includeDeleted of [false, true]) {
     for (const queryType of ["All"] as const) {
-      it(`corpusStubs includeDeleted=${includeDeleted} queryType=${queryType}`, ({
-        expect,
-      }) =>
+      it(`corpusStubs includeDeleted=${includeDeleted} queryType=${queryType}`, () =>
         withEmptyMutableModelSet(async (modelSet) => {
           const deleteModel = new Corpus({
             deleted: true,
@@ -330,11 +319,11 @@ export async function behavesLikeModelSet({
               query,
             })
           ).unsafeCoerce();
-          expect(
+          expectEqualResult(
             arrayEquals(expectedModels, actualCorpusStubs, (left, right) =>
               left.equals(right),
-            ).extract(),
-          ).toStrictEqual(true);
+            ),
+          );
         }));
     }
   }
@@ -376,30 +365,26 @@ export async function behavesLikeModelSet({
 
   Object.entries(syntheticTestData.documents).forEach(
     ([key, expectedModel]) => {
-      it(`document ${key}`, async ({ expect }) =>
+      it(`document ${key}`, async () =>
         withEmptyMutableModelSet(async (modelSet) => {
           await modelSet.addModel(expectedModel);
-          expect(
-            (await modelSet.document(expectedModel.identifier))
-              .unsafeCoerce()
-              .equals(expectedModel)
-              .extract(),
-          ).toStrictEqual(true);
+          expectModelsEqual(
+            expectedModel,
+            (await modelSet.document(expectedModel.identifier)).unsafeCoerce(),
+          );
         }));
     },
   );
 
   Object.entries(syntheticTestData.documents).forEach(
     ([key, expectedModel]) => {
-      it(`documentStub ${key}`, async ({ expect }) =>
+      it(`documentStub ${key}`, async () =>
         withEmptyMutableModelSet(async (modelSet) => {
           await modelSet.addModel(expectedModel);
-          expect(
-            (await modelSet.document(expectedModel.identifier))
-              .unsafeCoerce()
-              .equals(expectedModel)
-              .extract(),
-          ).toStrictEqual(true);
+          expectModelsEqual(
+            expectedModel,
+            (await modelSet.document(expectedModel.identifier)).unsafeCoerce(),
+          );
         }));
     },
   );
@@ -472,13 +457,13 @@ export async function behavesLikeModelSet({
               query,
             })
           ).unsafeCoerce();
-          expect(
+          expectEqualResult(
             arrayEquals(
               expectedModels.map((model) => stubify(model)),
               actualModelStubs,
               (left, right) => left.equals(right),
-            ).extract(),
-          ).toStrictEqual(true);
+            ),
+          );
 
           expect(
             (await modelSet.documentsCount(query)).unsafeCoerce(),
@@ -487,18 +472,18 @@ export async function behavesLikeModelSet({
     }
   }
 
-  it("languageModelSpecification", async ({ expect }) => {
+  it("languageModelSpecification", async () => {
     const expectedModel = medlinePlusTestData.languageModelSpecification;
-    const actualModel = (
-      await immutableModelSet.languageModelSpecification(
-        expectedModel.identifier,
+    expectModelsEqual(
+      expectedModel,
+      (
+        await immutableModelSet.languageModelSpecification(
+          expectedModel.identifier,
+        )
       )
-    )
-      .toMaybe()
-      .extractNullable();
-    expect(actualModel).not.toBeNull();
-    const equalsResult = actualModel!.equals(expectedModel).extract();
-    expect(equalsResult).toStrictEqual(true);
+        .toMaybe()
+        .extractNullable(),
+    );
   });
 
   it("languageModelSpecifications", async ({ expect }) => {
@@ -514,20 +499,20 @@ export async function behavesLikeModelSet({
     ).toStrictEqual(true);
   });
 
-  it("languageModelSpecificationStub", async ({ expect }) => {
+  it("languageModelSpecificationStub", async () => {
     const expectedModel = stubify(
       medlinePlusTestData.languageModelSpecification,
     );
-    const actualModel = (
-      await immutableModelSet.languageModelSpecificationStub(
-        expectedModel.identifier,
+    expectModelsEqual(
+      expectedModel,
+      (
+        await immutableModelSet.languageModelSpecificationStub(
+          expectedModel.identifier,
+        )
       )
-    )
-      .toMaybe()
-      .extractNullable();
-    expect(actualModel).not.toBeNull();
-    const equalsResult = actualModel!.equals(expectedModel).extract();
-    expect(equalsResult).toStrictEqual(true);
+        .toMaybe()
+        .extractNullable(),
+    );
   });
 
   it("languageModelSpecificationStubs", async ({ expect }) => {
@@ -551,14 +536,11 @@ export async function behavesLikeModelSet({
         withEmptyMutableModelSet(async (modelSet) => {
           expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
           await modelSet.addModel(expectedModel);
-          const actualModel = (
-            await modelSet.workflow(expectedModel.identifier)
-          )
-            .toMaybe()
-            .extractNullable();
-          expect(actualModel).not.toBeNull();
-          expect(actualModel!.equals(expectedModel).extract()).toStrictEqual(
-            true,
+          expectModelsEqual(
+            expectedModel,
+            (await modelSet.workflow(expectedModel.identifier))
+              .toMaybe()
+              .extractNullable(),
           );
         }),
       );
@@ -572,15 +554,12 @@ export async function behavesLikeModelSet({
         await modelSet.addModel(model);
       }
       for (const expectedModel of Object.values(syntheticTestData.workflows)) {
-        const actualModel = (await modelSet.workflow(expectedModel.identifier))
-          .toMaybe()
-          .extractNullable();
-        expect(actualModel).not.toBeNull();
-        const equalsResult = actualModel!.equals(expectedModel).extract();
-        if (equalsResult !== true) {
-          console.log("test");
-        }
-        expect(equalsResult).toStrictEqual(true);
+        expectModelsEqual(
+          expectedModel,
+          (await modelSet.workflow(expectedModel.identifier))
+            .toMaybe()
+            .extractNullable(),
+        );
       }
     }),
   );
@@ -591,15 +570,12 @@ export async function behavesLikeModelSet({
         withEmptyMutableModelSet(async (modelSet) => {
           expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
           await modelSet.addModel(expectedModel);
-          const actualModel = (
-            await modelSet.workflowStub(expectedModel.identifier)
-          )
-            .toMaybe()
-            .extractNullable();
-          expect(actualModel).not.toBeNull();
-          expect(
-            actualModel!.equals(stubify(expectedModel)).extract(),
-          ).toStrictEqual(true);
+          expectModelsEqual(
+            stubify(expectedModel),
+            (await modelSet.workflowStub(expectedModel.identifier))
+              .toMaybe()
+              .extractNullable(),
+          );
         }),
       );
     },
@@ -609,7 +585,7 @@ export async function behavesLikeModelSet({
     for (const queryType of ["All"] as const) {
       it.skipIf(sparql)(
         `workflowStubs includeDeleted=${includeDeleted} queryType=${queryType}`,
-        ({ expect }) =>
+        () =>
           withEmptyMutableModelSet(async (modelSet) => {
             const deleteModel = new Workflow({
               deleted: true,
@@ -646,12 +622,13 @@ export async function behavesLikeModelSet({
                 query,
               })
             ).unsafeCoerce();
-            const equalsResult = arrayEquals(
-              expectedModels.map((model) => stubify(model)),
-              actualModelStubs,
-              (left, right) => left.equals(right),
-            ).extract();
-            expect(equalsResult).toStrictEqual(true);
+            expectEqualResult(
+              arrayEquals(
+                expectedModels.map((model) => stubify(model)),
+                actualModelStubs,
+                (left, right) => left.equals(right),
+              ),
+            );
           }),
       );
     }
@@ -663,14 +640,11 @@ export async function behavesLikeModelSet({
         withEmptyMutableModelSet(async (modelSet) => {
           expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
           await modelSet.addModel(expectedModel);
-          const actualModel = (
-            await modelSet.workflowExecution(expectedModel.identifier)
-          )
-            .toMaybe()
-            .extractNullable();
-          expect(actualModel).not.toBeNull();
-          expect(actualModel!.equals(expectedModel).extract()).toStrictEqual(
-            true,
+          expectModelsEqual(
+            expectedModel,
+            (await modelSet.workflowExecution(expectedModel.identifier))
+              .toMaybe()
+              .extractNullable(),
           );
         }),
       );
@@ -683,15 +657,12 @@ export async function behavesLikeModelSet({
         withEmptyMutableModelSet(async (modelSet) => {
           expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
           await modelSet.addModel(expectedModel);
-          const actualModel = (
-            await modelSet.workflowExecutionStub(expectedModel.identifier)
-          )
-            .toMaybe()
-            .extractNullable();
-          expect(actualModel).not.toBeNull();
-          expect(
-            actualModel!.equals(stubify(expectedModel)).extract(),
-          ).toStrictEqual(true);
+          expectModelsEqual(
+            stubify(expectedModel),
+            (await modelSet.workflowExecutionStub(expectedModel.identifier))
+              .toMaybe()
+              .extractNullable(),
+          );
         }),
       );
     },
@@ -706,17 +677,12 @@ export async function behavesLikeModelSet({
       for (const expectedModel of Object.values(
         syntheticTestData.workflowExecutions,
       )) {
-        const actualModel = (
-          await modelSet.workflowExecution(expectedModel.identifier)
-        )
-          .toMaybe()
-          .extractNullable();
-        expect(actualModel).not.toBeNull();
-        const equalsResult = actualModel!.equals(expectedModel).extract();
-        // if (equalsResult !== true) {
-        //   console.log(ttl);
-        // }
-        expect(equalsResult).toStrictEqual(true);
+        expectModelsEqual(
+          expectedModel,
+          (await modelSet.workflowExecution(expectedModel.identifier))
+            .toMaybe()
+            .extractNullable(),
+        );
       }
     }),
   );
@@ -808,13 +774,13 @@ export async function behavesLikeModelSet({
           const actualWorkflowExecutionStubs = (
             await modelSet.workflowExecutionStubs({ query })
           ).unsafeCoerce();
-          expect(
+          expectEqualResult(
             arrayEquals(
               expectedModels.map((model) => stubify(model)),
               actualWorkflowExecutionStubs,
               (left, right) => left.equals(right),
-            ).extract(),
-          ).toStrictEqual(true);
+            ),
+          );
         }),
     );
   }
