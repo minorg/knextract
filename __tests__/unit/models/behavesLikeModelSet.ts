@@ -674,102 +674,110 @@ export async function behavesLikeModelSet({
   );
 
   for (const queryType of ["All", "ClaimGenerator", "Workflow"] as const) {
-    if (queryType !== "ClaimGenerator") {
-      continue;
-    }
-    it.only(`workflowExecutionStubs queryType=${queryType}`, async ({
-      expect,
-    }) =>
-      withEmptyMutableModelSet(async (modelSet) => {
-        expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
+    it.skipIf(sparql && queryType === "ClaimGenerator")(
+      `workflowExecutionStubs queryType=${queryType}`,
+      async ({ expect }) =>
+        withEmptyMutableModelSet(async (modelSet) => {
+          expect((await modelSet.isEmpty()).unsafeCoerce()).toStrictEqual(true);
 
-        let expectedModels: readonly WorkflowExecution[];
-        let query: WorkflowExecutionQuery;
-        switch (queryType) {
-          case "All": {
-            expectedModels = Object.values(
-              syntheticTestData.workflowExecutions,
-            );
-            for (const expectedModel of expectedModels) {
+          let expectedModels: readonly WorkflowExecution[];
+          let query: WorkflowExecutionQuery;
+          switch (queryType) {
+            case "All": {
+              expectedModels = Object.values(
+                syntheticTestData.workflowExecutions,
+              );
+              for (const expectedModel of expectedModels) {
+                await modelSet.addModel(expectedModel);
+              }
+              query = { type: "All" };
+              break;
+            }
+            case "ClaimGenerator": {
+              await modelSet.addModel(
+                syntheticTestData.workflows.questionnaireStep,
+              );
+              // const tempModelSet = new RdfjsDatasetModelSet().addModelSync(
+              //   syntheticTestData.workflowExecutions.questionnaireStep,
+              // );
+              // const ttl = await rdfEnvironment.serializers.serializeToString(
+              //   tempModelSet.dataset,
+              //   {
+              //     format: "text/turtle",
+              //   },
+              // );
+              // console.log(ttl);
+
+              const expectedModel =
+                syntheticTestData.workflowExecutions.questionnaireStep;
+              expectedModels = [expectedModel];
               await modelSet.addModel(expectedModel);
+              const expectedClaims: readonly Claim[] =
+                expectedModel.subProcesses.stepExecutions[0].subProcesses.questionnaireAdministration
+                  .unsafeCoerce()
+                  .subProcesses.questionAdministrations.flatMap(
+                    (questionAdministration) =>
+                      (
+                        questionAdministration.output as QuestionAdministrationOutput
+                      ).answer.claims,
+                  );
+              expect(expectedClaims).toHaveLength(4);
+              const expectedClaim = expectedClaims[0];
+              query = {
+                claimIdentifier: expectedClaim.identifier,
+                type: "ClaimGenerator",
+              };
+              break;
             }
-            query = { type: "All" };
-            break;
-          }
-          case "ClaimGenerator": {
-            await modelSet.addModel(
-              syntheticTestData.workflows.questionnaireStep,
-            );
-
-            const expectedModel =
-              syntheticTestData.workflowExecutions.questionnaireStep;
-            expectedModels = [expectedModel];
-            await modelSet.addModel(expectedModel);
-            const expectedClaims: readonly Claim[] =
-              expectedModel.subProcesses.stepExecutions[0].subProcesses.questionnaireAdministration
-                .unsafeCoerce()
-                .subProcesses.questionAdministrations.flatMap(
-                  (questionAdministration) =>
-                    (
-                      questionAdministration.output as QuestionAdministrationOutput
-                    ).answer.claims,
-                );
-            expect(expectedClaims).toHaveLength(4);
-            const expectedClaim = expectedClaims[0];
-            query = {
-              claimIdentifier: expectedClaim.identifier,
-              type: "ClaimGenerator",
-            };
-            break;
-          }
-          case "Workflow": {
-            // Add all workflows and executions just to make sure we get the right one.
-            const allWorkflows = Object.values(
-              syntheticTestData.workflows,
-            ).slice(0, 2);
-            const allWorkflowExecutions = Object.values(
-              syntheticTestData.workflowExecutions,
-            ).slice(0, 2);
-            for (
-              let workflowI = 0;
-              workflowI < allWorkflows.length;
-              workflowI++
-            ) {
-              const workflow = allWorkflows[workflowI];
-              await modelSet.addModel(workflow);
-              const workflowExecution = allWorkflowExecutions[workflowI];
-              expect(
-                workflowExecution.input.workflow.identifier.equals(
-                  workflow.identifier,
-                ),
-              ).toStrictEqual(true);
-              await modelSet.addModel(workflowExecution);
+            case "Workflow": {
+              // Add all workflows and executions just to make sure we get the right one.
+              const allWorkflows = Object.values(
+                syntheticTestData.workflows,
+              ).slice(0, 2);
+              const allWorkflowExecutions = Object.values(
+                syntheticTestData.workflowExecutions,
+              ).slice(0, 2);
+              for (
+                let workflowI = 0;
+                workflowI < allWorkflows.length;
+                workflowI++
+              ) {
+                const workflow = allWorkflows[workflowI];
+                await modelSet.addModel(workflow);
+                const workflowExecution = allWorkflowExecutions[workflowI];
+                expect(
+                  workflowExecution.input.workflow.identifier.equals(
+                    workflow.identifier,
+                  ),
+                ).toStrictEqual(true);
+                await modelSet.addModel(workflowExecution);
+              }
+              const expectedWorkflowExecution = allWorkflowExecutions[0];
+              expectedModels = [expectedWorkflowExecution];
+              const expectedWorkflow = (
+                await modelSet.workflow(
+                  expectedWorkflowExecution.input.workflow.identifier,
+                )
+              ).unsafeCoerce();
+              query = {
+                type: "Workflow",
+                workflowIdentifier: expectedWorkflow.identifier,
+              };
+              break;
             }
-            const expectedWorkflowExecution = allWorkflowExecutions[0];
-            expectedModels = [expectedWorkflowExecution];
-            const expectedWorkflow = (
-              await modelSet.workflow(
-                expectedWorkflowExecution.input.workflow.identifier,
-              )
-            ).unsafeCoerce();
-            query = {
-              type: "Workflow",
-              workflowIdentifier: expectedWorkflow.identifier,
-            };
-            break;
           }
-        }
 
-        const actualWorkflowExecutionStubs = (
-          await modelSet.workflowExecutionStubs({ query })
-        ).unsafeCoerce();
-        expectEqualResult(
-          arrayEquals(
-            expectedModels.map((model) => stubify(model)),
-            actualWorkflowExecutionStubs,
-            (left, right) => left.equals(right),
-          ),
-        );
-      }));
+          const actualWorkflowExecutionStubs = (
+            await modelSet.workflowExecutionStubs({ query })
+          ).unsafeCoerce();
+          expectEqualResult(
+            arrayEquals(
+              expectedModels.map((model) => stubify(model)),
+              actualWorkflowExecutionStubs,
+              (left, right) => left.equals(right),
+            ),
+          );
+        }),
+    );
   }
 }

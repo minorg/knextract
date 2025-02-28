@@ -1,79 +1,15 @@
-import {
-  WorkflowExecutionQuery,
-  WorkflowExecutionStub,
-  WorkflowQuestionnaireStepExecution,
-} from "@/lib/models";
+import { WorkflowExecutionQuery, WorkflowExecutionStub } from "@/lib/models";
 import { RdfjsDatasetModelSet } from "@/lib/models/RdfjsDatasetModelSet";
 import { SparqlModelSet } from "@/lib/models/SparqlModelSet";
 import { dataFactory, datasetCoreFactory } from "@/lib/rdfEnvironment";
 import { knextract } from "@/lib/vocabularies";
-import { Variable } from "@rdfjs/types";
-import { rdf } from "@tpluscode/rdf-ns-builders";
 import { Either, EitherAsync } from "purify-ts";
 import * as sparqljs from "sparqljs";
 
-function sparqlRdfListTriples({
-  itemVariable,
-  listVariable,
-}: {
-  itemVariable: Variable;
-  listVariable: Variable;
-}): sparqljs.Triple[] {
-  const restVariable = dataFactory.variable!(`${listVariable.value}Rest`);
-
-  return [
-    // (List, rdf:rest*, rest)
-    {
-      subject: listVariable,
-      predicate: {
-        items: [rdf.rest],
-        pathType: "*",
-        type: "path",
-      },
-      object: restVariable,
-    },
-    // Step execution list rest, rdf:first, step execution
-    {
-      subject: restVariable,
-      predicate: rdf.first,
-      object: itemVariable,
-    },
-  ];
-}
-
-const answerVariable = dataFactory.variable!("answer");
-const claimVariable = dataFactory.variable!("claim");
-const claimListVariable = dataFactory.variable!("claimList");
-const questionAdministrationOutputVariable = dataFactory.variable!(
-  "questionAdministrationOutput",
-);
-const questionAdministrationVariable = dataFactory.variable!(
-  "questionAdministration",
-);
-const questionAdministrationsListVariable = dataFactory.variable!(
-  "questionAdministrationsList",
-);
-const questionnaireAdministrationVariable = dataFactory.variable!(
-  "questionnaireAdministration",
-);
-const questionnaireAdministrationSubProcessesVariable = dataFactory.variable!(
-  "questionnaireAdministrationSubProcesses",
-);
 const workflowExecutionVariable = dataFactory.variable!("workflowExecution");
 const workflowExecutionInputVariable = dataFactory.variable!(
   "workflowExecutionInput",
 );
-const workflowExecutionSubProcessesVariable = dataFactory.variable!(
-  "workflowExecutionSubProcesses",
-);
-const workflowStepExecutionListVariable = dataFactory.variable!(
-  "workflowStepExecutionList",
-);
-const workflowStepExecutionVariable = dataFactory.variable!(
-  "workflowStepExecution",
-);
-const workflowQuestionnaireStepExecutionSubProcessesVariable =
-  dataFactory.variable!("workflowQuestionnaireStepExecutionSubProcesses");
 
 function workflowExecutionQueryToWherePatterns(
   query: WorkflowExecutionQuery,
@@ -82,92 +18,104 @@ function workflowExecutionQueryToWherePatterns(
     case "All":
       return [];
     case "ClaimGenerator":
-      return [
-        {
-          type: "values",
-          values: [query.claimIdentifier].map((identifier) => {
-            const valuePatternRow: sparqljs.ValuePatternRow = {};
-            valuePatternRow[`?${claimVariable.value}`] = identifier;
-            return valuePatternRow;
-          }),
-        },
-        {
-          triples: [
-            // Execution -> sub-processes
-            {
-              subject: workflowExecutionVariable,
-              predicate: knextract.subProcesses,
-              object: workflowExecutionSubProcessesVariable,
-            },
-            // Sub-processes -> step execution list
-            {
-              subject: workflowExecutionSubProcessesVariable,
-              predicate: knextract.workflowStepExecutions,
-              object: workflowStepExecutionListVariable,
-            },
-            ...sparqlRdfListTriples({
-              itemVariable: workflowStepExecutionVariable,
-              listVariable: workflowStepExecutionListVariable,
-            }),
-            // Step execution RDF type
-            {
-              subject: workflowStepExecutionVariable,
-              predicate: rdf.type,
-              object: WorkflowQuestionnaireStepExecution.fromRdfType,
-            },
-            // Questionnaire step execution -> sub-processes
-            {
-              subject: workflowStepExecutionVariable,
-              predicate: knextract.subProcesses,
-              object: workflowQuestionnaireStepExecutionSubProcessesVariable,
-            },
-            // Questionnaire step execution sub-processes -> questionnaire administration
-            {
-              subject: workflowQuestionnaireStepExecutionSubProcessesVariable,
-              predicate: knextract.questionnaireAdministration,
-              object: questionnaireAdministrationVariable,
-            },
-            // Questionnaire administration -> sub-processes
-            {
-              subject: questionnaireAdministrationVariable,
-              predicate: knextract.subProcesses,
-              object: questionnaireAdministrationSubProcessesVariable,
-            },
-            {
-              subject: questionnaireAdministrationSubProcessesVariable,
-              predicate: knextract.questionnaireAdministrations,
-              object: questionAdministrationsListVariable,
-            },
-            ...sparqlRdfListTriples({
-              itemVariable: questionAdministrationVariable,
-              listVariable: questionAdministrationsListVariable,
-            }),
-            // Question administration -> output
-            {
-              subject: questionAdministrationVariable,
-              predicate: knextract.processOutput,
-              object: questionAdministrationOutputVariable,
-            },
-            // Question administration output -> answer
-            {
-              subject: questionAdministrationOutputVariable,
-              predicate: knextract.answer,
-              object: answerVariable,
-            },
-            // Answer -> claims list
-            {
-              subject: answerVariable,
-              predicate: knextract.claims,
-              object: claimListVariable,
-            },
-            ...sparqlRdfListTriples({
-              itemVariable: claimVariable,
-              listVariable: claimListVariable,
-            }),
-          ],
-          type: "bgp",
-        },
-      ];
+      throw new Error(
+        "not implemented: add a generatedByWorkflowExecution to Claim instead of this monstrosity",
+      );
+    // return [
+    //   {
+    //     type: "values",
+    //     values: [query.claimIdentifier].map((identifier) => {
+    //       const valuePatternRow: sparqljs.ValuePatternRow = {};
+    //       valuePatternRow[`?${claimVariable.value}`] = identifier;
+    //       return valuePatternRow;
+    //     }),
+    //   },
+    //   // Execution -> sub-processes
+    //   sparqlTriplesToPattern({
+    //     subject: workflowExecutionVariable,
+    //     predicate: knextract.subProcesses,
+    //     object: workflowExecutionSubProcessesVariable,
+    //   }),
+    //   // Sub-processes -> step execution list
+    //   sparqlTriplesToPattern({
+    //     subject: workflowExecutionSubProcessesVariable,
+    //     predicate: knextract.workflowStepExecutions,
+    //     object: workflowStepExecutionListVariable,
+    //   }),
+    //   ...sparqlRdfListPatterns({
+    //     listVariable: workflowStepExecutionListVariable,
+    //     itemPatterns: (workflowStepExecutionVariable) => [
+    //       // Questionnaire step execution RDF type
+    //       sparqlTriplesToPattern({
+    //         subject: workflowStepExecutionVariable,
+    //         predicate: rdf.type,
+    //         object: WorkflowQuestionnaireStepExecution.fromRdfType,
+    //       }),
+    //       // Questionnaire step execution -> sub-processes
+    //       sparqlTriplesToPattern({
+    //         subject: workflowStepExecutionVariable,
+    //         predicate: knextract.subProcesses,
+    //         object: workflowQuestionnaireStepExecutionSubProcessesVariable,
+    //       }),
+    //       // Questionnaire step execution sub-processes -> questionnaire administration
+    //       sparqlTriplesToPattern({
+    //         subject: workflowQuestionnaireStepExecutionSubProcessesVariable,
+    //         predicate: knextract.questionnaireAdministration,
+    //         object: questionnaireAdministrationVariable,
+    //       }),
+    //       // Questionnaire administration -> sub-processes
+    //       sparqlTriplesToPattern({
+    //         subject: questionnaireAdministrationVariable,
+    //         predicate: knextract.subProcesses,
+    //         object: questionnaireAdministrationSubProcessesVariable,
+    //       }),
+    //       // Questionnaire administration sub-processes -> question administrations list
+    //       sparqlTriplesToPattern({
+    //         subject: questionnaireAdministrationSubProcessesVariable,
+    //         predicate: knextract.questionnaireAdministrations,
+    //         object: questionAdministrationsListVariable,
+    //       }),
+    //       // Question administrations list
+    //       ...sparqlRdfListPatterns({
+    //         listVariable: questionAdministrationsListVariable,
+    //         itemPatterns: (questionAdministrationVariable) => [
+    //           // Question administration -> output
+    //           sparqlTriplesToPattern({
+    //             subject: questionAdministrationVariable,
+    //             predicate: knextract.processOutput,
+    //             object: questionAdministrationOutputVariable,
+    //           }),
+    //           // Question administration output -> answer
+    //           sparqlTriplesToPattern({
+    //             subject: questionAdministrationOutputVariable,
+    //             predicate: knextract.answer,
+    //             object: answerVariable,
+    //           }),
+    //           // Answer -> claims list
+    //           sparqlTriplesToPattern({
+    //             subject: answerVariable,
+    //             predicate: knextract.claims,
+    //             object: claimListVariable,
+    //           }),
+    //           // Claim list item = claim
+    //           ...sparqlRdfListPatterns({
+    //             listVariable: claimListVariable,
+    //             itemPatterns: (claimListItemVariable) => [
+    //               {
+    //                 expression: {
+    //                   args: [claimListItemVariable, claimVariable],
+    //                   operator: "=",
+    //                   type: "operation",
+    //                 },
+    //                 type: "filter",
+    //               },
+    //             ],
+    //           }),
+    //         ],
+    //       }),
+    //     ],
+    //   }),
+    // ];
     case "Workflow":
       return [
         {
