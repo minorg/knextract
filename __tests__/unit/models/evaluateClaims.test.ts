@@ -9,7 +9,7 @@ import { dcterms } from "@tpluscode/rdf-ns-builders";
 import { describe, it } from "vitest";
 
 describe("evaluateClaims", () => {
-  const categoricalObjects = new Array(3).map(
+  const categoricalObjects = [...new Array(3).keys()].map(
     (_, index) =>
       new CategoricalValue({
         value: ConceptStub.create({
