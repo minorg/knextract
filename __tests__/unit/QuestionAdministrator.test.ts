@@ -7,8 +7,8 @@ import { QuestionAdministrator } from "@/lib/QuestionAdministrator";
 import {
   BooleanValue,
   CategoricalValue,
-  ConceptStub,
   Exception,
+  Identifier,
   Question,
   QuestionAdministrationOutput,
   RealValue,
@@ -16,11 +16,10 @@ import {
   Value,
   stubify,
 } from "@/lib/models";
-import { dataFactory } from "@/lib/rdfEnvironment";
 import { describe, expect, it } from "vitest";
 
 describe("QuestionAdministrator", () => {
-  const { document, modelSet } = testData.medlinePlus;
+  const { conceptStub, document, modelSet } = testData.medlinePlus;
   const { questions } = testData.synthetic;
 
   const newSystemUnderTest = (
@@ -128,12 +127,10 @@ describe("QuestionAdministrator", () => {
   it("should answer a categorical question", async () => {
     await testAnswer({
       completionMessage: JSON.stringify({
-        answer: ["http://example.com/concept"],
+        answer: [Identifier.toString(conceptStub.identifier)],
       }),
       expectedValue: new CategoricalValue({
-        value: ConceptStub.create({
-          identifier: dataFactory.namedNode("http://example.com/concept"),
-        }),
+        value: conceptStub,
       }),
       question: questions.categorical,
     });
