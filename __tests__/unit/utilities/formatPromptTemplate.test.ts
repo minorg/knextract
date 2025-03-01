@@ -1,3 +1,4 @@
+import { expectModelsEqual } from "@/__tests__/unit/models/expectModelsEqual";
 import {
   CorpusStub,
   Document,
@@ -13,7 +14,7 @@ import { OxigraphModelSet } from "@/lib/models/OxigraphModelSet";
 import { RdfjsDatasetModelSet } from "@/lib/models/RdfjsDatasetModelSet";
 import { dataFactory } from "@/lib/rdfEnvironment";
 import { formatPromptTemplate } from "@/lib/utilities/server";
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
 
 describe("formatPromptTemplate", async () => {
   const modelSet = new RdfjsDatasetModelSet();
@@ -59,7 +60,7 @@ describe("formatPromptTemplate", async () => {
         promptTemplate,
       })
     ).unsafeCoerce();
-    expect(actualPrompt.equals(expectedPrompt).extract()).toStrictEqual(true);
+    expectModelsEqual(expectedPrompt, actualPrompt);
   }
 
   it("should format a message template with no variables", async () => {

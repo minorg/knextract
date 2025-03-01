@@ -31,7 +31,7 @@ export async function formatPromptTemplate({
       const promptMessage = await formatPromptMessageTemplate({
         ambientInputValues: {
           ...ambientInputValues,
-          ...promptTemplateInputValues,
+          ...promptTemplateInputValues.unsafeCoerce(),
         },
         modelSet,
         promptMessageTemplate,
