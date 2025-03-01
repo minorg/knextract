@@ -94,8 +94,9 @@
   "DocumentClaimsDataTable": {
     "Gold": "Gold",
     "Inferred": "Inferred",
-    "Predicate": "Predicate",
-    "Type": "Type"
+    "Property": "Property",
+    "Type": "Type",
+    "Value": "Value"
   },
   "DocumentClaimsViewer": {
     "F1 score": "F1 score",

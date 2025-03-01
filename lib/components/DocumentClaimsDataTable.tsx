@@ -2,6 +2,7 @@
 
 import { DataTable as DelegateDataTable } from "@/lib/components/DataTable";
 import { Link } from "@/lib/components/Link";
+import { ValueViewer } from "@/lib/components/ValueViewer";
 import { claimPredicateLabel } from "@/lib/components/claimPredicateLabel";
 import { useHrefs } from "@/lib/hooks";
 import {
@@ -57,8 +58,18 @@ export function DocumentClaimsDataTable(json: {
           (rowA.original.gold ? 1 : 0) - (rowB.original.gold ? 1 : 0),
       }),
       columnHelper.accessor("predicate", {
-        header: () => translations("Predicate"),
+        header: () => translations("Property"),
         sortingFn: "alphanumericCaseSensitive",
+      }),
+      columnHelper.accessor("object", {
+        header: () => translations("Value"),
+        cell: (context) => (
+          <ValueViewer
+            hrefs={hrefs}
+            locale={locale}
+            value={context.row.original.object}
+          />
+        ),
       }),
       columnHelper.accessor("identifier", {
         cell: (context) => {
@@ -77,7 +88,7 @@ export function DocumentClaimsDataTable(json: {
         header: () => "",
       }),
     ];
-  }, [hrefs, translations]);
+  }, [hrefs, locale, translations]);
 
   const data: Row[] = useMemo(
     () =>
