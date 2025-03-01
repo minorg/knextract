@@ -8,7 +8,12 @@ import { useMemo } from "react";
 import { DataTable } from "./DataTable";
 import { Link } from "./Link";
 
-const columnHelper = createColumnHelper<WorkflowStub>();
+interface Row {
+  readonly displayLabel: string;
+  readonly identifier: Identifier;
+}
+
+const columnHelper = createColumnHelper<Row>();
 
 export function WorkflowsDataTable(json: {
   workflows: ReturnType<WorkflowStub["toJson"]>[];
@@ -17,15 +22,15 @@ export function WorkflowsDataTable(json: {
   const locale = useLocale();
   const translations = useTranslations("WorkflowsDataTable");
 
-  const columns: ColumnDef<WorkflowStub, any>[] = [
-    columnHelper.accessor("label", {
+  const columns: ColumnDef<Row, any>[] = [
+    columnHelper.accessor("displayLabel", {
       cell: (context) => (
         <Link
           href={hrefs.workflow({
             identifier: context.row.original.identifier,
           })}
         >
-          {displayLabel(context.row.original, { locale })}
+          {context.row.original.displayLabel}
         </Link>
       ),
       header: () => translations("Label"),
@@ -35,17 +40,18 @@ export function WorkflowsDataTable(json: {
   const data = useMemo(
     () =>
       json.workflows
-        .flatMap((workflowJson) =>
-          WorkflowStub.fromJson(workflowJson).toMaybe().toList(),
+        .flatMap((json) => WorkflowStub.fromJson(json).toMaybe().toList())
+        .map(
+          (workflow) =>
+            ({
+              displayLabel: displayLabel(workflow, { locale }),
+              identifier: workflow.identifier,
+            }) satisfies Row,
         )
         .toSorted((left, right) =>
-          left.label
-            .orDefault(Identifier.toString(left.identifier))
-            .localeCompare(
-              right.label.orDefault(Identifier.toString(left.identifier)),
-            ),
+          left.displayLabel.localeCompare(right.displayLabel),
         ),
-    [json],
+    [json, locale],
   );
 
   return (

@@ -1,7 +1,7 @@
 "use client";
 
 import { useHrefs } from "@/lib/hooks";
-import { ConceptStub, displayLabel } from "@/lib/models";
+import { ConceptStub, Identifier, displayLabel } from "@/lib/models";
 import {
   ColumnDef,
   OnChangeFn,
@@ -9,10 +9,16 @@ import {
   createColumnHelper,
 } from "@tanstack/react-table";
 import { useLocale, useTranslations } from "next-intl";
+import { useMemo } from "react";
 import { DataTable } from "./DataTable";
 import { Link } from "./Link";
 
-const columnHelper = createColumnHelper<ConceptStub>();
+interface Row {
+  readonly displayLabel: string;
+  readonly identifier: Identifier;
+}
+
+const columnHelper = createColumnHelper<Row>();
 
 export function ConceptsDataTable({
   concepts,
@@ -27,15 +33,15 @@ export function ConceptsDataTable({
   const locale = useLocale();
   const translations = useTranslations("ConceptsDataTable");
 
-  const columns: ColumnDef<ConceptStub, any>[] = [
-    columnHelper.accessor("identifier", {
+  const columns: ColumnDef<Row, any>[] = [
+    columnHelper.accessor("displayLabel", {
       cell: (context) => (
         <Link
           href={hrefs.concept({
             identifier: context.row.original.identifier,
           })}
         >
-          {displayLabel(context.row.original, { locale })}
+          {context.row.original.displayLabel}
         </Link>
       ),
       enableSorting: true,
@@ -45,12 +51,21 @@ export function ConceptsDataTable({
     }),
   ];
 
+  const data = useMemo(
+    () =>
+      concepts
+        .flatMap((json) => ConceptStub.fromJson(json).toMaybe().toList())
+        .map((concept) => ({
+          identifier: concept.identifier,
+          displayLabel: displayLabel(concept, { locale }),
+        })),
+    [concepts, locale],
+  );
+
   return (
     <DataTable
       columns={columns}
-      data={concepts.flatMap((json) =>
-        ConceptStub.fromJson(json).toMaybe().toList(),
-      )}
+      data={data}
       initialState={{
         columnVisibility: {
           identifier: false,

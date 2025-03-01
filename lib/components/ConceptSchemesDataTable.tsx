@@ -2,12 +2,19 @@
 
 import { useHrefs } from "@/lib/hooks";
 import { ConceptSchemeStub, displayLabel } from "@/lib/models";
+import { Identifier } from "@kos-kit/models";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { useLocale, useTranslations } from "next-intl";
+import { useMemo } from "react";
 import { DataTable } from "./DataTable";
 import { Link } from "./Link";
 
-const columnHelper = createColumnHelper<ConceptSchemeStub>();
+interface Row {
+  readonly displayLabel: string;
+  readonly identifier: Identifier;
+}
+
+const columnHelper = createColumnHelper<Row>();
 
 export function ConceptSchemesDataTable(json: {
   conceptSchemes: readonly ReturnType<typeof ConceptSchemeStub.toJson>[];
@@ -16,15 +23,15 @@ export function ConceptSchemesDataTable(json: {
   const locale = useLocale();
   const translations = useTranslations("ConceptSchemesDataTable");
 
-  const columns: ColumnDef<ConceptSchemeStub, any>[] = [
-    columnHelper.accessor("identifier", {
+  const columns: ColumnDef<Row, any>[] = [
+    columnHelper.accessor("displayLabel", {
       cell: (context) => (
         <Link
           href={hrefs.conceptScheme({
             identifier: context.row.original.identifier,
           })}
         >
-          {displayLabel(context.row.original, { locale })}
+          {context.row.original.displayLabel}
         </Link>
       ),
       enableSorting: true,
@@ -34,12 +41,21 @@ export function ConceptSchemesDataTable(json: {
     }),
   ];
 
+  const data = useMemo(
+    () =>
+      json.conceptSchemes
+        .flatMap((json) => ConceptSchemeStub.fromJson(json).toMaybe().toList())
+        .map((conceptScheme) => ({
+          identifier: conceptScheme.identifier,
+          displayLabel: displayLabel(conceptScheme, { locale }),
+        })),
+    [json, locale],
+  );
+
   return (
     <DataTable
       columns={columns}
-      data={json.conceptSchemes.flatMap((json) =>
-        ConceptSchemeStub.fromJson(json).toMaybe().toList(),
-      )}
+      data={data}
       excludeHeader={true}
       initialState={{
         columnVisibility: {

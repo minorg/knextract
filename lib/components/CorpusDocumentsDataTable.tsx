@@ -3,7 +3,7 @@
 import { getCorpusDocuments } from "@/lib/actions/getCorpusDocuments";
 import { LoadingSpinner } from "@/lib/components/ui/loading-spinner";
 import { useHrefs } from "@/lib/hooks";
-import { DocumentStub, Locale, displayLabel } from "@/lib/models";
+import { DocumentStub, Identifier, Locale, displayLabel } from "@/lib/models";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { useLocale, useTranslations } from "next-intl";
@@ -12,7 +12,12 @@ import React from "react";
 import { DataTable } from "./DataTable";
 import { Link } from "./Link";
 
-const columnHelper = createColumnHelper<DocumentStub>();
+interface Row {
+  readonly displayLabel: string;
+  readonly identifier: Identifier;
+}
+
+const columnHelper = createColumnHelper<Row>();
 
 export function CorpusDocumentsDataTable({
   corpusIdentifier,
@@ -53,15 +58,15 @@ export function CorpusDocumentsDataTable({
     );
   }
 
-  const columns: ColumnDef<DocumentStub, any>[] = [
-    columnHelper.accessor("identifier", {
+  const columns: ColumnDef<Row, any>[] = [
+    columnHelper.accessor("displayLabel", {
       cell: (context) => (
         <Link
           href={hrefs.document({
             identifier: context.row.original.identifier,
           })}
         >
-          {displayLabel(context.row.original, { locale })}
+          {context.row.original.displayLabel}
         </Link>
       ),
       enableColumnFilter: false,
@@ -73,9 +78,12 @@ export function CorpusDocumentsDataTable({
   return (
     <DataTable
       columns={columns}
-      data={data!.documents.flatMap((json) =>
-        DocumentStub.fromJson(json).toMaybe().toList(),
-      )}
+      data={data!.documents
+        .flatMap((json) => DocumentStub.fromJson(json).toMaybe().toList())
+        .map((document) => ({
+          displayLabel: displayLabel(document, { locale }),
+          identifier: document.identifier,
+        }))}
       enableRowSelection
       initialState={{
         columnVisibility: {
