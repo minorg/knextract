@@ -33,7 +33,7 @@ export async function exporterTestData(): Promise<ExporterTestData> {
         query: { includeDeleted: false, type: "All" },
       })
     ).unsafeCoerce();
-    invariant(plantsDocuments.length === 73);
+    invariant(plantsDocuments.length === 2175);
 
     lazyExporterTestData = {
       plants: {
