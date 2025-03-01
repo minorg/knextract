@@ -31,7 +31,6 @@ export async function WorkflowStepViewer({
             key={sections.length}
             questionnaire={step.questionnaire}
           />
-          ,
         </Section>,
       );
 
