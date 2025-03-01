@@ -94,6 +94,7 @@ async function* transform(
           object: new CategoricalValue({
             value: ConceptStub.create({
               identifier: dataFactory.namedNode(group["@_url"]),
+              prefLabel: [dataFactory.literal(group["#text"])],
             }),
           }),
           subject: document.identifier,
