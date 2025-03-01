@@ -52,6 +52,9 @@ export default async function CorpusPage({
         <div className="flex flex-row items-center gap-2">
           <ClientProvidersServer>
             <AnnotateCorpusForm
+              claimProperties={(await modelSet.claimProperties())
+                .orDefault([])
+                .map((claimProperty) => claimProperty.toJson())}
               corpus={stubify(corpus).toJson()}
               workflows={(
                 await modelSet.workflowStubs({

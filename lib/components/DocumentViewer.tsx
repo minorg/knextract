@@ -5,6 +5,7 @@ import { Section } from "@/lib/components/Section";
 import { syntaxHiglighterStyle } from "@/lib/components/syntaxHighlighterStyle";
 import { getHrefs } from "@/lib/getHrefs";
 import {
+  ClaimProperty,
   Document,
   DocumentClaims,
   Identifier,
@@ -18,10 +19,12 @@ import React from "react";
 import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/default-highlight";
 
 export async function DocumentViewer({
+  claimProperties,
   document,
   documentClaims,
   workflows,
 }: {
+  claimProperties: readonly ClaimProperty[];
   document: Document;
   documentClaims: DocumentClaims | null;
   workflows: readonly WorkflowStub[];
@@ -83,6 +86,9 @@ export async function DocumentViewer({
         <Section title={translations("Claims")}>
           <ClientProvidersServer>
             <DocumentClaimsViewer
+              claimProperties={claimProperties.map((claimProperty) =>
+                claimProperty.toJson(),
+              )}
               document={stubify(document).toJson()}
               documentClaims={documentClaims?.toJson()}
               workflows={workflows.map((workflow) => workflow.toJson())}

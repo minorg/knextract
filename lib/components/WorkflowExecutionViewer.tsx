@@ -7,6 +7,7 @@ import { WorkflowStepViewer } from "@/lib/components/WorkflowStepViewer";
 import { getHrefs } from "@/lib/getHrefs";
 import { logger } from "@/lib/logger";
 import {
+  ClaimProperty,
   Identifier,
   ModelSet,
   Workflow,
@@ -18,16 +19,18 @@ import { getTranslations } from "next-intl/server";
 import React from "react";
 
 async function WorkflowStepExecutionsViewer({
+  claimProperties,
   stepExecutions,
   steps,
 }: {
+  claimProperties: readonly ClaimProperty[];
   stepExecutions: readonly WorkflowStepExecution[];
   steps: readonly WorkflowStep[];
 }) {
   return (
     <div className="flex flex-col gap-4 ps-2">
       {stepExecutions.map(async (stepExecution) => {
-        const stepIdentifier = stepExecution.input.identifier;
+        const stepIdentifier = stepExecution.input.step.identifier;
         const step = steps.find((step) =>
           step.identifier.equals(stepIdentifier),
         );
@@ -45,6 +48,7 @@ async function WorkflowStepExecutionsViewer({
             title={Identifier.toString(stepExecution.identifier)}
           >
             <WorkflowStepExecutionViewer
+              claimProperties={claimProperties}
               step={step}
               stepExecution={stepExecution}
             />
@@ -56,9 +60,11 @@ async function WorkflowStepExecutionsViewer({
 }
 
 async function WorkflowStepExecutionViewer({
+  claimProperties,
   step,
   stepExecution,
 }: {
+  claimProperties: readonly ClaimProperty[];
   step: WorkflowStep;
   stepExecution: WorkflowStepExecution;
 }) {
@@ -92,6 +98,7 @@ async function WorkflowStepExecutionViewer({
                 title: translations("Questionnaire administration"),
                 content: (
                   <QuestionnaireAdministrationViewer
+                    claimProperties={claimProperties}
                     questionnaireAdministration={questionnaireAdministration}
                   />
                 ),
@@ -117,6 +124,7 @@ export async function WorkflowExecutionViewer({
   const hrefs = await getHrefs();
   const translations = await getTranslations("WorkflowExecutionViewer");
 
+  const claimProperties = (await modelSet.claimProperties()).orDefault([]);
   const documentStub = workflowExecution.input.document;
   const documentLink = (
     <Link href={hrefs.document(documentStub)}>
@@ -145,6 +153,7 @@ export async function WorkflowExecutionViewer({
                 ),
               content: documentEither.isRight() ? (
                 <DocumentViewer
+                  claimProperties={claimProperties}
                   document={documentEither.unsafeCoerce()}
                   documentClaims={null}
                   workflows={(
@@ -165,6 +174,7 @@ export async function WorkflowExecutionViewer({
             title: translations("Steps"),
             content: (
               <WorkflowStepExecutionsViewer
+                claimProperties={claimProperties}
                 stepExecutions={workflowExecution.subProcesses.stepExecutions}
                 steps={workflow.steps}
               />

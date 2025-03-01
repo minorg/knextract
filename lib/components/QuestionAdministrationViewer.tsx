@@ -14,6 +14,7 @@ import {
 } from "@/lib/components/ui/table";
 import { getHrefs } from "@/lib/getHrefs";
 import {
+  ClaimProperty,
   ConceptStub,
   Identifier,
   LanguageModelInvocation,
@@ -167,8 +168,10 @@ async function ValuesTable({ values }: { values: readonly Value[] }) {
 }
 
 export async function QuestionAdministrationViewer({
+  claimProperties,
   questionAdministration,
 }: {
+  claimProperties: readonly ClaimProperty[];
   questionAdministration: QuestionAdministration;
 }) {
   const locale = await getLocale();
@@ -197,6 +200,9 @@ export async function QuestionAdministrationViewer({
           content: (
             <ClientProvidersServer>
               <DocumentClaimsDataTable
+                claimProperties={claimProperties.map((claimProperty) =>
+                  claimProperty.toJson(),
+                )}
                 documentClaims={new UnevaluatedClaims({
                   claims: output.answer.claims,
                 }).toJson()}

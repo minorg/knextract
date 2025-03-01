@@ -16,6 +16,7 @@ import {
 import { LoadingSpinner } from "@/lib/components/ui/loading-spinner";
 import { useHrefs } from "@/lib/hooks";
 import {
+  ClaimProperty,
   DocumentClaims,
   DocumentStub,
   Identifier,
@@ -29,10 +30,12 @@ import React, { ReactElement, useCallback, useMemo, useState } from "react";
 import { Link } from "./Link";
 
 export function AnnotateDocumentForm({
+  claimProperties: claimPropertiesJson,
   document: documentJson,
   onAnnotateDocument,
   workflows: workflowsJson,
 }: {
+  claimProperties: readonly ReturnType<ClaimProperty["toJson"]>[];
   document: ReturnType<DocumentStub["toJson"]>;
   documentClaims: ReturnType<DocumentClaims["toJson"]> | null;
   onAnnotateDocument: (documentClaims: DocumentClaims) => void;
@@ -147,12 +150,16 @@ export function AnnotateDocumentForm({
         >
           <WorkflowExecutionEventsViewer
             abortedWorkflowExecution={false}
-            workflowExecutionEvents={workflowExecutionEvents}
+            claimProperties={claimPropertiesJson}
+            workflowExecutionEvents={workflowExecutionEvents.map(
+              (workflowExecutionEvent) => workflowExecutionEvent.toJson(),
+            )}
           />
         </Section>
         {workflowPostExecutionEvent ? (
           <Section className="w-full" title={translations("Cumulative claims")}>
             <DocumentClaimsDataTable
+              claimProperties={claimPropertiesJson}
               documentClaims={workflowPostExecutionEvent.payload.documentClaims.toJson()}
               excludeHeader
               key="right"

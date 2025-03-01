@@ -15,6 +15,7 @@ import {
 } from "@/lib/components/ui/dialog";
 import { LoadingSpinner } from "@/lib/components/ui/loading-spinner";
 import {
+  ClaimProperty,
   CorpusStub,
   Identifier,
   Locale,
@@ -26,6 +27,7 @@ import { useLocale, useTranslations } from "next-intl";
 import React, { ReactElement, useCallback, useMemo, useState } from "react";
 
 export function AnnotateCorpusForm(json: {
+  claimProperties: readonly ReturnType<ClaimProperty["toJson"]>[];
   corpus: ReturnType<CorpusStub["toJson"]>;
   workflows: readonly ReturnType<WorkflowStub["toJson"]>[];
 }) {
@@ -117,7 +119,10 @@ export function AnnotateCorpusForm(json: {
         </div>
         <WorkflowExecutionEventsViewer
           abortedWorkflowExecution={abortedWorkflowExecution}
-          workflowExecutionEvents={workflowExecutionEvents}
+          claimProperties={json.claimProperties}
+          workflowExecutionEvents={workflowExecutionEvents.map(
+            (workflowExecutionEvent) => workflowExecutionEvent.toJson(),
+          )}
         />
       </>
     );

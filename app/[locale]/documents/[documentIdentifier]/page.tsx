@@ -82,6 +82,7 @@ export default async function DocumentPage({
         ) : null}
       </div>
       <DocumentViewer
+        claimProperties={(await modelSet.claimProperties()).orDefault([])}
         document={document}
         documentClaims={
           evaluateClaims(documentClaims).extract() ??

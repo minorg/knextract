@@ -217,8 +217,19 @@
     "Human": "Human",
     "System": "System"
   },
-  "QuestionAdministrationViewer": {},
-  "QuestionnaireAdministrationViewer": {},
+  "QuestionAdministrationViewer": {
+    "Answer": "Answer",
+    "Document": "Document",
+    "Language model": "Language model",
+    "Question": "Question",
+    "Language model invocation": "Language model invocation",
+    "Prompt construction": "Prompt construction",
+    "Value extraction": "Value extraction"
+  },
+  "QuestionnaireAdministrationViewer": {
+    "Questionnaire": "Questionnaire",
+    "Question administration": "Question administration"
+  },
   "QuestionnaireViewer": {
     "Instructions": "Instructions"
   },
@@ -258,7 +269,10 @@
     "Title": "Title",
     "Upload": "Upload"
   },
-  "ValueExtractionViewer": {},
+  "ValueExtractionViewer": {
+    "Completion message": "Completion message",
+    "Values": "Values"
+  },
   "ValueTypes": {
     "BooleanValue": "Boolean",
     "CategoricalValue": "Categorical",

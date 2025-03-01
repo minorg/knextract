@@ -40,7 +40,7 @@ import { z } from "zod";
 const instructionsDefault = [
   "I will give you a document in HTML.",
   "I will also give you a JSON array of JSON objects describing concepts the document could be about.",
-  "You should determine which concepts the document is about, and return those concept numbers as a JSON object with the format { matches: [number, number, number] }",
+  'You should determine which concepts the document is about, and return the identifiers of those concepts as a JSON object with the format { matches: ["http://example.com/concept1", "http://example.com/concept2"] }',
   "Please do not return any other text, just the JSON object.",
 ].join(" ");
 

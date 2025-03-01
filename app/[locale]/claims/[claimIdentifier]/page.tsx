@@ -5,6 +5,7 @@ import { Link } from "@/lib/components/Link";
 import { PageTitleHeading } from "@/lib/components/PageTitleHeading";
 import { Section } from "@/lib/components/Section";
 import { ValueViewer } from "@/lib/components/ValueViewer";
+import { claimPredicateLabel } from "@/lib/components/claimPredicateLabel";
 import { getHrefs } from "@/lib/getHrefs";
 import {
   Identifier,
@@ -41,6 +42,7 @@ export default async function ClaimPage({
   if (!claim) {
     notFound();
   }
+  const claimProperties = (await modelSet.claimProperties()).orDefault([]);
 
   const subjectDocument = (await modelSet.documentStub(claim.subject))
     .mapLeft(() => undefined)
@@ -78,7 +80,7 @@ export default async function ClaimPage({
         </Section>
       ) : null}
       <Section title={translations("Predicate")}>
-        {Identifier.toString(claim.predicate)}
+        {claimPredicateLabel({ claim, claimProperties, locale })}
       </Section>
       <Section title={translations("Object")}>
         <ValueViewer hrefs={hrefs} locale={locale} value={claim.object} />

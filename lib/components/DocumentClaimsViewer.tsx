@@ -3,6 +3,7 @@
 import { AnnotateDocumentForm } from "@/lib/components/AnnotateDocumentForm";
 import { DocumentClaimsDataTable } from "@/lib/components/DocumentClaimsDataTable";
 import {
+  ClaimProperty,
   DocumentClaims,
   DocumentStub,
   UnevaluatedClaims,
@@ -12,6 +13,7 @@ import { useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";
 
 export function DocumentClaimsViewer(json: {
+  claimProperties: readonly ReturnType<ClaimProperty["toJson"]>[];
   document: ReturnType<DocumentStub["toJson"]>;
   documentClaims: ReturnType<DocumentClaims["toJson"]>;
   workflows: ReturnType<WorkflowStub["toJson"]>[];
@@ -35,6 +37,7 @@ export function DocumentClaimsViewer(json: {
 
   const annotateDocumentForm = (
     <AnnotateDocumentForm
+      claimProperties={json.claimProperties}
       document={json.document}
       documentClaims={documentClaims.toJson()}
       onAnnotateDocument={setDocumentClaims}
@@ -82,7 +85,10 @@ export function DocumentClaimsViewer(json: {
           </div>
         )
       ) : null}
-      <DocumentClaimsDataTable documentClaims={documentClaims.toJson()} />
+      <DocumentClaimsDataTable
+        claimProperties={json.claimProperties}
+        documentClaims={documentClaims.toJson()}
+      />
     </div>
   );
 }

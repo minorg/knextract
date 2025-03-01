@@ -20,6 +20,7 @@ import {
   TableRow,
 } from "@/lib/components/ui/table";
 import {
+  ClaimProperty,
   Identifier,
   PostWorkflowExecutionEvent,
   PostWorkflowStepExecutionEvent,
@@ -42,9 +43,11 @@ interface GroupedWorkflowExecutionEvents {
 
 function GroupedWorkflowExecutionEventsViewer({
   abortedWorkflowExecution,
+  claimProperties,
   groupedWorkflowExecutionEvents,
 }: {
   abortedWorkflowExecution: boolean;
+  claimProperties: readonly ClaimProperty[];
   groupedWorkflowExecutionEvents: GroupedWorkflowExecutionEvents;
 }) {
   const locale = useLocale();
@@ -165,6 +168,9 @@ function GroupedWorkflowExecutionEventsViewer({
               ) : (
                 <Section className="w-full" title={translations("Results")}>
                   <DocumentClaimsDataTable
+                    claimProperties={claimProperties.map((claimProperty) =>
+                      claimProperty.toJson(),
+                    )}
                     documentClaims={groupedWorkflowExecutionEvents.post.payload.documentClaims.toJson()}
                     excludeHeader={true}
                   />
@@ -180,8 +186,19 @@ function GroupedWorkflowExecutionEventsViewer({
 
 export function WorkflowExecutionEventsViewer(json: {
   abortedWorkflowExecution: boolean;
-  workflowExecutionEvents: readonly WorkflowExecutionEvent[];
+  claimProperties: readonly ReturnType<ClaimProperty["toJson"]>[];
+  workflowExecutionEvents: readonly ReturnType<
+    WorkflowExecutionEvent["toJson"]
+  >[];
 }) {
+  const claimProperties = useMemo(
+    () =>
+      json.claimProperties.flatMap((json) =>
+        ClaimProperty.fromJson(json).toMaybe().toList(),
+      ),
+    [json],
+  );
+
   const groupedWorkflowExecutionEvents = useMemo(() => {
     const groupedWorkflowExecutionEvents: GroupedWorkflowExecutionEvents[] = [];
     for (const workflowExecutionEvent of json.workflowExecutionEvents.flatMap(
@@ -219,6 +236,7 @@ export function WorkflowExecutionEventsViewer(json: {
       {groupedWorkflowExecutionEvents.map((groupedWorkflowExecutionEvents) => (
         <GroupedWorkflowExecutionEventsViewer
           abortedWorkflowExecution={json.abortedWorkflowExecution}
+          claimProperties={claimProperties}
           key={Identifier.toString(
             groupedWorkflowExecutionEvents.pre.identifier,
           )}

@@ -7,6 +7,7 @@ import {
   Document,
   DocumentStub,
   Exception,
+  Identifier,
   LanguageModelInvocation,
   LanguageModelInvocationInput,
   LanguageModelInvocationOutput,
@@ -254,7 +255,7 @@ export class QuestionAdministrator {
           const selectedConcept = selectedConceptEither.unsafeCoerce();
 
           const conceptJsonObject: Record<string, any> = {
-            number: conceptJsonObjects.length + 1,
+            identifier: Identifier.toString(selectedConcept.identifier),
           };
 
           if (selectedConcept.definition.length > 0) {

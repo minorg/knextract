@@ -2,11 +2,19 @@
 
 import { DataTable as DelegateDataTable } from "@/lib/components/DataTable";
 import { Link } from "@/lib/components/Link";
+import { claimPredicateLabel } from "@/lib/components/claimPredicateLabel";
 import { useHrefs } from "@/lib/hooks";
-import { Claim, DocumentClaims, Identifier, Value } from "@/lib/models";
+import {
+  Claim,
+  ClaimProperty,
+  DocumentClaims,
+  Identifier,
+  Locale,
+  Value,
+} from "@/lib/models";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { CircleCheck, CircleSlash, Info } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ReactElement, useMemo } from "react";
 
 interface Row {
@@ -14,14 +22,23 @@ interface Row {
   icon: ReactElement;
   identifier: Identifier;
   object: Value;
-  predicate: Identifier;
+  predicate: string;
 }
 
 export function DocumentClaimsDataTable(json: {
+  claimProperties: readonly ReturnType<ClaimProperty["toJson"]>[];
   documentClaims: ReturnType<DocumentClaims["toJson"]>;
   excludeHeader?: boolean;
 }) {
+  const claimProperties = useMemo(
+    () =>
+      json.claimProperties.flatMap((json) =>
+        ClaimProperty.fromJson(json).toMaybe().toList(),
+      ),
+    [json],
+  );
   const hrefs = useHrefs();
+  const locale = useLocale() as Locale;
   const translations = useTranslations("DocumentClaimsDataTable");
 
   const columns: ColumnDef<Row, any>[] = useMemo(() => {
@@ -40,12 +57,8 @@ export function DocumentClaimsDataTable(json: {
           (rowA.original.gold ? 1 : 0) - (rowB.original.gold ? 1 : 0),
       }),
       columnHelper.accessor("predicate", {
-        cell: (context) => Identifier.toString(context.row.original.predicate),
         header: () => translations("Predicate"),
-        sortingFn: (left, right) =>
-          Identifier.toString(left.original.predicate).localeCompare(
-            Identifier.toString(right.original.predicate),
-          ),
+        sortingFn: "alphanumericCaseSensitive",
       }),
       columnHelper.accessor("identifier", {
         cell: (context) => {
@@ -77,7 +90,7 @@ export function DocumentClaimsDataTable(json: {
             gold: claim.gold,
             identifier: claim.identifier,
             object: claim.object,
-            predicate: claim.predicate,
+            predicate: claimPredicateLabel({ claim, claimProperties, locale }),
             icon,
           });
 
@@ -119,7 +132,7 @@ export function DocumentClaimsDataTable(json: {
             );
         })
         .orDefault([]),
-    [json],
+    [claimProperties, json, locale],
   );
 
   return (
