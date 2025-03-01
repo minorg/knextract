@@ -50,7 +50,6 @@ const formSchema = z.object({
   label: z.string().min(1),
   languageModelSpecificationIdentifier: z.string(),
   instructions: z.string(),
-  recursive: z.boolean().default(false).optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -85,7 +84,6 @@ export function WorkflowEditor(json: {
       label: "",
       languageModelSpecificationIdentifier: "",
       instructions: instructionsDefault,
-      recursive: false,
     },
   });
 
@@ -208,24 +206,6 @@ export function WorkflowEditor(json: {
                 value={field.value}
               />
               <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          disabled={form.formState.isSubmitting}
-          name="recursive"
-          render={({ field }) => (
-            <FormItem>
-              <div className="flex flex-row gap-2 items-center">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <FormLabel>{translations("Recursive")}</FormLabel>
-              </div>
             </FormItem>
           )}
         />
