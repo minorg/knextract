@@ -24,6 +24,7 @@ import {
   WorkflowStep,
   WorkflowStepExecution,
   WorkflowStub,
+  claims,
   evaluateClaims,
 } from "@/lib/models";
 import Emittery, { Options as EmitteryOptions } from "emittery";
@@ -135,7 +136,7 @@ export class WorkflowEngine extends Emittery<EventData> {
       }),
     });
 
-    const documentClaims = (
+    const existingDocumentClaims = (
       await this.modelSet.claims({
         query: {
           documentIdentifier: document.identifier,
@@ -144,13 +145,18 @@ export class WorkflowEngine extends Emittery<EventData> {
       })
     ).orDefault([]);
 
+    const newDocumentClaims = claims(workflowExecution).orDefault([]);
+
+    const combinedDocumentClaims =
+      existingDocumentClaims.concat(newDocumentClaims);
+
     await this.emit(
       "postExecution",
       new PostWorkflowExecutionEvent({
         payload: new PostWorkflowExecutionEventPayload({
           documentClaims:
-            evaluateClaims(documentClaims).extract() ??
-            new UnevaluatedClaims({ claims: documentClaims }),
+            evaluateClaims(combinedDocumentClaims).extract() ??
+            new UnevaluatedClaims({ claims: combinedDocumentClaims }),
           workflowExecution,
         }),
         timestamp: new Date(),

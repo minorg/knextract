@@ -3,7 +3,6 @@
 import { DataTable as DelegateDataTable } from "@/lib/components/DataTable";
 import { Link } from "@/lib/components/Link";
 import { ValueViewer } from "@/lib/components/ValueViewer";
-import { claimPredicateLabel } from "@/lib/components/claimPredicateLabel";
 import { useHrefs } from "@/lib/hooks";
 import {
   Claim,
@@ -13,6 +12,7 @@ import {
   Locale,
   Value,
 } from "@/lib/models";
+import { claimPredicateLabel } from "@/lib/models/claimPredicateLabel";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { CircleCheck, CircleSlash, Info } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";

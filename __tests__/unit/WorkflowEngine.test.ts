@@ -2,7 +2,6 @@ import { testData } from "@/__tests__/unit/data";
 import { MockLanguageModel } from "@/__tests__/unit/language-models/MockLanguageModel";
 import { MockLanguageModelFactory } from "@/__tests__/unit/language-models/MockLanguageModelFactory";
 import { expectModelsEqual } from "@/__tests__/unit/models/expectModelsEqual";
-import { questionnaireAdministrationAnswers } from "@/__tests__/unit/questionnaireAdministrationAnswers";
 import { WorkflowEngine } from "@/lib/WorkflowEngine";
 import { LanguageModelFactory } from "@/lib/language-models";
 import {
@@ -16,6 +15,7 @@ import {
   TextValue,
   Workflow,
   WorkflowStub,
+  claims,
   stubify,
 } from "@/lib/models";
 import { dataFactory } from "@/lib/rdfEnvironment";
@@ -70,19 +70,7 @@ describe("WorkflowEngine", () => {
       document: stubify(document),
       workflow: stubify(workflow),
     });
-    if (workflowExecution.output.type === "Exception") {
-      throw new Error(workflowExecution.output.message);
-    }
-    return workflowExecution.subProcesses.stepExecutions.flatMap(
-      (stepExecution) =>
-        stepExecution.type === "WorkflowQuestionnaireStepExecution" &&
-        stepExecution.output.type !== "Exception"
-          ? stepExecution.subProcesses.questionnaireAdministration
-              .map(questionnaireAdministrationAnswers)
-              .orDefault([])
-              .flatMap((answer) => answer.claims)
-          : [],
-    );
+    return claims(workflowExecution).unsafeCoerce();
   }
 
   it("should execute a questionnaire step", async () => {

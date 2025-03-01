@@ -141,10 +141,12 @@ export {
 } from "./models.shaclmate.generated";
 
 // Re-export handwritten code
+export * from "./claims";
+export * from "./claimPredicateLabel";
 export * from "./ClaimQuery";
 export * from "./ClientConfiguration";
 export * from "./CorpusQuery";
-export * from "../components/displayLabel";
+export * from "./displayLabel";
 export * from "./DocumentQuery";
 export * from "./evaluateClaims";
 export * from "./Identifier";

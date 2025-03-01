@@ -5,7 +5,6 @@ import { Link } from "@/lib/components/Link";
 import { PageTitleHeading } from "@/lib/components/PageTitleHeading";
 import { Section } from "@/lib/components/Section";
 import { ValueViewer } from "@/lib/components/ValueViewer";
-import { claimPredicateLabel } from "@/lib/components/claimPredicateLabel";
 import { getHrefs } from "@/lib/getHrefs";
 import {
   Identifier,
@@ -13,6 +12,7 @@ import {
   WorkflowExecution,
   displayLabel,
 } from "@/lib/models";
+import { claimPredicateLabel } from "@/lib/models/claimPredicateLabel";
 import { routing } from "@/lib/routing";
 import { decodeFileName, encodeFileName } from "@kos-kit/next-utils";
 import { Metadata } from "next";
