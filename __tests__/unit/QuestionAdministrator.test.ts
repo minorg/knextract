@@ -1,5 +1,8 @@
 import { testData } from "@/__tests__/unit/data";
 import { MockLanguageModel } from "@/__tests__/unit/language-models/MockLanguageModel";
+import { expectEqualResult } from "@/__tests__/unit/models/expectEqualResult";
+import { expectModelsEqual } from "@/__tests__/unit/models/expectModelsEqual";
+import { expectTermsEqual } from "@/__tests__/unit/models/expectTermsEqual";
 import { QuestionAdministrator } from "@/lib/QuestionAdministrator";
 import {
   BooleanValue,
@@ -11,6 +14,7 @@ import {
   RealValue,
   TextValue,
   Value,
+  stubify,
 } from "@/lib/models";
 import { dataFactory } from "@/lib/rdfEnvironment";
 import { describe, expect, it } from "vitest";
@@ -89,17 +93,12 @@ describe("QuestionAdministrator", () => {
     expect(prompt.messages).not.toHaveLength(0);
 
     // Input
-    expect(
-      process.input.document.identifier.equals(document.identifier),
-    ).toStrictEqual(true);
-    expect(
-      Question.equals(process.input.question, question).extract(),
-    ).toStrictEqual(true);
-    expect(
-      process.input.languageModel.identifier.equals(
-        MockLanguageModel.IDENTIFIER,
-      ),
-    ).toStrictEqual(true);
+    expectModelsEqual(process.input.document, stubify(document));
+    expectEqualResult(Question.equals(process.input.question, question));
+    expectTermsEqual(
+      MockLanguageModel.IDENTIFIER,
+      process.input.languageModel.identifier,
+    );
 
     // Output
     expect(process.output.type).toStrictEqual("QuestionAdministrationOutput");
@@ -107,11 +106,9 @@ describe("QuestionAdministrator", () => {
       .claims;
     expect(claims).toHaveLength(1);
     const claim = claims[0];
-    expect(claim.predicate.equals(question.path)).toStrictEqual(true);
-    expect(Value.equals(claim.object, expectedValue).extract()).toStrictEqual(
-      true,
-    );
-    expect(claim.subject.equals(document.identifier)).toStrictEqual(true);
+    expectTermsEqual(question.path, claim.predicate);
+    expectEqualResult(Value.equals(claim.object, expectedValue));
+    expectTermsEqual(document.identifier, claim.subject);
 
     // Sub-processes
     expect(process.subProcesses.languageModelInvocation.isJust()).toStrictEqual(

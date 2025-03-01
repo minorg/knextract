@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { cachesDirectoryPath } from "@/__tests__/unit/caches/cachesDirectoryPath";
 import { testData } from "@/__tests__/unit/data";
+import { expectTermsEqual } from "@/__tests__/unit/models/expectTermsEqual";
 import { DocumentFactory } from "@/lib/DocumentFactory";
 import { Document, Identifier, stubify } from "@/lib/models";
 import { describe, it } from "vitest";
@@ -190,7 +191,7 @@ describe("DocumentFactory", async () => {
         title,
       })
       .unsafeCoerce();
-    expect(document.identifier.equals(identifier)).toStrictEqual(true);
+    expectTermsEqual(identifier, document.identifier);
     expect(document.mutable).toStrictEqual(mutable);
     expect(document.title.extractNullable()?.literalForm).toStrictEqual(title);
   });

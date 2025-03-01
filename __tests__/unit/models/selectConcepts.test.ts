@@ -1,4 +1,5 @@
 import { testData } from "@/__tests__/unit/data";
+import { expectEqualResult } from "@/__tests__/unit/models/expectEqualResult";
 import {
   ConceptSchemeConceptSelector,
   ConceptSchemeTopConceptSelector,
@@ -76,13 +77,13 @@ describe("selectConcepts", () => {
         expect(actualConceptIdentifiers).toHaveLength(expectedConceptsCount);
 
         if (expectedConceptIdentifiers) {
-          expect(
+          expectEqualResult(
             arrayEquals(
               expectedConceptIdentifiers,
               actualConceptIdentifiers,
               (left, right) => left.equals(right),
-            ).extract(),
-          ).toStrictEqual(true);
+            ),
+          );
         }
       });
     },

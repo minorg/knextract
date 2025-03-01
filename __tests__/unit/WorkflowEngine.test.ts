@@ -1,4 +1,5 @@
 import { testData } from "@/__tests__/unit/data";
+import { expectModelsEqual } from "@/__tests__/unit/models/expectModelsEqual";
 import { questionnaireAdministrationAnswers } from "@/__tests__/unit/questionnaireAdministrationAnswers";
 import { WorkflowEngine } from "@/lib/WorkflowEngine";
 import { LanguageModelFactory } from "@/lib/language-models";
@@ -26,20 +27,17 @@ describe("WorkflowEngine", () => {
   }): void {
     expect(claims).toHaveLength(1);
     const claim = claims[0];
-    expect(
-      claim
-        .equals(
-          new Claim({
-            gold: claim.gold,
-            predicate: dcterms.subject,
-            object: new CategoricalValue({
-              value: stubify(concept),
-            }),
-            subject: document.identifier,
-          }),
-        )
-        .extract(),
-    ).toStrictEqual(true);
+    expectModelsEqual(
+      claim,
+      new Claim({
+        gold: claim.gold,
+        predicate: dcterms.subject,
+        object: new CategoricalValue({
+          value: stubify(concept),
+        }),
+        subject: document.identifier,
+      }),
+    );
   }
 
   function createWorkflowEngine(options?: {
