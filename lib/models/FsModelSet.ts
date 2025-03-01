@@ -38,10 +38,7 @@ export class FsModelSet extends RdfjsDatasetModelSet {
   override async addModel(
     model: IModelSet.AddableModel,
   ): Promise<Either<Error, null>> {
-    const result = await super.addModel(model);
-    if (result.isLeft()) {
-      return result;
-    }
+    super.addModelSync(model);
 
     const fileStem = encodeFileName(Identifier.toString(model.identifier));
     const subdirectoryPath = path.resolve(
@@ -59,7 +56,7 @@ export class FsModelSet extends RdfjsDatasetModelSet {
       }),
     );
 
-    return result;
+    return Either.of(null);
   }
 
   override addModelSync(model: IModelSet.AddableModel): this {
@@ -111,10 +108,7 @@ export class FsModelSet extends RdfjsDatasetModelSet {
   override async deleteModel(
     model: IModelSet.DeletableModel,
   ): Promise<Either<Error, null>> {
-    const result = await super.deleteModel(model);
-    if (result.isLeft()) {
-      return result;
-    }
+    super.deleteModelSync(model);
 
     const fileStem = encodeFileName(Identifier.toString(model.identifier));
     const subdirectoryPath = path.resolve(
@@ -131,7 +125,7 @@ export class FsModelSet extends RdfjsDatasetModelSet {
       }),
     );
 
-    return result;
+    return Either.of(null);
   }
 
   override deleteModelSync(model: IModelSet.DeletableModel): void {
