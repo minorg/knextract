@@ -170,7 +170,6 @@ export class QuestionAdministrator {
           }),
           startedAtTime,
         });
-      case "CompletionMessage":
       case "PromptMessage":
         return new PromptConstruction({
           endedAtTime: new Date(),

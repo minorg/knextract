@@ -65,7 +65,6 @@ export class QuestionnaireAdministrator {
     for (const member of questionnaire.members) {
       if (member.type === "Instruction") {
         switch (member.promptMessage.type) {
-          case "CompletionMessage":
           case "PromptMessage":
             promptMessageHistory.push(member.promptMessage);
             break;
@@ -136,10 +135,15 @@ export class QuestionnaireAdministrator {
       // Update the prompt message history
       const languageModelInvocation =
         questionAdministration.subProcesses.languageModelInvocation.unsafeCoerce();
+      const completionMessage = (
+        languageModelInvocation.output as LanguageModelInvocationOutput
+      ).completionMessage;
       promptMessageHistory =
         languageModelInvocation.input.prompt.messages.concat(
-          (languageModelInvocation.output as LanguageModelInvocationOutput)
-            .completionMessage,
+          new PromptMessage({
+            literalForm: completionMessage.literalForm,
+            role: "http://purl.archive.org/purl/knextract/cbox#_Role_AI",
+          }),
         );
     }
 

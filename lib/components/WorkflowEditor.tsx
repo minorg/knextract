@@ -4,7 +4,6 @@ import { addWorkflow } from "@/lib/actions/addWorkflow";
 import { ModelSelect } from "@/lib/components/ModelSelect";
 import { PageTitleHeading } from "@/lib/components/PageTitleHeading";
 import { Button } from "@/lib/components/ui/button";
-import { Checkbox } from "@/lib/components/ui/checkbox";
 import {
   Form,
   FormControl,

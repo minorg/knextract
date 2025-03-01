@@ -6,7 +6,6 @@ export function PromptTemplateLikeViewer({
   promptTemplateLike,
 }: { promptTemplateLike: PromptTemplateLike }) {
   switch (promptTemplateLike.type) {
-    case "CompletionMessage":
     case "PromptMessage":
       return (
         <PromptViewer prompt={new Prompt({ messages: [promptTemplateLike] })} />

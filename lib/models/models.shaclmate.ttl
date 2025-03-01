@@ -255,7 +255,18 @@ knextract:ClaimProperty-labels
 knextract:CompletionMessage
     shaclmate:name "CompletionMessage" ;
     a owl:Class, sh:NodeShape ;
-    rdfs:subClassOf knextract:PromptMessage .
+    rdfs:subClassOf knextract:InformationContentEntity ;
+    sh:property knextract:CompletionMessage-role, knextract:literalForm .
+
+knextract:CompletionMessage-role
+    a sh:PropertyShape ;
+    sh:defaultValue knextract-cbox:_Role_AI ;
+    sh:in (knextract-cbox:_Role_AI
+    ) ;
+    sh:maxCount 1 ;
+    sh:minCount 1 ;
+    sh:name "role" ;
+    sh:path knextract:promptMessageRole .
 
 knextract:ConceptSchemeConceptSelector
     shaclmate:name "ConceptSchemeConceptSelector" ;
@@ -465,7 +476,6 @@ knextract:Entity
     shaclmate:export false ;
     shaclmate:name "Entity" ;
     a owl:Class, sh:NodeShape ;
-    rdfs:label "entity" ;
     sh:nodeKind sh:IRI .
 
 knextract:EnumeratedConceptSelector
@@ -571,7 +581,6 @@ knextract:InformationContentEntity
     shaclmate:mintingStrategy shaclmate:_MintingStrategy_SHA256 ;
     shaclmate:name "InformationContentEntity" ;
     a owl:Class, sh:NodeShape ;
-    rdfs:label "information content entity" ;
     rdfs:subClassOf knextract:Entity .
 
 knextract:Instruction
@@ -858,13 +867,11 @@ knextract:ProcessSubProcesses
 knextract:Prompt
     shaclmate:name "Prompt" ;
     a owl:Class, sh:NodeShape ;
-    rdfs:label "prompt" ;
     rdfs:subClassOf knextract:InformationContentEntity ;
     sh:property knextract:Prompt-messages .
 
 knextract:Prompt-messages
     a sh:PropertyShape ;
-    rdfs:label "messages" ;
     sh:maxCount 1 ;
     sh:minCount 1 ;
     sh:name "messages" ;
@@ -967,14 +974,12 @@ knextract:PromptLiteralInputValue-variable
 knextract:PromptMessage
     shaclmate:name "PromptMessage" ;
     a owl:Class, sh:NodeShape ;
-    rdfs:label "prompt message" ;
     rdfs:subClassOf knextract:InformationContentEntity ;
     sh:property knextract:literalForm, knextract:promptMessageRole .
 
 knextract:PromptMessageList
     shaclmate:name "PromptMessageList" ;
     a owl:Class, sh:NodeShape ;
-    rdfs:label "messages" ;
     rdfs:subClassOf rdf:List ;
     sh:nodeKind sh:IRI ;
     sh:property knextract:PromptMessageList-first, knextract:PromptMessageList-rest .
@@ -1006,14 +1011,12 @@ knextract:PromptMessageList-rest
 knextract:PromptMessageTemplate
     shaclmate:name "PromptMessageTemplate" ;
     a owl:Class, sh:NodeShape ;
-    rdfs:label "message template" ;
     rdfs:subClassOf knextract:InformationContentEntity ;
     sh:property knextract:literalForm, knextract:promptInputValue, knextract:promptMessageRole .
 
 knextract:PromptMessageTemplateList
     shaclmate:name "PromptMessageTemplateList" ;
     a owl:Class, sh:NodeShape ;
-    rdfs:label "messages" ;
     rdfs:subClassOf rdf:List ;
     sh:nodeKind sh:IRI ;
     sh:property knextract:PromptMessageTemplateList-first, knextract:PromptMessageTemplateList-rest .
@@ -1059,13 +1062,11 @@ knextract:PromptSparqlSelectInputValue-sparqlSelect
 knextract:PromptTemplate
     shaclmate:name "PromptTemplate" ;
     a owl:Class, sh:NodeShape ;
-    rdfs:label "prompt template" ;
     rdfs:subClassOf knextract:InformationContentEntity ;
     sh:property knextract:PromptTemplate-messageTemplates, knextract:promptInputValue .
 
 knextract:PromptTemplate-messageTemplates
     a sh:PropertyShape ;
-    rdfs:label "message templates" ;
     sh:maxCount 1 ;
     sh:minCount 1 ;
     sh:name "messageTemplates" ;
@@ -1075,8 +1076,7 @@ knextract:PromptTemplate-messageTemplates
 knextract:PromptTemplateLike
     shaclmate:name "PromptTemplateLike" ;
     a sh:NodeShape ;
-    sh:xone (knextract:CompletionMessage
-        knextract:Prompt
+    sh:xone (knextract:Prompt
         knextract:PromptMessage
         knextract:PromptMessageTemplate
         knextract:PromptTemplate
@@ -1414,7 +1414,6 @@ knextract:TextualEntity
 
 knextract:TextualEntity-encodingType
     a sh:PropertyShape ;
-    rdfs:label "has encoding type" ;
     sh:in (knextract-cbox:_EncodingType_TextHtml
         knextract-cbox:_EncodingType_TextPlain
     ) ;
@@ -1909,7 +1908,6 @@ knextract:WorkflowStub
 
 knextract:deleted
     a sh:PropertyShape ;
-    rdfs:label "deleted" ;
     sh:datatype xsd:boolean ;
     sh:defaultValue false ;
     sh:maxCount 1 ;
@@ -1919,7 +1917,6 @@ knextract:deleted
 
 knextract:label-optional
     a sh:PropertyShape ;
-    rdfs:label "has label" ;
     sh:datatype xsd:string ;
     sh:maxCount 1 ;
     sh:name "label" ;
@@ -1927,7 +1924,6 @@ knextract:label-optional
 
 knextract:label-required
     a sh:PropertyShape ;
-    rdfs:label "has label" ;
     sh:datatype xsd:string ;
     sh:maxCount 1 ;
     sh:minCount 1 ;
@@ -1936,7 +1932,6 @@ knextract:label-required
 
 knextract:literalForm
     a sh:PropertyShape ;
-    rdfs:label "has literal form" ;
     sh:datatype xsd:string ;
     sh:maxCount 1 ;
     sh:minCount 1 ;
@@ -1945,7 +1940,6 @@ knextract:literalForm
 
 knextract:mutable
     a sh:PropertyShape ;
-    rdfs:label "mutable" ;
     sh:datatype xsd:boolean ;
     sh:defaultValue false ;
     sh:maxCount 1 ;
@@ -1961,7 +1955,6 @@ knextract:promptInputValue
 
 knextract:promptMessageRole
     a sh:PropertyShape ;
-    rdfs:label "has role" ;
     sh:defaultValue knextract-cbox:_Role_Human ;
     sh:in (knextract-cbox:_Role_AI
         knextract-cbox:_Role_Human
