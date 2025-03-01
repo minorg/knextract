@@ -131,7 +131,7 @@ export class WorkflowEngine extends Emittery<EventData> {
         )?.output as Exception | undefined) ?? new WorkflowExecutionOutput({}),
       startedAtTime: new Date(),
       subProcesses: new WorkflowExecutionSubProcesses({
-        stepExecutions: [],
+        stepExecutions,
       }),
     });
 

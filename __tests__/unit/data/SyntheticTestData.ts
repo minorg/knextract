@@ -187,12 +187,6 @@ export namespace SyntheticTestData {
     ).unsafeCoerce();
 
     const questions: SyntheticTestData["questions"] = {
-      dichotomous: new DichotomousQuestion({
-        path: dataFactory.namedNode("http://example.com/question/dichotomous"),
-        promptTemplate: new PromptMessage({
-          literalForm: "Dichotomous question",
-        }),
-      }),
       categorical: new CategoricalQuestion({
         conceptSelector: new ConceptSchemeConceptSelector({
           conceptScheme: conceptSchemeStub,
@@ -200,6 +194,12 @@ export namespace SyntheticTestData {
         path: dataFactory.namedNode("http://example.com/question/categorical"),
         promptTemplate: new PromptMessage({
           literalForm: "Categorical question",
+        }),
+      }),
+      dichotomous: new DichotomousQuestion({
+        path: dataFactory.namedNode("http://example.com/question/dichotomous"),
+        promptTemplate: new PromptMessage({
+          literalForm: "Dichotomous question",
         }),
       }),
       realValued: new RealValuedQuestion({

@@ -1,43 +1,36 @@
 import { testData } from "@/__tests__/unit/data";
+import { MockLanguageModel } from "@/__tests__/unit/language-models/MockLanguageModel";
+import { MockLanguageModelFactory } from "@/__tests__/unit/language-models/MockLanguageModelFactory";
 import { expectModelsEqual } from "@/__tests__/unit/models/expectModelsEqual";
 import { questionnaireAdministrationAnswers } from "@/__tests__/unit/questionnaireAdministrationAnswers";
 import { WorkflowEngine } from "@/lib/WorkflowEngine";
 import { LanguageModelFactory } from "@/lib/language-models";
 import {
+  BooleanValue,
   CategoricalValue,
   Claim,
   DocumentStub,
   Exception,
+  Identifier,
+  RealValue,
+  TextValue,
   Workflow,
   WorkflowStub,
   stubify,
 } from "@/lib/models";
 import { dataFactory } from "@/lib/rdfEnvironment";
-import { dcterms } from "@tpluscode/rdf-ns-builders";
 import { describe, expect, it } from "vitest";
 
 describe("WorkflowEngine", () => {
-  const { concept, document, modelSet } = testData.medlinePlus;
-  const { workflows } = testData.synthetic;
-
-  function expectSingleClaim({
-    claims,
-  }: {
-    claims: readonly Claim[];
-  }): void {
-    expect(claims).toHaveLength(1);
-    const claim = claims[0];
-    expectModelsEqual(
-      claim,
-      new Claim({
-        gold: claim.gold,
-        predicate: dcterms.subject,
-        object: new CategoricalValue({
-          value: stubify(concept),
-        }),
-        subject: document.identifier,
-      }),
-    );
+  const {
+    concept,
+    document,
+    modelSet: medlinePlusModelSet,
+  } = testData.medlinePlus;
+  const modelSet = medlinePlusModelSet.cloneSync();
+  const { questions, workflows } = testData.synthetic;
+  for (const workflow of Object.values(workflows)) {
+    modelSet.addModelSync(workflow);
   }
 
   function createWorkflowEngine(options?: {
@@ -57,17 +50,22 @@ describe("WorkflowEngine", () => {
   }
 
   async function testWorkflow({
-    languageModelFactory,
+    languageModelInvocationResults,
     workflow,
   }: {
-    languageModelFactory?: LanguageModelFactory;
+    languageModelInvocationResults: (Error | string)[];
     workflow: Workflow;
   }): Promise<readonly Claim[]> {
     const modelSetClone = modelSet.cloneSync();
     modelSetClone.addModelSync(workflow);
 
     const workflowExecution = await createWorkflowEngine({
-      languageModelFactory,
+      languageModelFactory: new MockLanguageModelFactory(
+        new MockLanguageModel({
+          invocationResults: languageModelInvocationResults,
+          contextWindow: 128000,
+        }),
+      ),
     }).execute({
       document: stubify(document),
       workflow: stubify(workflow),
@@ -88,14 +86,63 @@ describe("WorkflowEngine", () => {
   }
 
   it("should execute a questionnaire step", async () => {
-    expectSingleClaim({
-      claims: await testWorkflow({
-        workflow: workflows.questionnaireStep,
-      }),
+    const actualClaims = await testWorkflow({
+      languageModelInvocationResults: [
+        Identifier.toString(concept.identifier),
+        "true",
+        "1.0",
+        "test",
+      ],
+      workflow: workflows.questionnaireStep,
     });
+    expect(actualClaims).toHaveLength(4);
+    expectModelsEqual(
+      new Claim({
+        gold: false,
+        predicate: questions.categorical.path,
+        object: new CategoricalValue({
+          value: stubify(concept),
+        }),
+        subject: document.identifier,
+      }),
+      actualClaims[0],
+    );
+    expectModelsEqual(
+      new Claim({
+        gold: false,
+        predicate: questions.dichotomous.path,
+        object: new BooleanValue({
+          value: true,
+        }),
+        subject: document.identifier,
+      }),
+      actualClaims[1],
+    );
+    expectModelsEqual(
+      new Claim({
+        gold: false,
+        predicate: questions.realValued.path,
+        object: new RealValue({
+          value: 1.0,
+        }),
+        subject: document.identifier,
+      }),
+      actualClaims[2],
+    );
+    expectModelsEqual(
+      new Claim({
+        gold: false,
+        predicate: questions.text.path,
+        object: new TextValue({
+          value: "test",
+        }),
+        subject: document.identifier,
+      }),
+      actualClaims[3],
+    );
   });
 
-  // it("should use a custom prompt on an claim step", async ({ expect }) => {
+  // it("should use a custom prompt on an questionnaire step", async ({ expect }) => {
   //   const mockLanguageModel = new MockLanguageModel({
   //     contextWindow: 128000,
   //     invocationResults: [JSON.stringify({ matches: [1] })],
