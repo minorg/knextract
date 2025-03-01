@@ -148,7 +148,7 @@ export function WorkflowEditor(json: {
                       role: "http://purl.archive.org/purl/knextract/cbox#_Role_AI",
                     }),
                     new PromptMessageTemplate({
-                      literalForm: "{{{concepts | json}}}",
+                      literalForm: "{{{json concepts}}}",
                       role: "http://purl.archive.org/purl/knextract/cbox#_Role_Human",
                     }),
                   ],
