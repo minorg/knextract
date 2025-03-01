@@ -29,6 +29,7 @@ import {
   selectConcepts,
   stubify,
 } from "@/lib/models";
+import { convertHtmlToText } from "@/lib/utilities";
 import {
   formatPromptMessageTemplate,
   formatPromptTemplate,
@@ -190,17 +191,25 @@ export class QuestionAdministrator {
 
     const ambientInputValues: Record<string, any> = {};
 
-    ambientInputValues["document"] = {};
+    let documentHtml = "";
+    let documentText = "";
     for (const textualEntity of this.document.textualEntities) {
       switch (textualEntity.encodingType.value) {
         case "http://purl.archive.org/purl/knextract/cbox#_EncodingType_TextHtml":
-          ambientInputValues["document"]["html"] = textualEntity.literalForm;
+          documentHtml = textualEntity.literalForm;
           break;
         case "http://purl.archive.org/purl/knextract/cbox#_EncodingType_TextPlain":
-          ambientInputValues["document"]["text"] = textualEntity.literalForm;
+          documentText = textualEntity.literalForm;
           break;
       }
     }
+    if (documentHtml.length === 0 && documentText.length > 0) {
+      documentHtml = documentText;
+    }
+    if (documentText.length === 0 && documentHtml.length > 0) {
+      documentText = convertHtmlToText(documentHtml);
+    }
+    ambientInputValues["document"] = { html: documentHtml, text: documentText };
 
     switch (question.type) {
       case "CategoricalQuestion": {
