@@ -114,13 +114,13 @@ export function AnnotateDocumentForm({
           workflowExecutionIdentifier =
             workflowExecutionEvent.payload.workflowExecution.identifier;
           workflowIdentifier =
-            workflowExecutionEvent.payload.workflowExecution.input.identifier;
+            workflowExecutionEvent.payload.workflowExecution.input.workflow
+              .identifier;
           break;
         }
         case "PreWorkflowExecutionEvent": {
-          workflowExecutionIdentifier =
-            workflowExecutionEvent.payload.identifier;
-          workflowIdentifier = workflowExecutionEvent.payload.identifier;
+          workflowIdentifier =
+            workflowExecutionEvent.payload.workflow.identifier;
           break;
         }
       }
