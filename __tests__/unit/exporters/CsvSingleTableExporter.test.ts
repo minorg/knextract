@@ -9,7 +9,7 @@ import { describe, it } from "vitest";
 
 describe.skipIf(process.env["CI"])("CsvSingleTableExporter", () => {
   it(
-    "should export plants annotations",
+    "should export plants claims",
     async ({ expect }) => {
       const {
         plants: { documents, modelSet },

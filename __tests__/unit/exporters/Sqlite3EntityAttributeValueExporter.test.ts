@@ -13,7 +13,7 @@ describe.skipIf(process.env["CI"])(
   "Sqlite3EntityAttributeValueExporter",
   () => {
     it(
-      "should export plants annotations",
+      "should export plants claims",
       async ({ expect }) => {
         const {
           plants: { documents, modelSet },

@@ -8,9 +8,9 @@
     "Skip previously-annotated documents": "Skip previously-annotated documents"
   },
   "AnnotateDocumentForm": {
-    "Cumulative annotations": "Cumulative annotations",
     "Annotate": "Annotate",
     "Annotating document": "Annotating document",
+    "Cumulative claims": "Cumulative claims",
     "Workflow execution": "Workflow execution"
   },
   "ClaimPage": {

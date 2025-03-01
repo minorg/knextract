@@ -21,7 +21,7 @@ import {
 
 const cmd = subcommands({
   cmds: {
-    "corpus-annotations": command({
+    "corpus-claims": command({
       args: {
         corpusIri: option({
           defaultValue: () => "",
@@ -137,7 +137,7 @@ const cmd = subcommands({
 
         progressBar.stop();
       },
-      name: "corpus-annotations",
+      name: "corpus-claims",
     }),
   },
   description: "Knextract export command line program",

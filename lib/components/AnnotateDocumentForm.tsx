@@ -151,10 +151,7 @@ export function AnnotateDocumentForm({
           />
         </Section>
         {workflowPostExecutionEvent ? (
-          <Section
-            className="w-full"
-            title={translations("Cumulative annotations")}
-          >
+          <Section className="w-full" title={translations("Cumulative claims")}>
             <DocumentClaimsDataTable
               documentClaims={workflowPostExecutionEvent.payload.documentClaims.toJson()}
               excludeHeader

@@ -11,7 +11,7 @@ import { describe, it } from "vitest";
 
 describe.skipIf(process.env["CI"])("Sqlite3SingleTableExporter", () => {
   it(
-    "should export plants annotations",
+    "should export plants claims",
     async ({ expect }) => {
       const {
         plants: { documents, modelSet },
